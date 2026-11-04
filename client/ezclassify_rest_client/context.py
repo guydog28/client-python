@@ -39,7 +39,6 @@ from .client import (
 )
 from ezclassify_rest_contract import (
     Assertion,
-    ContextDocumentAccessAssessmentResult,
     ContextDocumentAuditResult,
     ContextAccessDecisionResult,
     ContextAccessRequirementsResult,
@@ -102,7 +101,6 @@ _CACHED_GETS = frozenset({"scheme/describe-concept", "access/rules"})
 # A response check the result model cannot express, given the decoded body
 # and its status. It raises MalformedResponseError.
 _Check = Callable[[Dict[str, Any], int], None]
-
 
 # The body a deployment running authentication answers every unauthenticated
 # request with. Authentication runs before routing, so the runtime cannot say
@@ -1717,32 +1715,3 @@ class CtxDocument:
         if response_profile is not None:
             body["responseProfile"] = response_profile
         return self._ctx._post("document/audit", body, ContextDocumentAuditResult)
-
-    def assess_access(
-        self,
-        text: str,
-        user_attributes: Dict[str, Any],
-        *,
-        context: Dict[str, Any] | None = None,
-        guide_determinations: GuideDeterminationInput | Dict[str, Any] | None = None,
-        response_profile: Literal["summary", "standard", "full"] | None = None,
-    ) -> ContextDocumentAccessAssessmentResult:
-        """Assess authored, authoritative, and projected document access.
-
-        Subject and relationship values remain immutable inputs; remediation is
-        returned only as document-content or subject-to-context requirements.
-        """
-        body: Dict[str, Any] = {"text": text, "userAttributes": user_attributes}
-        if context is not None:
-            body["context"] = context
-        if guide_determinations is not None:
-            body["guideDeterminations"] = (
-                guide_determinations.model_dump(by_alias=True, exclude_none=True)
-                if isinstance(guide_determinations, GuideDeterminationInput)
-                else guide_determinations
-            )
-        if response_profile is not None:
-            body["responseProfile"] = response_profile
-        return self._ctx._post(
-            "document/assess-access", body, ContextDocumentAccessAssessmentResult
-        )

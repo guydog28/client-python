@@ -13,10 +13,8 @@ import pytest
 from ezclassify_rest_client.client import _api_error
 from ezclassify_rest_contract import (
     ContextAccessRequirementsResult,
-    ContextDocumentAccessAssessmentResult,
     ContextDocumentAuditResult,
 )
-
 
 _SEMANTIC_ROOT = Path(__file__).parents[1] / "vendor" / "spec" / "semantic" / "v1"
 _CONTRACT = json.loads(
@@ -74,8 +72,6 @@ def _assert_semantic_clause(output: dict[str, Any], assertion: dict[str, Any]) -
 
 
 def _success_model(operation: str):
-    if operation == "assessDocumentAccess":
-        return ContextDocumentAccessAssessmentResult
     if operation == "documentAccessRequirements":
         return ContextAccessRequirementsResult
     return ContextDocumentAuditResult

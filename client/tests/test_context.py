@@ -1024,7 +1024,6 @@ class TestResponseCache:
             ctx.guide.scan("text")
             assert guide.call_count == 2
             assert not ctx._caches("POST", "document/audit")
-            assert not ctx._caches("POST", "document/assess-access")
 
 
 class TestScheme:

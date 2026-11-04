@@ -16,7 +16,6 @@ from typing import Any, NamedTuple
 
 import yaml
 
-
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "types/ezclassify_rest_contract/models.py"
 
@@ -114,11 +113,6 @@ MODEL_ORDER = [
     "DocumentGuideAssessment",
     "DocumentResponseCounts",
     "DocumentResponseProjection",
-    "EffectiveDocumentTarget",
-    "ContentChangeRequirement",
-    "SubjectContextRequirement",
-    "AccessScenarioAssessment",
-    "DocumentAccessAssessment",
     "RenderResponse",
     "NormalizeResponse",
     "ContextSchemeProcessResult",
@@ -153,7 +147,6 @@ MODEL_ORDER = [
     "ContextDescription",
     "ContextCrosswalkTranslationResult",
     "ContextDocumentAuditResult",
-    "ContextDocumentAccessAssessmentResult",
 ]
 
 JSON_TOP = {
@@ -281,7 +274,6 @@ INLINE_TYPES = {
     ("DocumentAuditReport", "parts"): "List[AuditPart]",
 }
 
-
 class EnumOverride(NamedTuple):
     """A ``TYPE_OVERRIDES`` value that is still an enum position.
 
@@ -292,7 +284,6 @@ class EnumOverride(NamedTuple):
     """
 
     known: str
-
 
 # Canonical schemas intentionally expose rich guide internals.  The Python
 # facade has always treated these leaf declarations as opaque dictionaries;
@@ -340,11 +331,9 @@ TYPE_OVERRIDES: dict[tuple[str, str], str | EnumOverride] = {
     ("ContextCrosswalkTranslationResult", "result"): "Dict[str, Any]",
 }
 
-
 def snake(name: str) -> str:
     value = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name).replace("-", "_").lower()
     return value + "_" if keyword.iskeyword(value) else value
-
 
 class MissingSchemaSource(LookupError):
     """A public model cannot be generated from the vendored contract.
@@ -354,12 +343,10 @@ class MissingSchemaSource(LookupError):
     the table in this file that decides.
     """
 
-
 def descend(value: dict[str, Any], path: tuple[str, ...]) -> dict[str, Any]:
     for key in path:
         value = value[key]
     return value
-
 
 class Generator:
     def __init__(self, spec_dir: Path) -> None:
@@ -1138,7 +1125,6 @@ from ._model_helpers import (
             models[name] = component
         return shapes.render(models)
 
-
 class WireShapes:
     """Compile the OpenAPI document's required members into a decoding table.
 
@@ -1345,7 +1331,6 @@ class WireShapes:
         lines.append("}")
         return "\n".join(lines) + "\n"
 
-
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("spec_dir", nargs="?", default="vendor/spec")
@@ -1358,7 +1343,6 @@ def main() -> None:
         raise SystemExit(2) from exc
     OUT.write_text(output, encoding="utf-8")
     print(f"Generated shipped models: {OUT.relative_to(ROOT)}")
-
 
 if __name__ == "__main__":
     main()

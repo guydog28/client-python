@@ -263,15 +263,6 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
         profile = _optional_text(body, "responseProfile")
         assert profile in (None, "summary", "standard", "full")
         return ctx.document.audit(_text(body, "text"), response_profile=profile)
-    if op == "document/assess-access":
-        profile = _optional_text(body, "responseProfile")
-        assert profile in (None, "summary", "standard", "full")
-        return ctx.document.assess_access(
-            _text(body, "text"),
-            _attributes(body),
-            context=_context(body),
-            response_profile=profile,
-        )
     raise AssertionError(f"no public driver for {case.id}: {op}")
 
 

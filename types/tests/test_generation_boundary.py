@@ -20,7 +20,6 @@ from typing_extensions import Annotated
 import ezclassify_rest_contract
 from ezclassify_rest_contract import _model_helpers, models
 
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -149,10 +148,8 @@ def test_oas31_null_unions_preserve_concrete_public_types() -> None:
     generator = _generator().Generator(REPO_ROOT / "vendor/spec")
 
     cases = [
-        ("AccessScenarioAssessment", "target", "Optional[EffectiveDocumentTarget]"),
         ("DocumentAuditReport", "whole", "Optional[str]"),
         ("DocumentAuditReport", "wholeValidation", "Optional[MarkingValidation]"),
-        ("DocumentAccessAssessment", "projected", "Optional[AccessScenarioAssessment]"),
     ]
     for owner, prop, expected in cases:
         schema = generator.source(owner)["properties"][prop]
@@ -174,27 +171,26 @@ def test_oas31_null_unions_preserve_concrete_public_types() -> None:
     )
     assert generator.type_for({"type": "null"}, "Probe", "value") == "None"
 
-    assert models.AccessScenarioAssessment.__annotations__["target"] == (
-        "Optional[EffectiveDocumentTarget]"
-    )
     assert models.DocumentAuditReport.__annotations__["whole"] == "Optional[str]"
 
     common = {
-        "basis": "authored",
-        "advisory": False,
-        "status": "not-evaluated",
+        "whole": None,
+        "wholes": [],
+        "wholeValidation": None,
+        "parts": [],
+        "wholeCoversParts": None,
+        "unmarkedSpans": [],
+        "proceduralFlags": [],
+        "overallVerdict": "pass",
+        "vocabulary": None,
+        "documentDigest": "sha256:document",
+        "markingRequirements": {"whole": False, "part": False},
+        "guideAssessment": None,
         "limitations": [],
     }
-    assert (
-        models.AccessScenarioAssessment.model_validate(
-            {**common, "target": None}
-        ).target
-        is None
-    )
+    assert models.DocumentAuditReport.model_validate(common).whole is None
     with pytest.raises(PydanticValidationError):
-        models.AccessScenarioAssessment.model_validate(
-            {**common, "target": "not-an-object"}
-        )
+        models.DocumentAuditReport.model_validate({**common, "whole": {}})
 
 
 def _declares_enum(generator: Any, schema: dict[str, Any]) -> bool:

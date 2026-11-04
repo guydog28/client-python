@@ -11,8 +11,8 @@ from pydantic import ValidationError
 
 from ezclassify_rest_client import EzClassifyClientError, connect_context
 from ezclassify_rest_contract import (
-    ContextDocumentAccessAssessmentResult,
     ContextDocumentAuditResult,
+    ContextAccessDecisionResult,
     GuideDeterminationInput,
 )
 
@@ -81,30 +81,15 @@ def _projection() -> dict:
     return {
         "profile": "summary",
         "detailsComplete": False,
-        "omittedFields": ["/result/authoritative/decision"],
+        "omittedFields": ["/result/guideAssessment/evaluation"],
         "counts": {
             "nominations": 1,
             "evidenceSpans": 1,
             "guideUnits": 1,
-            "accessRuleResults": 3,
-            "contentRequirements": 1,
-            "contextRequirements": 1,
+            "accessRuleResults": 0,
+            "contentRequirements": 0,
+            "contextRequirements": 0,
         },
-    }
-
-
-def _scenario(basis: str, advisory: bool = False) -> dict:
-    return {
-        "basis": basis,
-        "advisory": advisory,
-        "status": "denied",
-        "target": {
-            "basis": basis,
-            "marking": "HIGH",
-            "assertions": [],
-            "authoredParts": [],
-        },
-        "limitations": [],
     }
 
 
@@ -149,52 +134,8 @@ def test_audit_returns_typed_envelope_and_preserves_omissions() -> None:
 
 
 @respx.mock
-def test_assess_access_preserves_scenario_authority_and_absent_details() -> None:
-    route = respx.post(f"{ROOT}/document/assess-access").mock(
-        return_value=httpx.Response(
-            200,
-            json={
-                "resolution": _resolution(),
-                "result": {
-                    "audit": _audit(),
-                    "authored": _scenario("authored"),
-                    "authoritative": _scenario("authoritative"),
-                    "projected": _scenario("projected", True),
-                },
-                "operationLimitations": [
-                    {
-                        "code": "best-effort-source",
-                        "scope": "resolution",
-                        "reason": "Mutable source.",
-                    }
-                ],
-                "responseProjection": _projection(),
-            },
-            headers=HEADERS,
-        )
-    )
-    with _connect() as ctx:
-        result = ctx.document.assess_access(
-            "record",
-            {"clearance": "LOW"},
-            context={"mission": "A"},
-            response_profile="summary",
-        )
-
-    assert isinstance(result, ContextDocumentAccessAssessmentResult)
-    assert result.result.authoritative.basis == "authoritative"
-    assert result.result.projected is not None and result.result.projected.advisory
-    assert "decision" not in result.result.authoritative.model_fields_set
-    assert "content_requirements" not in result.result.authoritative.model_fields_set
-    assert result.operation_limitations[0].code == "best-effort-source"
-    body = json.loads(route.calls.last.request.content)
-    assert body["userAttributes"] == {"clearance": "LOW"}
-    assert body["context"] == {"mission": "A"}
-
-
-@respx.mock
 def test_structured_stale_error_is_available_without_message_parsing() -> None:
-    respx.post(f"{ROOT}/document/assess-access").mock(
+    respx.post(f"{ROOT}/document/audit").mock(
         return_value=httpx.Response(
             409,
             json={
@@ -205,7 +146,7 @@ def test_structured_stale_error_is_available_without_message_parsing() -> None:
         )
     )
     with _connect() as ctx, pytest.raises(EzClassifyClientError) as caught:
-        ctx.document.assess_access("record", {})
+        ctx.document.audit("record")
 
     assert caught.value.status_code == 409
     assert caught.value.code == "INVALID_INPUT"
@@ -286,8 +227,7 @@ def test_full_nested_document_models_are_lossless_and_strict() -> None:
         ],
         "limitations": [],
     }
-    scenario = _scenario("authoritative")
-    scenario["decision"] = {
+    decision_payload = {
         "granted": False,
         "rules": [
             {
@@ -325,21 +265,22 @@ def test_full_nested_document_models_are_lossless_and_strict() -> None:
             "snapshotId": "sha256:source",
         },
     }
-    result = ContextDocumentAccessAssessmentResult.from_dict(
+    result = ContextDocumentAuditResult.from_dict(
         {
             "resolution": _resolution(),
-            "result": {
-                "audit": audit,
-                "authored": _scenario("authored"),
-                "authoritative": scenario,
-                "projected": None,
-            },
+            "result": audit,
             "operationLimitations": [],
         }
     )
 
-    nomination = result.result.audit.guide_assessment.evaluation.nominations[0]
-    decision = result.result.authoritative.decision
+    nomination = result.result.guide_assessment.evaluation.nominations[0]
+    decision = ContextAccessDecisionResult.from_dict(
+        {
+            "resolution": _resolution(),
+            "result": decision_payload,
+            "operationLimitations": [],
+        }
+    ).result
     assert nomination.evidence[0].rule.rule_digest == "sha256:rule"
     assert decision.rules[0].comparisons[0].missing == ["blue"]
     assert decision.provenance.attribution.license_url == "https://example.test/license"

@@ -37,7 +37,6 @@ from ezclassify_rest_contract import (
     GuideFindingDetermination,
 )
 
-
 SPEC_PATH = Path(__file__).resolve().parents[2] / "vendor/spec/openapi.yaml"
 
 _BASE = "http://conformance.invalid"
@@ -361,7 +360,6 @@ _DETERMINATIONS = GuideDeterminationInput(
 
 _PART_OF = {"role": "part", "partOf": {"rendered": "H//A"}}
 
-
 # One case per client call that sends a body, keyed by a readable name. Each
 # supplies every optional argument the call takes, so the whole option surface
 # reaches the wire. Calls that build a different body for the same route get
@@ -543,16 +541,6 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
         "document/audit",
         lambda c: c.document.audit(
             "document text",
-            guide_determinations=_DETERMINATIONS,
-            response_profile="full",
-        ),
-    ),
-    "document.assess-access": (
-        "document/assess-access",
-        lambda c: c.document.assess_access(
-            "document text",
-            {"clearance": "high"},
-            context={"project": "p1"},
             guide_determinations=_DETERMINATIONS,
             response_profile="full",
         ),
