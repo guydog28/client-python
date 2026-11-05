@@ -17,7 +17,7 @@ from typing import Any, NamedTuple
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "types/ezclassify_rest_contract/models.py"
+OUT = ROOT / "types/ezclassify_contract/models.py"
 
 # Column limit for generated docstrings. models.py is excluded from
 # `ruff format` (see the root pyproject) because regen freshness requires it to
@@ -723,7 +723,7 @@ class Generator:
                 "decides it. A schema the contract dropped or renamed is "
                 "repaired upstream in ezclassify/contracts or by pointing the "
                 "table at its new location — never by hand-editing "
-                "types/ezclassify_rest_contract/models.py."
+                "types/ezclassify_contract/models.py."
             )
 
     def resolve_schema_ref(self, schema: dict[str, Any]) -> dict[str, Any]:
