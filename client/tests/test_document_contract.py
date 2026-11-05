@@ -10,7 +10,7 @@ import respx
 from pydantic import ValidationError
 
 from ezclassify_rest_client import EzClassifyClientError, connect_context
-from ezclassify_rest_contract import (
+from ezclassify_contract import (
     ContextDocumentAuditResult,
     ContextAccessDecisionResult,
     GuideDeterminationInput,
@@ -229,6 +229,7 @@ def test_full_nested_document_models_are_lossless_and_strict() -> None:
     }
     decision_payload = {
         "granted": False,
+        "warnings": [],
         "rules": [
             {
                 "ruleIndex": 0,

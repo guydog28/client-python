@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from audit_builders import aggregate, audit_report, coverage, part, validation
 from classifier import ClassifyResult, classify, print_report
 from client import EzClassifyClient
-from ezclassify_rest_contract import AggregateResult, DocumentAuditReport, Notice
+from ezclassify_contract import AggregateResult, DocumentAuditReport, Notice
 
 SIMPLE_TEXT = "Document with marking HIGH and LOW."
 

@@ -22,7 +22,7 @@ from ezclassify_rest_client import (
     RestClientCredentials,
     connect_context,
 )
-from ezclassify_rest_contract import (
+from ezclassify_contract import (
     Assertion,
     CategoryView,
     ConceptView,
@@ -816,7 +816,9 @@ class TestResponseCache:
     def test_access_decisions_still_make_one_request_per_decision(self):
         route = respx.post(_ctx_url("access/check")).mock(
             return_value=httpx.Response(
-                200, json=_envelope({"granted": True, "rules": []}), headers=_HDR
+                200,
+                json=_envelope({"granted": True, "rules": [], "warnings": []}),
+                headers=_HDR,
             )
         )
         with _connect() as ctx:
@@ -828,7 +830,9 @@ class TestResponseCache:
     def test_access_decision_opt_in_requires_a_pin_and_can_be_cleared(self):
         route = respx.post(_ctx_url("access/check")).mock(
             return_value=httpx.Response(
-                200, json=_envelope({"granted": True, "rules": []}), headers=_HDR
+                200,
+                json=_envelope({"granted": True, "rules": [], "warnings": []}),
+                headers=_HDR,
             )
         )
         with pytest.raises(ValueError, match="concrete Context version"):
@@ -2506,6 +2510,7 @@ class TestAccess:
                     {
                         "granted": True,
                         "rules": [_access_result()],
+                        "warnings": [],
                     }
                 ),
                 headers=_HDR,
@@ -2537,7 +2542,7 @@ class TestAccess:
         route = respx.post(_ctx_url("access/check")).mock(
             return_value=httpx.Response(
                 200,
-                json=_envelope({"granted": False, "rules": []}),
+                json=_envelope({"granted": False, "rules": [], "warnings": []}),
                 headers=_HDR,
             )
         )
@@ -2571,7 +2576,7 @@ class TestAccess:
         route = respx.post(_ctx_url("access/check")).mock(
             return_value=httpx.Response(
                 200,
-                json=_envelope({"granted": False, "rules": []}),
+                json=_envelope({"granted": False, "rules": [], "warnings": []}),
                 headers=_HDR,
             )
         )

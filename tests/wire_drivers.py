@@ -17,7 +17,7 @@ from ezclassify_rest_client import (
 )
 from ezclassify_rest_client._deadline import _DeadlineTransport
 from ezclassify_rest_client.client import _api_error
-from ezclassify_rest_contract import Assertion
+from ezclassify_contract import Assertion
 
 from .wire_corpus import WireCase
 

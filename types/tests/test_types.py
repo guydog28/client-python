@@ -1,9 +1,9 @@
-"""Tests for ezclassify-rest-contract Pydantic models."""
+"""Tests for ezclassify-contract Pydantic models."""
 
 import pytest
 from pydantic import ValidationError as PydanticValidationError
 
-from ezclassify_rest_contract import (
+from ezclassify_contract import (
     AccessDecision,
     AccessRuleResult,
     AggregateResult,
@@ -566,9 +566,50 @@ class TestAccessModels:
             )
 
     def test_access_decision(self):
-        d = AccessDecision.from_dict({"granted": True, "rules": []})
+        d = AccessDecision.from_dict({"granted": True, "rules": [], "warnings": []})
         assert d.granted is True
         assert d.rules == []
+        assert d.warnings == []
+
+    @pytest.mark.parametrize("granted", [True, False])
+    def test_access_decision_preserves_warnings(self, granted):
+        decision = AccessDecision.from_dict(
+            {
+                "granted": granted,
+                "rules": [],
+                "warnings": [
+                    {
+                        "kind": "deprecated",
+                        "message": "Use the current concept",
+                        "conceptId": "prior",
+                        "conceptName": "Prior",
+                        "categoryId": "controls",
+                        "replacement": "current",
+                        "replacementName": "Current",
+                        "ruleId": "modernize",
+                    }
+                ],
+            }
+        )
+        assert decision.granted is granted
+        warning = decision.warnings[0]
+        assert warning.concept_name == "Prior"
+        assert warning.replacement_name == "Current"
+        assert warning.concept_id == "prior"
+        assert warning.replacement == "current"
+        assert warning.category_id == "controls"
+        assert warning.rule_id == "modernize"
+
+    @pytest.mark.parametrize(
+        "payload",
+        [
+            {"granted": True, "rules": []},
+            {"granted": False, "rules": [], "warnings": None},
+        ],
+    )
+    def test_access_decision_refuses_missing_or_null_warnings(self, payload):
+        with pytest.raises(PydanticValidationError):
+            AccessDecision.from_dict(payload)
 
 
 class TestGuideModels:

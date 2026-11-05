@@ -1,6 +1,6 @@
 """Handwritten behavior shared by generated wire-model declarations.
 
-The wire fields live exclusively in :mod:`ezclassify_rest_contract.models`,
+The wire fields live exclusively in :mod:`ezclassify_contract.models`,
 which is generated from the vendored schemas and OpenAPI document.  This
 module is intentionally limited to Python ergonomics and cross-field checks
 that JSON Schema cannot express as a single class declaration.
@@ -211,7 +211,7 @@ _Loc = Tuple[Union[str, int], ...]
 def _check_wire_shape(model: str, value: Any) -> None:
     """Refuse a wire value that breaks the contract's required members.
 
-    The shapes are generated into :mod:`ezclassify_rest_contract.models` from
+    The shapes are generated into :mod:`ezclassify_contract.models` from
     the OpenAPI document's ``required`` lists (see ``WireShapes`` in
     ``scripts/gen_models.py`` for how one reads). A model generated from no
     component has no shape here and is checked by the component around it.

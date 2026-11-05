@@ -1,11 +1,11 @@
 # <img src="assets/icon.svg" alt="" width="32"> EzClassify Python SDK
 
-[![CI](https://github.com/ezclassify/client-python/actions/workflows/ci.yml/badge.svg)](https://github.com/ezclassify/client-python/actions/workflows/ci.yml)
+[![CI](https://github.com/ezclassify/sdk-python/actions/workflows/ci.yml/badge.svg)](https://github.com/ezclassify/sdk-python/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/ezclassify-rest-client?label=ezclassify-rest-client)](https://pypi.org/project/ezclassify-rest-client/)
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://pypi.org/project/ezclassify-rest-client/)
 
-Apache-licensed HTTP client for a licensed EzClassify REST runtime. It contains wire models and client ergonomics, not the proprietary engine or enterprise content. Two PyPI packages are provided: `ezclassify-rest-contract` and `ezclassify-rest-client`.
+Apache-licensed HTTP client for a licensed EzClassify REST runtime. It contains wire models and client ergonomics, not the proprietary engine or enterprise content. Two PyPI packages are provided: `ezclassify-contract` and `ezclassify-rest-client`.
 
 The [ezclassify/contracts](https://github.com/ezclassify/contracts) repository owns
 document and wire types; EzClassify Runtime owns
@@ -24,7 +24,7 @@ isolated from system packages.
 pip install ezclassify-rest-client
 ```
 
-That pulls in `ezclassify-rest-contract` as a dependency. Python 3.11+. The SDK ships client-only: use `EzClassifyClient` against a running REST API server.
+That pulls in `ezclassify-contract` as a dependency. Python 3.11+. The SDK ships client-only: use `EzClassifyClient` against a running REST API server.
 
 ## Quickstart
 

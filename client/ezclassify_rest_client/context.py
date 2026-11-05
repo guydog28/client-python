@@ -37,7 +37,7 @@ from .client import (
     _Model,
     _transport_error,
 )
-from ezclassify_rest_contract import (
+from ezclassify_contract import (
     Assertion,
     ContextDocumentAuditResult,
     ContextAccessDecisionResult,

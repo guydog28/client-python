@@ -37,7 +37,7 @@ NOTICES_PATH = REPO_ROOT / "THIRD-PARTY-NOTICES.md"
 # The packages published to PyPI from this repository, in the order their
 # sections appear in the notices file. Maps package name to source directory.
 PUBLISHED_PACKAGES = {
-    "ezclassify-rest-contract": "types/",
+    "ezclassify-contract": "types/",
     "ezclassify-rest-client": "client/",
 }
 
@@ -63,7 +63,7 @@ upstream copyright holders.
 
 Two packages are published from this repository:
 
-- `ezclassify-rest-contract` (directory `types/`)
+- `ezclassify-contract` (directory `types/`)
 - `ezclassify-rest-client` (directory `client/`)
 
 The top-level `ezclassify` package (repository root) is a dev-only integration

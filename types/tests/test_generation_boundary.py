@@ -17,8 +17,8 @@ from pydantic import TypeAdapter
 from pydantic import ValidationError as PydanticValidationError
 from typing_extensions import Annotated
 
-import ezclassify_rest_contract
-from ezclassify_rest_contract import _model_helpers, models
+import ezclassify_contract
+from ezclassify_contract import _model_helpers, models
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -54,7 +54,7 @@ def _generated_model_names() -> list[str]:
 
 def test_only_the_shipped_model_module_holds_generated_declarations() -> None:
     model_names = set(_generated_model_names())
-    package_dir = REPO_ROOT / "types/ezclassify_rest_contract"
+    package_dir = REPO_ROOT / "types/ezclassify_contract"
     declarations: dict[str, set[str]] = {}
 
     for module_path in package_dir.glob("*.py"):
@@ -103,7 +103,7 @@ def test_bot_manifest_pins_every_generator_input_and_shipped_output() -> None:
             ).hexdigest(),
         },
     ]
-    assert manifest["generatedPaths"] == ["types/ezclassify_rest_contract/models.py"]
+    assert manifest["generatedPaths"] == ["types/ezclassify_contract/models.py"]
 
 
 def _generator() -> object:
@@ -486,9 +486,7 @@ def test_shipped_models_are_marked_generated() -> None:
     digest is compared for real here so a forgotten `make regen` fails loudly.
     """
     first_line = (
-        (REPO_ROOT / "types/ezclassify_rest_contract/models.py")
-        .read_text()
-        .splitlines()[0]
+        (REPO_ROOT / "types/ezclassify_contract/models.py").read_text().splitlines()[0]
     )
 
     expected = f"# Code generated from vendored contracts@{_vendored_contract_digest()}. DO NOT EDIT."
@@ -513,8 +511,8 @@ def test_each_generated_model_is_the_exported_production_type(model_name: str) -
     generated = getattr(models, model_name)
 
     if model_name.startswith("_"):
-        assert model_name not in ezclassify_rest_contract.__all__
-        assert not hasattr(ezclassify_rest_contract, model_name)
+        assert model_name not in ezclassify_contract.__all__
+        assert not hasattr(ezclassify_contract, model_name)
     else:
-        assert getattr(ezclassify_rest_contract, model_name) is generated
-    assert generated.__module__ == "ezclassify_rest_contract.models"
+        assert getattr(ezclassify_contract, model_name) is generated
+    assert generated.__module__ == "ezclassify_contract.models"

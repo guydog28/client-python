@@ -3,9 +3,9 @@ requires = ["hatchling>=1.32.4"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ezclassify-rest-contract"
+name = "ezclassify-contract"
 version = "1.0.0.dev30"
-description = "Pydantic wire and domain contracts for the EzClassify REST API"
+description = "Pydantic wire and domain contracts for EzClassify"
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
@@ -32,9 +32,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ezclassify/client-python"
-Source = "https://github.com/ezclassify/client-python"
-Issues = "https://github.com/ezclassify/client-python/issues"
+Homepage = "https://github.com/ezclassify/sdk-python"
+Source = "https://github.com/ezclassify/sdk-python"
+Issues = "https://github.com/ezclassify/sdk-python/issues"
 
 [project.optional-dependencies]
 # PyYAML is not a runtime dependency of this package. The generation-boundary
@@ -43,16 +43,16 @@ Issues = "https://github.com/ezclassify/client-python/issues"
 dev = ["pytest>=9.1", "pytest-cov>=7.1", "PyYAML>=6.0.3"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["ezclassify_rest_contract"]
+packages = ["ezclassify_contract"]
 
 [tool.hatch.build.targets.sdist]
 include = [
     "/LICENSE",
     "/README.md",
     "/pyproject.toml",
-    "/ezclassify_rest_contract",
+    "/ezclassify_contract",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=ezclassify_rest_contract --cov-report=term-missing"
+addopts = "--cov=ezclassify_contract --cov-report=term-missing"

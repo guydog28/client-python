@@ -24,7 +24,7 @@ import yaml
 from pydantic import BaseModel, StrictBool
 from pydantic.fields import FieldInfo
 
-from ezclassify_rest_contract import models
+from ezclassify_contract import models
 
 SPEC = Path(__file__).resolve().parents[2] / "vendor/spec/openapi.yaml"
 DOCUMENT: Dict[str, Any] = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
@@ -238,11 +238,11 @@ NO_COMPONENT = {
 
 
 def test_every_public_model_is_compared_or_has_no_component() -> None:
-    import ezclassify_rest_contract
+    import ezclassify_contract
 
     exported = {
         name
-        for name in ezclassify_rest_contract.__all__
+        for name in ezclassify_contract.__all__
         if isinstance(getattr(models, name, None), type)
     }
     compared = {name for name, _ in PAIRS}

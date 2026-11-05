@@ -9,7 +9,7 @@ wire field silently as the spec evolves.
 import pytest
 from pydantic import ValidationError
 
-from ezclassify_rest_contract import (
+from ezclassify_contract import (
     CategoryView,
     ConceptView,
     FormatView,
@@ -559,6 +559,7 @@ class TestAccessDecisionWireFields:
             {
                 "granted": True,
                 "rules": [],
+                "warnings": [],
                 "provenance": {
                     "providerId": "idp-1",
                     "attribution": {"name": "IdP", "license": "internal"},
@@ -766,8 +767,8 @@ class TestUnknownResponseFields:
         # in a response. A closed model that also comes back in responses, such
         # as Assertion, decodes openly and refuses unknown keywords only when a
         # caller constructs it; see TestConstructionClosedModels.
-        import ezclassify_rest_contract as contract
-        from ezclassify_rest_contract import models
+        import ezclassify_contract as contract
+        from ezclassify_contract import models
 
         closed = sorted(
             name
@@ -846,8 +847,8 @@ class TestConstructionClosedModels:
     """A model callers build and servers return is strict only on construction."""
 
     def test_the_construction_closed_set_is_the_models_used_both_ways(self):
-        import ezclassify_rest_contract as contract
-        from ezclassify_rest_contract import _model_helpers, models
+        import ezclassify_contract as contract
+        from ezclassify_contract import _model_helpers, models
 
         closed_on_construction = sorted(
             name
@@ -1000,6 +1001,7 @@ class TestUnknownResponseEnumValues:
             {
                 "granted": True,
                 "rules": [],
+                "warnings": [],
                 "provenance": {
                     "providerId": "idp-1",
                     "attribution": {"name": "IdP", "license": "internal"},

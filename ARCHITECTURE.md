@@ -3,7 +3,7 @@
 This repository contains the EzClassify Python SDK. It adapts the public REST
 contract to Python; EzClassify Runtime evaluates marking operations and composes
 Contexts. It publishes two packages
-with one-way dependencies: `ezclassify-rest-contract` and
+with one-way dependencies: `ezclassify-contract` and
 `ezclassify-rest-client`. The repository-root package is only the
 conformance test harness; it is not a third implementation package.
 
@@ -29,9 +29,9 @@ conformance test harness; it is not a third implementation package.
   invoking it.
 - [`scripts/gen_models.py`](scripts/gen_models.py) reads [`vendor/spec/openapi.yaml`](vendor/spec/openapi.yaml) and every
   `vendor/spec/json-schemas/*.schema.json`. Its sole committed output is
-  [`types/ezclassify_rest_contract/models.py`](types/ezclassify_rest_contract/models.py), as recorded in
+  [`types/ezclassify_contract/models.py`](types/ezclassify_contract/models.py), as recorded in
   [`vendor/spec/MANIFEST.json`](vendor/spec/MANIFEST.json).
-- [`types/ezclassify_rest_contract/models.py`](types/ezclassify_rest_contract/models.py) is the only public module that
+- [`types/ezclassify_contract/models.py`](types/ezclassify_contract/models.py) is the only public module that
   declares the generated wire models. Its first line carries the contract
   digest and `DO NOT EDIT` ownership marker.
 - `models.py` also carries the contract's required members, compiled from the
@@ -47,11 +47,11 @@ conformance test harness; it is not a third implementation package.
 
 ## Handwritten seams
 
-- [`types/ezclassify_rest_contract/_model_helpers.py`](types/ezclassify_rest_contract/_model_helpers.py) is private and limited to
+- [`types/ezclassify_contract/_model_helpers.py`](types/ezclassify_contract/_model_helpers.py) is private and limited to
   Pydantic configuration, strict wire decoding, Python-native `from_dict`
   ergonomics, and cross-field source-identity validation. It may support
   generated declarations but must not duplicate their fields.
-- [`types/ezclassify_rest_contract/__init__.py`](types/ezclassify_rest_contract/__init__.py) curates the public exports from
+- [`types/ezclassify_contract/__init__.py`](types/ezclassify_contract/__init__.py) curates the public exports from
   generated wire and domain models; transport behavior belongs in [`client/`](client/).
   A generated model whose name starts with an underscore is a body the client
   decodes but no public method returns, such as the health report; it is
@@ -89,7 +89,7 @@ conformance test harness; it is not a third implementation package.
 ## Required gates
 
 - Generation ownership and freshness: run `make regen`, then
-  `git diff --exit-code -- types/ezclassify_rest_contract/models.py`. Run
+  `git diff --exit-code -- types/ezclassify_contract/models.py`. Run
   `python -m pytest types/tests/test_generation_boundary.py` in an environment
   with `types[dev]` installed; it enforces the pinned inputs and output, header,
   single public declaration module, and package exports.

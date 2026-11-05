@@ -31,7 +31,7 @@ import respx
 import yaml
 
 from ezclassify_rest_client import EzClassifyClient, EzClassifyContext
-from ezclassify_rest_contract import (
+from ezclassify_contract import (
     Assertion,
     GuideDeterminationInput,
     GuideFindingDetermination,

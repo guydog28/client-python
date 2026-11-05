@@ -11,7 +11,7 @@ Two PyPI packages plus a repo-root harness that is not published:
 
 | Directory | PyPI name | Purpose |
 |---|---|---|
-| [`types/`](types/) | `ezclassify-rest-contract` | Pydantic wire and domain contracts |
+| [`types/`](types/) | `ezclassify-contract` | Pydantic wire and domain contracts |
 | [`client/`](client/) | `ezclassify-rest-client` | HTTP client via `httpx` |
 | *(repo root)* | `ezclassify` *(not on PyPI)* | Conformance suite + HTTP replayer; delegates to the published packages |
 
@@ -31,7 +31,7 @@ make test   # creates .venv, installs test dependencies, and runs every suite
 | Action | Command | Notes |
 |--------|---------|-------|
 | Install for development | `pip install -e types/ -e client/` | Editable installs in dependency order. |
-| Generate API reference | `make docs` | Requires editable local packages installed in `.venv`; open `dist/api/ezclassify_rest_client.html` and `dist/api/ezclassify_rest_contract.html`. |
+| Generate API reference | `make docs` | Requires editable local packages installed in `.venv`; open `dist/api/ezclassify_rest_client.html` and `dist/api/ezclassify_contract.html`. |
 | Test | `make test` | Runs contract, client, example, and root conformance suites; `make test-verbose` adds detailed output. |
 | Lint + format check | `make lint` | `ruff check .` and `ruff format --check .` at the pinned version CI uses (CI runs this target). `ruff format .` applies the formatting. |
 | Type check | `make typecheck` | `mypy --strict` over the two `py.typed` packages (config in the root [`pyproject.toml`](pyproject.toml) `[tool.mypy]`); the Makefile pins the mypy version CI uses. |
@@ -55,7 +55,7 @@ reviewed API change committed alongside that change.
 ## Spec and conformance
 
 - **The spec is vendored, not authored here.** The Pydantic models in
-  `ezclassify-rest-contract` track the OpenAPI spec under [`vendor/spec/`](vendor/spec/). That
+  `ezclassify-contract` track the OpenAPI spec under [`vendor/spec/`](vendor/spec/). That
   mirror is written exclusively by the EzClassify spec bot from
   [ezclassify/contracts](https://github.com/ezclassify/contracts), landing as `ezclassify-spec-bot`;
   `vendor-readonly.yml` rejects a [`vendor/spec/`](vendor/spec/) commit from anyone else. There

@@ -6,7 +6,7 @@ upstream copyright holders.
 
 Two packages are published from this repository:
 
-- `ezclassify-rest-contract` (directory `types/`)
+- `ezclassify-contract` (directory `types/`)
 - `ezclassify-rest-client` (directory `client/`)
 
 The top-level `ezclassify` package (repository root) is a dev-only integration
@@ -23,7 +23,7 @@ workflow artifact.
 
 ---
 
-## ezclassify-rest-contract
+## ezclassify-contract
 
 Directory `types/`. Direct runtime dependencies: `pydantic`, `typing_extensions`.
 
@@ -35,7 +35,7 @@ Directory `types/`. Direct runtime dependencies: `pydantic`, `typing_extensions`
 ## ezclassify-rest-client
 
 Directory `client/`. Direct runtime dependencies: `httpcore`, `httpx`.
-Also depends on the sibling packages `ezclassify-rest-contract` (covered above).
+Also depends on the sibling packages `ezclassify-contract` (covered above).
 
 | Package (declared requirement) | License | Copyright |
 | --- | --- | --- |

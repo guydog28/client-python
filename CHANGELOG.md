@@ -9,5 +9,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 The first public release. An Apache-licensed HTTP client for a licensed
 EzClassify REST runtime, published as two PyPI packages:
-`ezclassify-rest-contract` and `ezclassify-rest-client`. It contains wire
+`ezclassify-contract` and `ezclassify-rest-client`. It contains wire
 models and client ergonomics, not the proprietary engine or enterprise content.

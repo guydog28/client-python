@@ -13,7 +13,7 @@ from ezclassify_rest_client import (
     RestClientCredentials,
     connect_context,
 )
-from ezclassify_rest_contract import Assertion, SourceReference
+from ezclassify_contract import Assertion, SourceReference
 
 from .test_context import (
     _BASE,

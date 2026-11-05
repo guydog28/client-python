@@ -192,5 +192,5 @@ print(decision.result.granted)
 
 ## Dependencies
 
-`httpx` and `httpcore`, plus the `ezclassify-rest-contract` package. pip
+`httpx` and `httpcore`, plus the `ezclassify-contract` package. pip
 resolves the exact floors from the package metadata.

@@ -14,7 +14,7 @@ import copy
 import pytest
 from pydantic import ValidationError
 
-from ezclassify_rest_contract import (
+from ezclassify_contract import (
     Assertion,
     ContextCrosswalkTranslationResult,
     ProcessResult,

@@ -14,7 +14,7 @@ CANONICAL_MANIFESTS = {
 }
 VERSION_LINE = re.compile(r'^version\s*=\s*"(?P<version>[^"]+)"')
 INTERNAL_DEPENDENCY_LINE = re.compile(
-    r'^\s*"(?P<name>ezclassify-rest-contract)>='
+    r'^\s*"(?P<name>ezclassify-contract)>='
     r'(?P<version>[^"]+)",\s*$'
 )
 
@@ -67,5 +67,5 @@ def test_package_versions_and_internal_floors_move_in_lockstep():
             dependency_versions[match.group("name")] = match.group("version")
 
     assert dependency_versions == {
-        "ezclassify-rest-contract": current_version,
+        "ezclassify-contract": current_version,
     }

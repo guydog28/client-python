@@ -118,7 +118,7 @@ from .models import (
 try:
     from importlib.metadata import version as _pkg_version, PackageNotFoundError
 
-    __version__ = _pkg_version("ezclassify-rest-contract")
+    __version__ = _pkg_version("ezclassify-contract")
 except PackageNotFoundError:
     __version__ = "1.0.0.dev0"
 

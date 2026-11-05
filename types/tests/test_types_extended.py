@@ -17,8 +17,8 @@ from pydantic import ValidationError
 
 from unittest.mock import patch
 
-import ezclassify_rest_contract as _et
-from ezclassify_rest_contract.models import (
+import ezclassify_contract as _et
+from ezclassify_contract.models import (
     AccessRequirementsDescription,
     AccessRuleDescription,
     AuditPart,
@@ -793,7 +793,7 @@ class TestVersionFallback:
             with patch(
                 "importlib.metadata.version",
                 side_effect=importlib.metadata.PackageNotFoundError(
-                    "ezclassify-rest-contract"
+                    "ezclassify-contract"
                 ),
             ):
                 importlib.reload(_et)

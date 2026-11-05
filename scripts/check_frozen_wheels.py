@@ -64,7 +64,7 @@ def check_wheel(wheel: Path, distribution: importlib.metadata.Distribution) -> N
 
 def main(directory: Path) -> None:
     """Require one exact handoff wheel per installed first-party distribution."""
-    for name in ("ezclassify-rest-contract", "ezclassify-rest-client"):
+    for name in ("ezclassify-contract", "ezclassify-rest-client"):
         distribution = importlib.metadata.distribution(name)
         candidates = []
         for wheel in directory.glob("*.whl"):

@@ -17,7 +17,7 @@ regen:
 	$(PYTHON) -m venv "$(REGEN_VENV)"
 	$(REGEN_VENV)/bin/pip install -q -r tools/requirements-regen.txt
 	REGEN_PYTHON=$(REGEN_VENV)/bin/python node scripts/gen.mjs vendor/spec
-	@echo "Regenerated shipped types/ezclassify_rest_contract/models.py"
+	@echo "Regenerated shipped types/ezclassify_contract/models.py"
 
 # build: build sdist + wheel artifacts for the two published packages into
 #   dist/ (gitignored).
@@ -113,7 +113,7 @@ test-conformance-runner:
 docs:
 	rm -rf dist/api
 	mkdir -p dist/api
-	cd dist/api && PYTHONPATH="$(CURDIR)/client:$(CURDIR)/types" ../../$(VENV)/bin/python -c 'import ezclassify_rest_client, ezclassify_rest_contract, pydoc; pydoc.writedoc("ezclassify_rest_client"); pydoc.writedocs("../../client/ezclassify_rest_client", "ezclassify_rest_client."); pydoc.writedoc("ezclassify_rest_contract"); pydoc.writedocs("../../types/ezclassify_rest_contract", "ezclassify_rest_contract.")'
+	cd dist/api && PYTHONPATH="$(CURDIR)/client:$(CURDIR)/types" ../../$(VENV)/bin/python -c 'import ezclassify_rest_client, ezclassify_contract, pydoc; pydoc.writedoc("ezclassify_rest_client"); pydoc.writedocs("../../client/ezclassify_rest_client", "ezclassify_rest_client."); pydoc.writedoc("ezclassify_contract"); pydoc.writedocs("../../types/ezclassify_contract", "ezclassify_contract.")'
 
 # Maintenance scripts guard execution with __main__; importing them for pydoc
 # does not regenerate models, notices, or API goldens.

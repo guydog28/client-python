@@ -1,11 +1,11 @@
-# ezclassify-rest-contract
+# ezclassify-contract
 
 Pydantic wire and domain contracts for the EzClassify REST Python SDK.
 
 ## Installation
 
 ```bash
-pip install ezclassify-rest-contract
+pip install ezclassify-contract
 ```
 
 ## What's included
@@ -36,7 +36,7 @@ keyword the model does not declare, so a typo fails at once instead of
 silently dropping the value before the request is sent:
 
 ```python
-from ezclassify_rest_contract import Assertion
+from ezclassify_contract import Assertion
 
 Assertion(category_id="level", concept_id="LOW", expires_at="2027-01-01")  # ok
 Assertion(

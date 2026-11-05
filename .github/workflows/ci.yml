@@ -94,14 +94,14 @@ jobs:
 
       - name: Check for unexpected changes
         run: |
-          if ! git diff --exit-code -- types/ezclassify_rest_contract/models.py; then
+          if ! git diff --exit-code -- types/ezclassify_contract/models.py; then
             echo ""
             echo "ERROR: Shipped generated models differ from the vendored contracts."
             echo "Run 'make regen' locally and commit models.py."
             exit 1
           fi
 
-      # The public API of the published packages (ezclassify-rest-contract,
+      # The public API of the published packages (ezclassify-contract,
       # -client) is frozen at 1.0. This diffs the live source
       # surface against the reviewed api-surface.txt and fails on any drift.
       # Stdlib-only ast walk, so no build or install is needed. Deliberate API
@@ -186,7 +186,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Build and test ezclassify-rest-contract
+      - name: Build and test ezclassify-contract
         working-directory: types
         run: |
           pip install -e ".[dev]"

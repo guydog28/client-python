@@ -3,5 +3,5 @@
 
 # Generated code, regenerated from the vendored spec the spec bot mirrors
 # from contracts' OpenAPI document. Review a change here as a contract change.
-types/ezclassify_rest_contract/models.py @ezclassify/maintainers
+types/ezclassify_contract/models.py @ezclassify/maintainers
 vendor/spec/ @ezclassify/maintainers

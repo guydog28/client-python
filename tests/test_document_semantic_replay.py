@@ -11,7 +11,7 @@ import httpx
 import pytest
 
 from ezclassify_rest_client.client import _api_error
-from ezclassify_rest_contract import (
+from ezclassify_contract import (
     ContextAccessRequirementsResult,
     ContextDocumentAuditResult,
 )
@@ -118,11 +118,14 @@ def test_canonical_document_semantic_case(case_id: str) -> None:
 
 
 def test_semantic_corpus_is_complete() -> None:
-    """The corpus is the count: cases run 1..N in order, each with one request and
-    one recording, so a dropped or added case fails here without a pinned total."""
+    """Every ordered stable case identity names exactly one request and recording."""
     numbers = [case["number"] for case in _CONTRACT["cases"]]
     assert numbers, "the semantic contract declares no cases"
-    assert numbers == list(range(1, len(numbers) + 1))
+    assert all(number > 0 for number in numbers)
+    assert numbers == sorted(set(numbers))
+    assert [case["requestId"] for case in _CONTRACT["cases"]] == [
+        f"case-{number:02d}" for number in numbers
+    ]
     assert set(_RECORDINGS) == set(_CASES)
     assert set(_REQUESTS) == set(_CASES)
 

@@ -27,7 +27,7 @@ from urllib.parse import quote
 import httpx
 from pydantic import ValidationError as PydanticValidationError
 
-from ezclassify_rest_contract.models import (
+from ezclassify_contract.models import (
     _CtxListResponseBody,
     _CtxVersionsResponseBody,
     _HealthResponse,
