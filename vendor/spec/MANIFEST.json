@@ -1,25 +1,25 @@
 {
   "openapiVersion": "1.0.0-dev.30",
-  "openapiSha256": "cf1679c6bae46071cec779c7864802568a3f517aea6b3cc7a2a634de512c6e61",
-  "specBundleSha256": "28b76ee0c0525b0962eadf31ab9eb91a1ea92fe892e75ba0127acb41a04cc0c5",
-  "specDigest": "6147143891dad12cd371f83d3ce5fcf6de796f58d66d91b98f39e587ff9de399",
-  "contractsSha": "8fb77d1299f537cfe13d50eb26b41ff4bc881766",
+  "openapiSha256": "c5c3cfa4244ddfb7968d13a9ced6e0a31d82b9706baef1b523b5457d988ff313",
+  "specBundleSha256": "a80282e3faec613f33a544d80dbccf42661832849e4fc93aa41e48f0d237f1d0",
+  "specDigest": "0a433194e26f7f93368e7ffae66369852724b208fcd6edb75f8ccf90de7ce75f",
+  "contractsSha": "2a607692d8357317b495a022b9e668f9928b5202",
   "sourcePackages": {
     "@ezclassify/openapi": "1.0.0-dev.30",
     "@ezclassify/schemas": "1.0.0-dev.30",
     "@ezclassify/conformance": "1.0.0-dev.30"
   },
-  "generatedAt": "2026-11-03T16:15:23.000Z",
+  "generatedAt": "2026-11-05T23:20:12.375Z",
   "generators": {
     "python": {
       "binary": "node",
       "script": "scripts/gen.mjs",
       "version": "node",
-      "sha256": "fa84891439e6a8510cd9d73c0270e3fd6270491c39a6b4a9f52871f0b8fb8bf4",
+      "sha256": "099650874d44f3c7f72469abed6b7dd098ad11dcaedf77012416119378361fd4",
       "additionalInputs": [
         {
           "path": "scripts/gen_models.py",
-          "sha256": "0dc6627b7f0eb0090397b53637b140fdbdca5b8b99d2c79f6c00503bf99f4f02"
+          "sha256": "6aee021aff2212bd248d026231f746e7998b5eb4db7c29eb1335113f50263d3e"
         },
         {
           "path": "tools/requirements-regen.txt",
@@ -27,10 +27,10 @@
         }
       ],
       "note": "sha256 is of scripts/gen.mjs; additionalInputs pins its Python implementation and native regeneration dependency requirements",
-      "jsonSchemasSha256": "a6e48772d5f835151c6a63811b2addd81197e6a4d2f7199837a3ac9290ebb3c1"
+      "jsonSchemasSha256": "2c3fe85a3f31ed98deeebb182f87c3398d0282b207367b5506bfef05f9cd2e0a"
     }
   },
   "generatedPaths": [
-    "types/ezclassify_rest_contract/models.py"
+    "types/ezclassify_contract/models.py"
   ]
 }

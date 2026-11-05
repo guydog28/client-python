@@ -6,7 +6,6 @@
   "accessFixture": "../../../fixtures/v1/ref-scheme-1.access.json",
   "variants": {
     "no-guide": { "guideFixture": null },
-    "no-access": { "accessFixture": null },
     "share-list": { "schemeFixture": "../../../fixtures/v1/ref-scheme-2.json", "guideFixture": null, "accessFixture": null }
   },
   "artifacts": {
