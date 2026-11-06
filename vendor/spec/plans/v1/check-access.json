@@ -97,12 +97,12 @@
             "name": "check-access-rules-array-present"
         },
         {
-            "accessFixture": "ref-scheme-1.access",
+            "accessFixture": "ref-scheme-1.controls.access",
             "args": [
                 [
                     {
-                        "categoryId": "controls",
-                        "conceptId": "CTRL-A",
+                        "categoryId": "level",
+                        "conceptId": "LOW",
                         "confidence": "certain",
                         "source": "data"
                     }
@@ -115,7 +115,7 @@
                     {
                         "granted": true,
                         "rule": {
-                            "ruleId": "level-rule"
+                            "ruleId": "controls-rule"
                         },
                         "skipped": true
                     }

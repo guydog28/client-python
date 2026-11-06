@@ -36,10 +36,10 @@ conformance tests against it.
 | `openapiVersion`          | `1.0.0-dev.30`          |
 | `abiVersion`              | `v1`              |
 | `replayerContractVersion` | `1` |
-| `contracts@`              | `2a607692d8357317b495a022b9e668f9928b5202`      |
-| `specSourceUrl`           | https://github.com/ezclassify/contracts/tree/2a607692d8357317b495a022b9e668f9928b5202/libs/openapi/openapi.yaml             |
+| `contracts@`              | `54caf0e6b6c6c5a4456c32a6b1d529f4ea369af6`      |
+| `specSourceUrl`           | https://github.com/ezclassify/contracts/tree/54caf0e6b6c6c5a4456c32a6b1d529f4ea369af6/libs/openapi/openapi.yaml             |
 | `targetRepo`              | `python`          |
-| `releaseDateUtc`          | `2026-11-05T23:20:12.375Z`          |
+| `releaseDateUtc`          | `2026-11-06T00:55:54.139Z`          |
 | `generatorScript@`        | `5053284f58ce`      |
 
 `abiVersion` is the wire interface version the server reports on `/v1/health`. It is fixed at `v1`.
