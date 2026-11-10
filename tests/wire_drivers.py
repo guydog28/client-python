@@ -119,6 +119,9 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
                 return ctx._send("POST", op, body=case.body)[0]
             return _post_with_query(ctx, op, case.body, query)
         return ctx._send("GET", op, params=query)[0]
+    # A case that names a scheme is a call on that scheme's view; every other
+    # scheme case is a call on the primary view, which sends no selector.
+    s = ctx.scheme_view(query["scheme"]) if query and "scheme" in query else ctx.scheme
     if case.method == "GET":
         if op == "":
             description = ctx.describe()
@@ -128,22 +131,23 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
             return description
         if op == "scheme/describe-concept":
             assert query is not None
-            return ctx.scheme.describe_concept(query["conceptId"], query["categoryId"])
+            return s.describe_concept(
+                query["conceptId"], query["categoryId"], view=query.get("view")
+            )
         resources = {
-            "scheme": ctx.scheme.summary,
-            "scheme/concepts": ctx.scheme.concepts,
-            "scheme/categories": ctx.scheme.categories,
-            "scheme/formats": ctx.scheme.formats,
-            "scheme/grammar": ctx.scheme.grammar,
-            "scheme/scopes": ctx.scheme.scopes,
-            "scheme/label-presets": ctx.scheme.label_presets,
+            "scheme": s.summary,
+            "scheme/concepts": s.concepts,
+            "scheme/categories": s.categories,
+            "scheme/formats": s.formats,
+            "scheme/grammar": s.grammar,
+            "scheme/scopes": s.scopes,
+            "scheme/label-presets": s.label_presets,
             "access/rules": ctx.access.rules,
             "crosswalk/describe": ctx.crosswalk.describe,
         }
         return resources[op]()
     body = case.body
     assert isinstance(body, dict)
-    s = ctx.scheme
     if op == "scheme/process":
         return s.process(
             _text(body, "input"),

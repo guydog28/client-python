@@ -248,8 +248,10 @@ class EzClassifyContext:
     """A handle bound to one named Context.
 
     Reach the operations through :attr:`scheme`, :attr:`guide`, :attr:`access`,
-    :attr:`document`, and :attr:`crosswalk`. The context is synchronous and safe
-    to use as a context manager.
+    :attr:`document`, and :attr:`crosswalk`. :attr:`scheme` addresses the
+    Context's primary scheme; :meth:`scheme_view` addresses any other scheme
+    it holds. The context is synchronous and safe to use as a context
+    manager.
 
     A concrete ``context_version`` pins the binding: a published Context
     version is immutable, so its answers are kept until the handle closes or
@@ -333,6 +335,7 @@ class EzClassifyContext:
         self._disable_cache = disable_cache
         self._resolved_version: Optional[str] = None
         self.scheme = CtxScheme(self)
+        self._scheme_views: Dict[str, CtxScheme] = {}
         self.guide = CtxGuide(self)
         self.access = CtxAccess(self)
         self.document = CtxDocument(self)
@@ -405,6 +408,44 @@ class EzClassifyContext:
                 be reached. A 429 carries ``retry_after``.
         """
         return self._get("", ContextDescription)
+
+    def scheme_view(self, selector: str) -> CtxScheme:
+        """Bind the scheme operations to one scheme this Context holds.
+
+        A Context can hold more than its primary scheme: a crosswalk's source
+        and target, or an additional scheme. The view answers every operation
+        and read :attr:`scheme` does, against the selected scheme, and sends
+        ``selector`` as ``?scheme=`` on each request. :attr:`scheme` stays the
+        primary view.
+
+        Views are kept per selector, so asking twice for the same selector
+        returns the same view. Their answers share this handle's response
+        cache, keyed by selector, so one scheme's answer is never served for
+        another's.
+
+        The selector is checked by the server, not here: a selector the
+        Context does not hold answers 404 on the first request the view
+        makes, and the call raises. Nothing falls back to the primary.
+
+        Args:
+            selector: Context-local key of the scheme, as
+                ``describe().schemes[i].selector`` reports it, or an
+                unambiguous scheme id.
+
+        Returns:
+            The scheme view bound to ``selector``.
+
+        Raises:
+            ValueError: ``selector`` is blank. An empty selector would reach
+                the server as ``?scheme=`` and could never name a scheme.
+        """
+        if not isinstance(selector, str) or not selector.strip():
+            raise ValueError("selector must be a non-blank string")
+        view = self._scheme_views.get(selector)
+        if view is None:
+            view = CtxScheme(self, selector)
+            self._scheme_views[selector] = view
+        return view
 
     @property
     def _pinned(self) -> bool:
@@ -482,19 +523,22 @@ class EzClassifyContext:
         body: Dict[str, Any],
         model: type[_Model],
         check: _Check | None = None,
+        params: Dict[str, Any] | None = None,
     ) -> _Model:
         """Send one operation and decode its answer, through the cache when cached.
 
-        A POST operation takes its input in the body and declares no query
-        parameter, and the server refuses one it does not declare, so none is
-        sent.
+        A POST operation takes its input in the body. The only query one
+        carries is the scheme selector a scheme view adds; every other
+        caller passes no ``params``, and the server refuses a query parameter
+        an operation does not declare. The selector is part of the cache key,
+        so two schemes never share an answer.
 
         ``check`` is a response check the result model cannot express, such as
         a map that must answer every key the request named. It runs on every
         answer, and inside the cached read, so a malformed answer raises for
         this caller and is never kept for the next one.
         """
-        return self._operation("POST", op, model, body=body, check=check)
+        return self._operation("POST", op, model, body=body, params=params, check=check)
 
     def _get(
         self, op: str, model: type[_Model], params: Dict[str, Any] | None = None
@@ -565,7 +609,7 @@ class EzClassifyContext:
         try:
             with request_deadline(self._timeout):
                 if method == "POST":
-                    response = self._client.post(path, json=body)
+                    response = self._client.post(path, json=body, params=params)
                 else:
                     response = self._client.get(path, params=params)
             self._capture(response, cache_key)
@@ -591,10 +635,46 @@ class EzClassifyContext:
 
 
 class CtxScheme:
-    """Scheme-domain operations bound to a :class:`EzClassifyContext`."""
+    """Scheme-domain operations bound to one scheme of a :class:`EzClassifyContext`.
 
-    def __init__(self, ctx: EzClassifyContext) -> None:
+    ``ctx.scheme`` is bound to the Context's primary scheme and addresses it
+    by leaving the selector off the wire. A view from
+    :meth:`EzClassifyContext.scheme_view` is bound to the scheme its selector
+    names and sends that selector as ``?scheme=`` on every operation and read
+    it makes. The operations take no selector of their own: the view picks
+    the scheme, so one call cannot address a scheme other than its view's.
+    """
+
+    def __init__(self, ctx: EzClassifyContext, selector: Optional[str] = None) -> None:
         self._ctx = ctx
+        self._selector = selector
+
+    def _query(self, params: Dict[str, Any] | None = None) -> Optional[Dict[str, Any]]:
+        """Add this view's selector to an operation's query.
+
+        The primary view adds nothing, so its requests carry no ``scheme``
+        parameter at all rather than an empty one.
+        """
+        if self._selector is None:
+            return params
+        return {**(params or {}), "scheme": self._selector}
+
+    def _post(
+        self,
+        op: str,
+        body: Dict[str, Any],
+        model: type[_Model],
+        check: _Check | None = None,
+    ) -> _Model:
+        return self._ctx._post(op, body, model, check=check, params=self._query())
+
+    def _get(
+        self, op: str, model: type[_Model], params: Dict[str, Any] | None = None
+    ) -> _Model:
+        return self._ctx._get(op, model, self._query(params))
+
+    def _get_list(self, op: str, model: type[_Model]) -> List[_Model]:
+        return self._ctx._get_list(op, model, self._query())
 
     def process(
         self,
@@ -680,7 +760,7 @@ class CtxScheme:
         _put_value_if_set(body, "parts", parts)
         _put_value_if_set(body, "outputs", outputs)
         _put_value_if_set(body, "suggestFor", suggest_for)
-        return self._ctx._post("scheme/process", body, ContextSchemeProcessResult)
+        return self._post("scheme/process", body, ContextSchemeProcessResult)
 
     # The two spellings of validate, so a type checker refuses a call that
     # gives neither or both before it runs. The implementation below still
@@ -786,7 +866,7 @@ class CtxScheme:
         _put_if_set(body, "surface", surface)
         _put_value_if_set(body, "context", context)
         _put_value_if_set(body, "parts", parts)
-        return self._ctx._post("scheme/validate", body, ContextSchemeValidateResult)
+        return self._post("scheme/validate", body, ContextSchemeValidateResult)
 
     def explain(
         self,
@@ -836,7 +916,7 @@ class CtxScheme:
         _put_assertions_if_set(body, assertions)
         _put_value_if_set(body, "context", context)
         _put_value_if_set(body, "parts", parts)
-        return self._ctx._post("scheme/explain", body, ContextSchemeExplainResult)
+        return self._post("scheme/explain", body, ContextSchemeExplainResult)
 
     @overload
     def suggest(
@@ -915,7 +995,7 @@ class CtxScheme:
         _put_if_set(body, "filter", filter)
         _put_assertions_if_set(body, assertions)
         _put_value_if_set(body, "includeGated", include_gated)
-        return self._ctx._post("scheme/suggest", body, ContextSchemeSuggestResult)
+        return self._post("scheme/suggest", body, ContextSchemeSuggestResult)
 
     def suggest_for_categories(
         self,
@@ -971,7 +1051,7 @@ class CtxScheme:
                     path=path,
                 )
 
-        return self._ctx._post(
+        return self._post(
             "scheme/suggest-for-categories",
             body,
             ContextSchemeSuggestForCategoriesResult,
@@ -1019,7 +1099,7 @@ class CtxScheme:
         _put_if_set(body, "outputFormat", output_format)
         _put_if_set(body, "surface", surface)
         _put_value_if_set(body, "context", context)
-        return self._ctx._post("scheme/aggregate", body, ContextSchemeAggregateResult)
+        return self._post("scheme/aggregate", body, ContextSchemeAggregateResult)
 
     def aggregate_assertions(
         self,
@@ -1070,7 +1150,7 @@ class CtxScheme:
         _put_if_set(body, "outputFormat", output_format)
         _put_if_set(body, "surface", surface)
         _put_value_if_set(body, "context", context)
-        return self._ctx._post("scheme/aggregate", body, ContextSchemeAggregateResult)
+        return self._post("scheme/aggregate", body, ContextSchemeAggregateResult)
 
     def scan(
         self,
@@ -1105,7 +1185,7 @@ class CtxScheme:
         body: Dict[str, Any] = {"text": text}
         _put_if_set(body, "inputFormat", input_format)
         _put_if_set(body, "outputFormat", output_format)
-        return self._ctx._post("scheme/scan", body, ContextSchemeScanResult)
+        return self._post("scheme/scan", body, ContextSchemeScanResult)
 
     def render(
         self,
@@ -1132,7 +1212,7 @@ class CtxScheme:
         }
         _put_if_set(body, "outputFormat", output_format)
         _put_if_set(body, "preservation", preservation)
-        return self._ctx._post("scheme/render", body, ContextSchemeRenderResult)
+        return self._post("scheme/render", body, ContextSchemeRenderResult)
 
     def normalize(
         self,
@@ -1158,7 +1238,7 @@ class CtxScheme:
         body: Dict[str, Any] = {"input": marking}
         _put_if_set(body, "inputFormat", input_format)
         _put_if_set(body, "outputFormat", output_format)
-        return self._ctx._post("scheme/normalize", body, ContextSchemeNormalizeResult)
+        return self._post("scheme/normalize", body, ContextSchemeNormalizeResult)
 
     def check_coverage(
         self,
@@ -1186,9 +1266,7 @@ class CtxScheme:
         body: Dict[str, Any] = {"children": children, "parent": parent}
         _put_if_set(body, "inputFormat", input_format)
         _put_if_set(body, "outputFormat", output_format)
-        return self._ctx._post(
-            "scheme/check-coverage", body, ContextSchemeCoverageResult
-        )
+        return self._post("scheme/check-coverage", body, ContextSchemeCoverageResult)
 
     def describe_concept(
         self, concept_id: str, category_id: str, view: Optional[str] = None
@@ -1213,7 +1291,7 @@ class CtxScheme:
         params: Dict[str, Any] = {"conceptId": concept_id, "categoryId": category_id}
         if view is not None:
             params["view"] = view
-        return self._ctx._get(
+        return self._get(
             "scheme/describe-concept", ContextSchemeConceptDescriptionResult, params
         )
 
@@ -1237,11 +1315,11 @@ class CtxScheme:
         """
         body: Dict[str, Any] = {"a": marking_a, "b": marking_b}
         _put_if_set(body, "inputFormat", input_format)
-        return self._ctx._post("scheme/diff", body, ContextSchemeDiffResult)
+        return self._post("scheme/diff", body, ContextSchemeDiffResult)
 
     def filter_concepts(self, query: str) -> ContextSchemeFilterConceptsResult:
         """Substring-filter the context's concepts."""
-        return self._ctx._post(
+        return self._post(
             "scheme/filter-concepts",
             {"query": query},
             ContextSchemeFilterConceptsResult,
@@ -1256,7 +1334,7 @@ class CtxScheme:
         field, collected the same way, so reading notices for a marking you
         just processed does not need this call.
         """
-        return self._ctx._post(
+        return self._post(
             "scheme/notices",
             {"assertions": [_assertion_to_wire(a) for a in assertions]},
             ContextSchemeNoticesResult,
@@ -1264,7 +1342,7 @@ class CtxScheme:
 
     def view(self) -> ContextSchemeViewResult:
         """Build a render-ready structural view of the context's composed scheme."""
-        return self._ctx._post("scheme/view", {}, ContextSchemeViewResult)
+        return self._post("scheme/view", {}, ContextSchemeViewResult)
 
     # ---- Scheme resources ---------------------------------------------------
     #
@@ -1276,40 +1354,15 @@ class CtxScheme:
     # marking it stands for, so it answers with the same
     # ContextSchemeValidateResult as ``validate``.
     #
-    # Summary, concepts, categories, formats, grammar and scopes accept
-    # ``scheme``, which names a context-local key or an unambiguous artifact id
-    # when the caller wants a scheme other than the context's primary one. That
-    # is how a crosswalk's source and target schemes are read: they are held by
-    # the same context and reachable by key. Label presets and apply-preset take
-    # no selector. They belong to the primary scheme, and the server refuses a
-    # query parameter an operation does not declare.
+    # Like every operation above, these read the scheme this view is bound
+    # to: the primary for ``ctx.scheme``, the selected one for a view from
+    # ``ctx.scheme_view``. A crosswalk's source and target schemes are held by
+    # the same Context and read that way.
     #
     # The bodies are typed by the generated models, not by shapes declared
     # here.
 
-    @staticmethod
-    def _resource_params(scheme: Optional[str]) -> Optional[Dict[str, Any]]:
-        """Build the query for a scheme resource read.
-
-        Args:
-            scheme: Context-local key, or unambiguous artifact id, of the
-                scheme to read. ``None`` selects the context's primary scheme.
-
-        Returns:
-            The query mapping, or ``None`` so the parameter is left off the
-            wire entirely rather than sent empty.
-
-        Raises:
-            ValueError: ``scheme`` was given but blank. An empty key would
-                otherwise reach the server as ``?scheme=`` and answer 404.
-        """
-        if scheme is None:
-            return None
-        if not scheme.strip():
-            raise ValueError("scheme must not be blank when provided")
-        return {"scheme": scheme}
-
-    def summary(self, *, scheme: Optional[str] = None) -> SchemeSummary:
+    def summary(self) -> SchemeSummary:
         """Read the composed scheme's summary metadata.
 
         Identity, presentation configuration, default render format, and scope
@@ -1317,72 +1370,49 @@ class CtxScheme:
         layers). There is no ``layers`` parameter: the layers belong to the
         context.
 
-        Args:
-            scheme: Optional context-local key or artifact id of the scheme to
-                read; defaults to the context's primary scheme.
-
         Returns:
             The summary as a :class:`SchemeSummary`.
 
         Raises:
-            ValueError: ``scheme`` was blank.
             MalformedResponseError: The answer is not the one the contract
                 describes.
             EzClassifyClientError: The server returned a non-2xx response or
                 the connection failed. A 429 carries ``retry_after``.
         """
-        return self._ctx._get("scheme", SchemeSummary, self._resource_params(scheme))
+        return self._get("scheme", SchemeSummary)
 
-    def concepts(self, *, scheme: Optional[str] = None) -> List[ConceptView]:
+    def concepts(self) -> List[ConceptView]:
         """List every concept of the composed scheme.
-
-        Args:
-            scheme: Optional context-local key or artifact id of the scheme to
-                read; defaults to the context's primary scheme.
 
         Returns:
             One :class:`ConceptView` per concept, the shape a local engine's
             scheme view carries.
 
         Raises:
-            ValueError: ``scheme`` was blank.
             MalformedResponseError: The answer is not the one the contract
                 describes.
             EzClassifyClientError: The server returned a non-2xx response or
                 the connection failed. A 429 carries ``retry_after``.
         """
-        return self._ctx._get_list(
-            "scheme/concepts", ConceptView, self._resource_params(scheme)
-        )
+        return self._get_list("scheme/concepts", ConceptView)
 
-    def categories(self, *, scheme: Optional[str] = None) -> List[CategoryView]:
+    def categories(self) -> List[CategoryView]:
         """List every category of the composed scheme, in declared order.
-
-        Args:
-            scheme: Optional context-local key or artifact id of the scheme to
-                read; defaults to the context's primary scheme.
 
         Returns:
             One :class:`CategoryView` per category, the shape a local engine's
             scheme view carries.
 
         Raises:
-            ValueError: ``scheme`` was blank.
             MalformedResponseError: The answer is not the one the contract
                 describes.
             EzClassifyClientError: The server returned a non-2xx response or
                 the connection failed. A 429 carries ``retry_after``.
         """
-        return self._ctx._get_list(
-            "scheme/categories", CategoryView, self._resource_params(scheme)
-        )
+        return self._get_list("scheme/categories", CategoryView)
 
-    def formats(self, *, scheme: Optional[str] = None) -> List[FormatView]:
+    def formats(self) -> List[FormatView]:
         """List the formats the composed scheme writes.
-
-        Args:
-            scheme: Optional context-local key or artifact id of the scheme to
-                read; defaults to the context's primary scheme.
 
         Returns:
             One :class:`FormatView` per format: its id, the surface it writes,
@@ -1390,44 +1420,30 @@ class CtxScheme:
             stay server-side.
 
         Raises:
-            ValueError: ``scheme`` was blank.
             MalformedResponseError: The answer is not the one the contract
                 describes.
             EzClassifyClientError: The server returned a non-2xx response or
                 the connection failed. A 429 carries ``retry_after``.
         """
-        return self._ctx._get_list(
-            "scheme/formats", FormatView, self._resource_params(scheme)
-        )
+        return self._get_list("scheme/formats", FormatView)
 
-    def grammar(self, *, scheme: Optional[str] = None) -> SchemeGrammar:
+    def grammar(self) -> SchemeGrammar:
         """Read the composed scheme's parse grammar.
-
-        Args:
-            scheme: Optional context-local key or artifact id of the scheme to
-                read; defaults to the context's primary scheme.
 
         Returns:
             Case sensitivity and whitespace handling as a
             :class:`SchemeGrammar`.
 
         Raises:
-            ValueError: ``scheme`` was blank.
             MalformedResponseError: The answer is not the one the contract
                 describes.
             EzClassifyClientError: The server returned a non-2xx response or
                 the connection failed. A 429 carries ``retry_after``.
         """
-        return self._ctx._get(
-            "scheme/grammar", SchemeGrammar, self._resource_params(scheme)
-        )
+        return self._get("scheme/grammar", SchemeGrammar)
 
-    def scopes(self, *, scheme: Optional[str] = None) -> List[SchemeScope]:
+    def scopes(self) -> List[SchemeScope]:
         """List the composed scheme's scope definitions, in declaration order.
-
-        Args:
-            scheme: Optional context-local key or artifact id of the scheme to
-                read; defaults to the context's primary scheme.
 
         Returns:
             One :class:`SchemeScope` per declared scope, in the order a
@@ -1436,23 +1452,19 @@ class CtxScheme:
             entry here marks it.
 
         Raises:
-            ValueError: ``scheme`` was blank.
             MalformedResponseError: The answer is not the one the contract
                 describes.
             EzClassifyClientError: The server returned a non-2xx response or
                 the connection failed. A 429 carries ``retry_after``.
         """
-        return self._ctx._get_list(
-            "scheme/scopes", SchemeScope, self._resource_params(scheme)
-        )
+        return self._get_list("scheme/scopes", SchemeScope)
 
     def label_presets(self) -> List[LabelPresetView]:
-        """List the label presets of the context's primary scheme.
+        """List the label presets of this view's scheme.
 
         Name and scope only: each preset's marking string and tag list stay
-        server-side, so :meth:`apply_preset` is the only way to expand one.
-        Presets belong to the primary scheme, the one :meth:`apply_preset`
-        expands them in, so there is no scheme selector.
+        server-side, so :meth:`apply_preset` on the same view is the only way
+        to expand one.
 
         Returns:
             One :class:`LabelPresetView` per preset; empty when the scheme
@@ -1464,7 +1476,7 @@ class CtxScheme:
             EzClassifyClientError: The server returned a non-2xx response or
                 the connection failed. A 429 carries ``retry_after``.
         """
-        return self._ctx._get_list("scheme/label-presets", LabelPresetView)
+        return self._get_list("scheme/label-presets", LabelPresetView)
 
     def apply_preset(
         self, preset_id: str, *, output_format: str | None = None
@@ -1499,7 +1511,7 @@ class CtxScheme:
             raise ValueError("preset_id must not be blank or empty")
         body: Dict[str, Any] = {"presetId": preset_id}
         _put_if_set(body, "outputFormat", output_format)
-        return self._ctx._post("scheme/apply-preset", body, ContextSchemeValidateResult)
+        return self._post("scheme/apply-preset", body, ContextSchemeValidateResult)
 
 
 class CtxGuide:

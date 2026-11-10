@@ -15,6 +15,7 @@ import pytest
 import respx
 
 from ezclassify_rest_client import (
+    CtxScheme,
     EzClassifyClient,
     EzClassifyClientError,
     EzClassifyContext,
@@ -2227,42 +2228,6 @@ class TestSchemeResources:
             _connect().scheme.apply_preset("  ")
         assert not route.called
 
-    @pytest.mark.parametrize(
-        ("op", "resource", "body"),
-        [
-            ("summary", "scheme", _SUMMARY_BODY),
-            ("concepts", "scheme/concepts", []),
-            ("categories", "scheme/categories", []),
-            ("formats", "scheme/formats", []),
-            ("grammar", "scheme/grammar", _GRAMMAR_BODY),
-            ("scopes", "scheme/scopes", []),
-        ],
-    )
-    @respx.mock
-    def test_scheme_parameter_reaches_a_crosswalk_side(self, op, resource, body):
-        """The six reads that take ?scheme= use it to read a crosswalk's sides."""
-        route = respx.get(_ctx_url(resource)).mock(
-            return_value=httpx.Response(200, json=body, headers=_HDR)
-        )
-        getattr(_connect().scheme, op)(scheme="target-side")
-        assert route.calls.last.request.url.params["scheme"] == "target-side"
-
-    @pytest.mark.parametrize(
-        ("op", "resource"),
-        [
-            ("summary", "scheme"),
-            ("concepts", "scheme/concepts"),
-        ],
-    )
-    @respx.mock
-    def test_blank_scheme_key_rejected_before_the_request(self, op, resource):
-        route = respx.get(_ctx_url(resource)).mock(
-            return_value=httpx.Response(200, json=[], headers=_HDR)
-        )
-        with pytest.raises(ValueError):
-            getattr(_connect().scheme, op)(scheme="   ")
-        assert not route.called
-
     @respx.mock
     def test_array_resource_rejects_an_object_body(self):
         respx.get(_ctx_url("scheme/concepts")).mock(
@@ -2291,10 +2256,10 @@ class TestSchemeResources:
     @respx.mock
     def test_resource_read_surfaces_a_404(self):
         respx.get(_ctx_url("scheme/concepts")).mock(
-            return_value=httpx.Response(404, json={"error": "no such scheme key"})
+            return_value=httpx.Response(404, json={"error": "no such concept"})
         )
         with pytest.raises(EzClassifyClientError) as failure:
-            _connect().scheme.concepts(scheme="not-here")
+            _connect().scheme.concepts()
         assert failure.value.status_code == 404
 
     @respx.mock
@@ -2309,6 +2274,196 @@ class TestSchemeResources:
         ctx = _connect()
         ctx.scheme.summary()
         assert ctx.resolved_version == "3.1.4"
+
+
+_FACT = Assertion(categoryId="level", conceptId="H")
+
+# Every public call a scheme view makes, with the route it reaches. The view
+# picks the scheme, so each one must carry the view's selector; the coverage
+# test below keeps a new operation from joining CtxScheme without a row here.
+_SCHEME_VIEW_CALLS = {
+    "process": ("POST", "scheme/process", lambda s: s.process("H")),
+    "validate": ("POST", "scheme/validate", lambda s: s.validate("H")),
+    "explain": ("POST", "scheme/explain", lambda s: s.explain("H")),
+    "suggest": ("POST", "scheme/suggest", lambda s: s.suggest("H//")),
+    "suggest_for_categories": (
+        "POST",
+        "scheme/suggest-for-categories",
+        lambda s: s.suggest_for_categories([_FACT], ["level"]),
+    ),
+    "aggregate": ("POST", "scheme/aggregate", lambda s: s.aggregate(["H"])),
+    "aggregate_assertions": (
+        "POST",
+        "scheme/aggregate",
+        lambda s: s.aggregate_assertions([[_FACT]]),
+    ),
+    "scan": ("POST", "scheme/scan", lambda s: s.scan("text H")),
+    "render": ("POST", "scheme/render", lambda s: s.render([_FACT])),
+    "normalize": ("POST", "scheme/normalize", lambda s: s.normalize("h")),
+    "check_coverage": (
+        "POST",
+        "scheme/check-coverage",
+        lambda s: s.check_coverage(["L"], "H"),
+    ),
+    "describe_concept": (
+        "GET",
+        "scheme/describe-concept",
+        lambda s: s.describe_concept("H", "level"),
+    ),
+    "diff": ("POST", "scheme/diff", lambda s: s.diff("H", "L")),
+    "filter_concepts": (
+        "POST",
+        "scheme/filter-concepts",
+        lambda s: s.filter_concepts("hi"),
+    ),
+    "notices": ("POST", "scheme/notices", lambda s: s.notices([_FACT])),
+    "view": ("POST", "scheme/view", lambda s: s.view()),
+    "summary": ("GET", "scheme", lambda s: s.summary()),
+    "concepts": ("GET", "scheme/concepts", lambda s: s.concepts()),
+    "categories": ("GET", "scheme/categories", lambda s: s.categories()),
+    "formats": ("GET", "scheme/formats", lambda s: s.formats()),
+    "grammar": ("GET", "scheme/grammar", lambda s: s.grammar()),
+    "scopes": ("GET", "scheme/scopes", lambda s: s.scopes()),
+    "label_presets": ("GET", "scheme/label-presets", lambda s: s.label_presets()),
+    "apply_preset": (
+        "POST",
+        "scheme/apply-preset",
+        lambda s: s.apply_preset("default-label"),
+    ),
+}
+
+
+def _request_made_by(invoke) -> httpx.Request:
+    """Run one call against a server that answers everything, return its request.
+
+    The stub's empty body fails most result models; only the request matters.
+    """
+    with respx.mock(base_url=_BASE, assert_all_called=False) as router:
+        catch_all = router.route().mock(
+            return_value=httpx.Response(200, json={}, headers=_HDR)
+        )
+        with EzClassifyContext(_BASE, context_id=_CTX, context_version=_VER) as ctx:
+            try:
+                invoke(ctx)
+            except MalformedResponseError:
+                pass
+    assert catch_all.call_count == 1
+    return catch_all.calls.last.request
+
+
+class TestSchemeView:
+    """A Context's non-primary schemes are reached through a per-selector view."""
+
+    def test_every_scheme_operation_has_a_view_case(self):
+        public = {
+            name
+            for name in vars(CtxScheme)
+            if not name.startswith("_") and callable(getattr(CtxScheme, name))
+        }
+        assert public == set(_SCHEME_VIEW_CALLS)
+
+    @pytest.mark.parametrize("name", sorted(_SCHEME_VIEW_CALLS))
+    def test_a_view_sends_its_selector_on_every_call(self, name):
+        method, route, invoke = _SCHEME_VIEW_CALLS[name]
+        request = _request_made_by(lambda ctx: invoke(ctx.scheme_view("source-side")))
+        assert request.method == method
+        assert request.url.path == f"/v1/ctx/{_CTX}/{_VER}/{route}"
+        assert request.url.params.get_list("scheme") == ["source-side"]
+
+    @pytest.mark.parametrize("name", sorted(_SCHEME_VIEW_CALLS))
+    def test_the_primary_view_sends_no_selector(self, name):
+        _, _, invoke = _SCHEME_VIEW_CALLS[name]
+        request = _request_made_by(lambda ctx: invoke(ctx.scheme))
+        assert "scheme" not in request.url.params
+
+    def test_the_selector_rides_beside_an_operations_own_query(self):
+        request = _request_made_by(
+            lambda ctx: ctx.scheme_view("source-side").describe_concept(
+                "H", "level", view="short"
+            )
+        )
+        assert dict(request.url.params) == {
+            "conceptId": "H",
+            "categoryId": "level",
+            "view": "short",
+            "scheme": "source-side",
+        }
+
+    def test_the_selector_is_sent_as_given_and_encoded(self):
+        request = _request_made_by(
+            lambda ctx: ctx.scheme_view("levels@2.0.0 & more").summary()
+        )
+        assert request.url.params["scheme"] == "levels@2.0.0 & more"
+        assert b"scheme=levels%402.0.0+%26+more" in request.url.query
+
+    def test_views_are_kept_per_selector(self):
+        ctx = EzClassifyContext(_BASE, context_id=_CTX, context_version=_VER)
+        source = ctx.scheme_view("source-side")
+        assert ctx.scheme_view("source-side") is source
+        assert ctx.scheme_view("target-side") is not source
+        assert source is not ctx.scheme
+        ctx.close()
+
+    @pytest.mark.parametrize("selector", ["", "   ", None, 3])
+    @respx.mock
+    def test_a_blank_selector_is_refused_before_any_request(self, selector):
+        route = respx.route().mock(return_value=httpx.Response(200, json={}))
+        ctx = EzClassifyContext(_BASE, context_id=_CTX, context_version=_VER)
+        with pytest.raises(ValueError):
+            ctx.scheme_view(selector)
+        assert not route.called
+
+    @respx.mock
+    def test_a_selector_the_context_does_not_hold_raises_and_never_reaches_the_primary(
+        self,
+    ):
+        unknown = respx.post(
+            _ctx_url("scheme/validate"), params={"scheme": "not-here"}
+        ).mock(
+            return_value=httpx.Response(
+                404, json={"error": "scheme not-here is not held by this context"}
+            )
+        )
+        primary = respx.post(_ctx_url("scheme/validate")).mock(
+            return_value=httpx.Response(
+                200, json=_envelope(_validate_result()), headers=_HDR
+            )
+        )
+        ctx = EzClassifyContext(_BASE, context_id=_CTX, context_version=_VER)
+        view = ctx.scheme_view("not-here")
+        with pytest.raises(EzClassifyClientError) as failure:
+            view.validate("H")
+        assert failure.value.status_code == 404
+        assert unknown.call_count == 1
+        assert not primary.called
+        # The refusal is not cached either: the next call asks again.
+        with pytest.raises(EzClassifyClientError):
+            view.validate("H")
+        assert unknown.call_count == 2
+        assert not primary.called
+        ctx.close()
+
+    @respx.mock
+    def test_answers_are_cached_per_selector(self):
+        route = respx.post(_ctx_url("scheme/validate")).mock(
+            return_value=httpx.Response(
+                200, json=_envelope(_validate_result()), headers=_HDR
+            )
+        )
+        ctx = EzClassifyContext(_BASE, context_id=_CTX, context_version=_VER)
+        ctx.scheme.validate("H")
+        ctx.scheme_view("source-side").validate("H")
+        ctx.scheme_view("target-side").validate("H")
+        assert route.call_count == 3
+        selectors = [call.request.url.params.get("scheme") for call in route.calls]
+        assert selectors == [None, "source-side", "target-side"]
+
+        # Each scheme's answer is then held under its own selector.
+        ctx.scheme.validate("H")
+        ctx.scheme_view("source-side").validate("H")
+        ctx.scheme_view("target-side").validate("H")
+        assert route.call_count == 3
+        ctx.close()
 
 
 class TestGuide:

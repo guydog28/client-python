@@ -178,6 +178,24 @@ Context declares (`version`, possibly `"latest"`) and the concrete one that
 answered (`resolved_version`). Each call makes one request. `scheme.scopes()`
 returns typed `SchemeScope` entries, each with an `id` and a `label`.
 
+### Marking in another scheme the Context holds
+
+`ctx.scheme` works in the Context's primary scheme. A Context can hold more:
+a crosswalk's source and target, or an additional scheme. `ctx.scheme_view`
+takes a selector from `describe().schemes` and returns the same operations
+bound to that scheme:
+
+```python
+description = ctx.describe()
+other = next(s for s in description.schemes if "primary" not in s.roles)
+result = ctx.scheme_view(other.selector).validate("LEVEL-A")
+```
+
+The view sends the selector as `?scheme=` on every operation and read. A
+selector the Context does not hold answers 404 and the call raises; it never
+falls back to the primary. Views are kept per selector, and each scheme's
+answers are cached apart from the others.
+
 ## Access and guide operations
 
 Use the bound `access`, `guide`, `scheme`, `document`, and `crosswalk` groups:

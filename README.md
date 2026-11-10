@@ -108,7 +108,9 @@ version to let the server choose: the context token's default, or the newest
 published. Pass one, such as `"1.0.0"`, to pin it. The concrete Context version
 resolved by the server is on `ctx.resolved_version`.
 Operation groups are `ctx.scheme`, `ctx.guide`, `ctx.access`, `ctx.document`,
-and `ctx.crosswalk`. There is intentionally no loose scheme-addressed mode.
+and `ctx.crosswalk`. `ctx.scheme` is the Context's primary scheme;
+`ctx.scheme_view(selector)` is any other scheme the Context holds. There is
+intentionally no loose scheme-addressed mode.
 
 ### Managed application credentials
 
