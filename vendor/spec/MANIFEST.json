@@ -3,13 +3,13 @@
   "openapiSha256": "b88f22507ef6197276e92b2e9800de45505708891d089e17b315774c8658eab6",
   "specBundleSha256": "06333e3400812d6b3547a12f1ef9fefd68c0f837f41e45eed2e45559549f7a2c",
   "specDigest": "b25e71b60ef4f94683cc1db18da88d5c26a337dc60b6bc37a8ff5e3edf5d3a2e",
-  "contractsSha": "6bf9814ed04f4366592d485e6da87401eed80aae",
+  "contractsSha": "60b8032a98782f767aceea2b7517a09746d2cd73",
   "sourcePackages": {
     "@ezclassify/openapi": "1.0.0-dev.30",
     "@ezclassify/schemas": "1.0.0-dev.30",
     "@ezclassify/conformance": "1.0.0-dev.30"
   },
-  "generatedAt": "2026-11-10T23:12:20.000Z",
+  "generatedAt": "2026-11-10T23:24:54.000Z",
   "generators": {
     "python": {
       "binary": "node",
