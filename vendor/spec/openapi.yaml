@@ -343,10 +343,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       responses:
@@ -401,10 +401,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       responses:
@@ -461,10 +461,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       responses:
@@ -521,10 +521,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       responses:
@@ -581,10 +581,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       responses:
@@ -638,10 +638,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       responses:
@@ -696,10 +696,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       responses:
@@ -758,10 +758,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -826,10 +826,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -899,10 +899,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -970,10 +970,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1039,10 +1039,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1104,10 +1104,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1168,10 +1168,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1232,10 +1232,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1296,10 +1296,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1358,10 +1358,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1420,10 +1420,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1489,10 +1489,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1559,10 +1559,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1629,10 +1629,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1699,10 +1699,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       requestBody:
@@ -1785,10 +1785,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
-            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
-            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
-            primary.
+            Context-local key of the scheme the request is answered in, as `GET /v1/ctx/{ctxId}/{version}` lists it.
+            Without it the context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's
+            source or target among them. A key the context does not hold answers 404 with code `scheme_not_found`; it
+            never falls back to the primary. Name it once: a repeated selector answers 400.
           schema:
             type: string
       responses:
@@ -6066,18 +6066,19 @@ components:
           description: >-
             Stable machine-readable classification of the failure, present whenever the server can name one. Set to
             `INVALID_INPUT` when the failure originated in engine input or the request carried something the operation
-            does not declare, and to `route_not_found` on a 404 that reached routing and matched no route. A request
-            refused before routing carries the constant refusal body instead, which has no `code` at all by design, so
-            the absence of a code on a 404 is itself uninformative.
+            does not declare, to `route_not_found` on a 404 that reached routing and matched no route, and to
+            `scheme_not_found` on a 404 for a `?scheme=` key the Context does not hold. A request refused before routing
+            carries the constant refusal body instead, which has no `code` at all by design, so the absence of a code on
+            a 404 is itself uninformative.
         detail:
           type: string
           description: >-
             What the failure is about, beside `code`: a stable operation-specific detail used to classify it. For a
             request that names a format, a concept or a category the scheme does not declare, it is the request field
             and the id it named, written `field: id`, such as `outputFormat: nope` or `conceptId: NOPE`. For a request
-            that carries a query parameter the operation does not declare, it is `query: ` and the parameter's name; for
-            an undeclared body field, `body`, the JSON pointer of the object that holds it, `: ` and the field, such as
-            `body: extra` or `body/context: extra`. Never a scheme's internals.
+            that carries a query parameter the operation does not declare, or names a declared one twice, it is `query:
+            ` and the parameter's name; for an undeclared body field, `body`, the JSON pointer of the object that holds
+            it, `: ` and the field, such as `body: extra` or `body/context: extra`. Never a scheme's internals.
       required:
         - error
       description: Response body for error responses (4xx / 5xx).
@@ -9859,8 +9860,9 @@ components:
     NotFound:
       description: >
         Context or resource not found. A request that reached routing and matched no route carries `code:
-        route_not_found`; a request refused before routing carries the constant refusal body, which has no `code` by
-        design. Branch on the code, never on the message. See the API description for why the two bodies differ.
+        route_not_found`, and a `?scheme=` key the Context does not hold carries `code: scheme_not_found`; a request
+        refused before routing carries the constant refusal body, which has no `code` by design. Branch on the code,
+        never on the message. See the API description for why the two bodies differ.
       content:
         application/json:
           schema:
@@ -9870,6 +9872,11 @@ components:
               summary: The route exists and the resource does not
               value:
                 error: "Context not found: nonexistent-context"
+            schemeAbsent:
+              summary: The Context holds no scheme under the `?scheme=` key
+              value:
+                error: "Scheme not found in context: no-such-scheme"
+                code: scheme_not_found
             routeAbsent:
               summary: The request reached routing and matched no route
               value:

@@ -6071,6 +6071,7 @@
             },
             "response": {
                 "body": {
+                    "code": "scheme_not_found",
                     "error": "Scheme not found in context: no-such-scheme"
                 },
                 "headers": {

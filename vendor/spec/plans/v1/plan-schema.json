@@ -85,7 +85,7 @@
                     "type": "integer"
                 },
                 "scheme": {
-                    "description": "Scheme selector for ctx-family methods: the Context-local key, or unambiguous id, of the scheme the operation answers in, sent as ?scheme=. Omitted, the Context's primary scheme answers.",
+                    "description": "Scheme selector for ctx-family methods: the Context-local key of the scheme the operation answers in, sent as ?scheme=. Omitted, the Context's primary scheme answers.",
                     "type": "string"
                 }
             },
