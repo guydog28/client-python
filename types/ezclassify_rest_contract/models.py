@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@e9f2156fa0b1ba06c1ce5414aad155749525c987702cc350e9a692ddc787fe14. DO NOT EDIT.
+# Code generated from vendored contracts@74132eb07476181af647bb65748262d7ee3fe78d05760bec0520e54cb6fec3b3. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -2709,10 +2709,10 @@ class ContextSchemeDescriptor(_WireModel):
     Read it as a sentence: this Context holds a scheme you select with `selector`, it is
     `id` at `version`, and it plays these `roles`.
 
-    `selector` is the whole point. A Context keys its schemes locally, and an operation
-    that addresses one takes that key, so a caller that cannot enumerate the keys cannot
-    reach anything but the primary. On the REST surface the same value is what
-    `?scheme=` takes.
+    `selector` is the whole point. A Context keys its schemes locally, and a caller
+    reaches a scheme by its key: an adapter's `schemeView` takes it, and so does
+    `?scheme=` on the REST surface. A caller that cannot enumerate the keys cannot reach
+    anything but the primary.
     """
 
     selector: str

@@ -1148,31 +1148,31 @@ module ezclassify_rest_client.context
     def scan(self, text: str, guide_id: Optional[str] = None) -> ContextGuideScanResult
     def view(self, guide_id: Optional[str] = None) -> ContextGuideViewResult
   class CtxScheme
-    def __init__(self, ctx: EzClassifyContext) -> None
+    def __init__(self, ctx: EzClassifyContext, selector: Optional[str] = None) -> None
     def aggregate(self, markings: List[str], *, output_format: str | None = None, surface: str | None = None, input_format: str | None = None, context: Dict[str, Any] | None = None) -> ContextSchemeAggregateResult
     def aggregate_assertions(self, assertion_sets: List[List[Assertion]], *, output_format: str | None = None, surface: str | None = None, context: Dict[str, Any] | None = None) -> ContextSchemeAggregateResult
     def apply_preset(self, preset_id: str, *, output_format: str | None = None) -> ContextSchemeValidateResult
-    def categories(self, *, scheme: Optional[str] = None) -> List[CategoryView]
+    def categories(self) -> List[CategoryView]
     def check_coverage(self, children: List[str], parent: str, *, output_format: str | None = None, input_format: str | None = None) -> ContextSchemeCoverageResult
-    def concepts(self, *, scheme: Optional[str] = None) -> List[ConceptView]
+    def concepts(self) -> List[ConceptView]
     def describe_concept(self, concept_id: str, category_id: str, view: Optional[str] = None) -> ContextSchemeConceptDescriptionResult
     def diff(self, marking_a: str, marking_b: str, *, input_format: str | None = None) -> ContextSchemeDiffResult
     def explain(self, marking: str, *, output_format: str | None = None, surface: str | None = None, input_format: str | None = None, assertions: List[Assertion] | None = None, context: Dict[str, Any] | None = None, parts: List[str] | None = None) -> ContextSchemeExplainResult
     def filter_concepts(self, query: str) -> ContextSchemeFilterConceptsResult
-    def formats(self, *, scheme: Optional[str] = None) -> List[FormatView]
-    def grammar(self, *, scheme: Optional[str] = None) -> SchemeGrammar
+    def formats(self) -> List[FormatView]
+    def grammar(self) -> SchemeGrammar
     def label_presets(self) -> List[LabelPresetView]
     def normalize(self, marking: str, *, output_format: str | None = None, input_format: str | None = None) -> ContextSchemeNormalizeResult
     def notices(self, assertions: List[Assertion]) -> ContextSchemeNoticesResult
     def process(self, marking: str, *, output_format: str | None = None, surface: str | None = None, input_format: str | None = None, assertions: List[Assertion] | None = None, context: Dict[str, Any] | None = None, parts: List[str] | None = None, outputs: List[str] | None = None, suggest_for: List[str] | None = None) -> ContextSchemeProcessResult
     def render(self, assertions: List[Assertion], *, output_format: str | None = None, preservation: Literal["projection", "full"] | None = None) -> ContextSchemeRenderResult
     def scan(self, text: str, *, output_format: str | None = None, input_format: str | None = None) -> ContextSchemeScanResult
-    def scopes(self, *, scheme: Optional[str] = None) -> List[SchemeScope]
+    def scopes(self) -> List[SchemeScope]
     @overload def suggest(self, partial: str, *, output_format: str | None = None, surface: str | None = None, input_format: str | None = None, filter: str | None = None, include_gated: bool | None = None) -> ContextSchemeSuggestResult
     @overload def suggest(self, *, assertions: List[Assertion], output_format: str | None = None, surface: str | None = None, filter: str | None = None, include_gated: bool | None = None) -> ContextSchemeSuggestResult
     def suggest(self, partial: str | None = None, *, output_format: str | None = None, surface: str | None = None, input_format: str | None = None, filter: str | None = None, assertions: List[Assertion] | None = None, include_gated: bool | None = None) -> ContextSchemeSuggestResult
     def suggest_for_categories(self, assertions: List[Assertion], category_ids: List[str], *, output_format: str | None = None, surface: str | None = None) -> ContextSchemeSuggestForCategoriesResult
-    def summary(self, *, scheme: Optional[str] = None) -> SchemeSummary
+    def summary(self) -> SchemeSummary
     @overload def validate(self, marking: str, *, output_format: str | None = None, surface: str | None = None, input_format: str | None = None, context: Dict[str, Any] | None = None, parts: List[str] | None = None) -> ContextSchemeValidateResult
     @overload def validate(self, *, assertions: List[Assertion], output_format: str | None = None, surface: str | None = None, context: Dict[str, Any] | None = None, parts: List[str] | None = None) -> ContextSchemeValidateResult
     def validate(self, marking: str | None = None, *, assertions: List[Assertion] | None = None, output_format: str | None = None, surface: str | None = None, input_format: str | None = None, context: Dict[str, Any] | None = None, parts: List[str] | None = None) -> ContextSchemeValidateResult
@@ -1187,6 +1187,7 @@ module ezclassify_rest_client.context
     def describe(self) -> ContextDescription
     def resolve(self) -> None
     @property def resolved_version(self) -> Optional[str]
+    def scheme_view(self, selector: str) -> CtxScheme
     @property def version(self) -> Optional[str]
   def connect_context(base_url: str, *, context_id: str, context_version: str | None = None, timeout: float = 30.0, headers: Dict[str, str] | None = None, credentials: RestClientCredentials | None = None, cache_access_decisions: bool = False, disable_cache: bool = False) -> "EzClassifyContext"
 
