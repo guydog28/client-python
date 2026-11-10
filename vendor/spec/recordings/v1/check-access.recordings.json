@@ -2,6 +2,37 @@
   "engineVersion": "1.0.0-dev.30",
   "openapiVersion": "1.0.0-dev.30",
   "responses": {
+    "0eb3bf82db61d27c9cc3f348cc4546872da723d23877c8d8d854af347a30b520": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"LOW\",\"confidence\":\"certain\",\"source\":\"da...",
+      "method": "checkAccess",
+      "response": {
+        "granted": true,
+        "rules": [
+          {
+            "activation": {
+              "assertions": [],
+              "contextPaths": [],
+              "matched": false
+            },
+            "comparisons": [],
+            "granted": true,
+            "name": "Controls held",
+            "rule": {
+              "artifact": {
+                "id": "ref-scheme-1-controls-access",
+                "kind": "access",
+                "version": "1.0.0"
+              },
+              "ruleDigest": "sha256:897b6420c6fc0c823930d196cb813b1d8501b715c5514361c429d6c0a0ea39ee",
+              "ruleId": "controls-rule"
+            },
+            "ruleIndex": 0,
+            "skipped": true
+          }
+        ],
+        "warnings": []
+      }
+    },
     "9a5c68bc611c3eedd0d188da53f0f2ec925d854cb3c050deb773933e1f61f5d7": {
       "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"LOW\",\"confidence\":\"certain\",\"source\":\"da...",
       "method": "checkAccess",
@@ -54,7 +85,8 @@
             "ruleIndex": 0,
             "skipped": false
           }
-        ]
+        ],
+        "warnings": []
       }
     },
     "c32f26410142fa51380abc9f296eb4b08057a9a6f4d7efd7878295c9b57a1b4d": {
@@ -109,7 +141,8 @@
             "ruleIndex": 0,
             "skipped": false
           }
-        ]
+        ],
+        "warnings": []
       }
     },
     "c8d3b7b88cb895659b9b630068653b6d32bf58d175814f1490533549d65be7a9": {
@@ -168,7 +201,8 @@
             "ruleIndex": 0,
             "skipped": false
           }
-        ]
+        ],
+        "warnings": []
       }
     },
     "d6d6dcd31984eb98c60083e4eb06fd300331e9cba51d9b43fc54dbf3e390ba1e": {
@@ -223,37 +257,8 @@
             "ruleIndex": 0,
             "skipped": false
           }
-        ]
-      }
-    },
-    "d93f10be9b56bea5361f508c4cf4c099c86cd08d0baa31176ddc1f1371e9eb23": {
-      "argsSummary": "[[{\"categoryId\":\"controls\",\"conceptId\":\"CTRL-A\",\"confidence\":\"certain\",\"sourc...",
-      "method": "checkAccess",
-      "response": {
-        "granted": true,
-        "rules": [
-          {
-            "activation": {
-              "assertions": [],
-              "contextPaths": [],
-              "matched": false
-            },
-            "comparisons": [],
-            "granted": true,
-            "name": "Level",
-            "rule": {
-              "artifact": {
-                "id": "ref-scheme-1-access-rules",
-                "kind": "access",
-                "version": "1.0.0"
-              },
-              "ruleDigest": "sha256:a2e19222c8fb21c7693131829e03c23cc108eb2d8bf8a160a62d3a4cf7f8662a",
-              "ruleId": "level-rule"
-            },
-            "ruleIndex": 0,
-            "skipped": true
-          }
-        ]
+        ],
+        "warnings": []
       }
     },
     "eaf3530975890ae907ccdeb66758e19bed36b8eb4c5c3a5ff1797a3f245f3cce": {
@@ -312,7 +317,8 @@
             "ruleIndex": 0,
             "skipped": false
           }
-        ]
+        ],
+        "warnings": []
       }
     }
   },

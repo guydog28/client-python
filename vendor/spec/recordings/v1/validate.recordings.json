@@ -164,22 +164,48 @@
       "response": {
         "appliedFixes": [
           {
-            "action": "remove",
-            "message": "A part may not be above its whole.",
-            "remove": [
+            "action": "add",
+            "add": [
               {
-                "categoryId": "level",
-                "conceptId": "HIGH"
+                "categoryId": "handling",
+                "conceptId": "SEALED"
               }
             ],
-            "ruleId": "part-above-whole"
+            "message": "Rule \"high-is-sealed\": added \"SEALED\" to category \"handling\"",
+            "ruleId": "high-is-sealed",
+            "triggerConceptIds": [
+              "HIGH"
+            ]
           }
         ],
-        "assertions": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          },
+          {
+            "categoryId": "handling",
+            "conceptId": "SEALED",
+            "confidence": "inferred",
+            "source": "infer",
+            "sourceRule": "high-is-sealed"
+          }
+        ],
         "assessment": {
           "collapsed": [],
           "conflicts": [],
-          "emitted": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            },
+            {
+              "categoryId": "handling",
+              "conceptId": "SEALED"
+            }
+          ],
           "omitted": [],
           "unrepresentable": []
         },
@@ -188,7 +214,6 @@
             "affectedConcepts": [
               "HIGH"
             ],
-            "categoryId": "level",
             "constraintId": "part-above-whole",
             "message": "A part may not be above its whole."
           }
@@ -201,7 +226,7 @@
           "surface": "marking",
           "unmatched": []
         },
-        "rendered": "",
+        "rendered": "HIGH//SEALED",
         "valid": false,
         "warnings": []
       }
@@ -676,22 +701,48 @@
       "response": {
         "appliedFixes": [
           {
-            "action": "remove",
-            "message": "A part may not be above its whole.",
-            "remove": [
+            "action": "add",
+            "add": [
               {
-                "categoryId": "level",
-                "conceptId": "HIGH"
+                "categoryId": "handling",
+                "conceptId": "SEALED"
               }
             ],
-            "ruleId": "part-above-whole"
+            "message": "Rule \"high-is-sealed\": added \"SEALED\" to category \"handling\"",
+            "ruleId": "high-is-sealed",
+            "triggerConceptIds": [
+              "HIGH"
+            ]
           }
         ],
-        "assertions": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          },
+          {
+            "categoryId": "handling",
+            "conceptId": "SEALED",
+            "confidence": "inferred",
+            "source": "infer",
+            "sourceRule": "high-is-sealed"
+          }
+        ],
         "assessment": {
           "collapsed": [],
           "conflicts": [],
-          "emitted": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            },
+            {
+              "categoryId": "handling",
+              "conceptId": "SEALED"
+            }
+          ],
           "omitted": [],
           "unrepresentable": []
         },
@@ -700,7 +751,6 @@
             "affectedConcepts": [
               "HIGH"
             ],
-            "categoryId": "level",
             "constraintId": "part-above-whole",
             "message": "A part may not be above its whole."
           }
@@ -713,7 +763,7 @@
           "surface": "marking",
           "unmatched": []
         },
-        "rendered": "",
+        "rendered": "HIGH//SEALED",
         "valid": false,
         "warnings": []
       }

@@ -395,6 +395,50 @@
                 }
             ],
             "description": "Records source identity and mandatory attribution for an operation."
+        },
+        "Warning": {
+            "description": "A non-blocking informational signal surfaced in a result's `warnings`.\n\nUnlike `ValidationError`, warnings never affect `valid`. `kind: 'deprecation'` fires when a deprecated concept is asserted, and `replacement` names a suggested successor concept. `kind: 'rule'` fires when a scheme's authored `warn` rule matches the marking, with the rule's id as `ruleId`. `kind: 'notice'` is the engine speaking about the operation itself rather than about anything the scheme declares; its `ruleId`, when present, is an engine-reserved id beginning with `_`, the same convention a `ValidationError` follows.\n\nA marking's warnings come in a fixed order: deprecations first, then the scheme's rule warnings in the order the scheme declares its rules, then the engine's notices. An aggregate's warnings are about the rolled-up marking, not about each marking that fed it.",
+            "properties": {
+                "categoryId": {
+                    "description": "Category this warning relates to (when applicable)",
+                    "type": "string"
+                },
+                "conceptId": {
+                    "description": "Concept this warning relates to (when applicable). A rule warning names one when the rule's `when` names exactly one concept the marking holds.",
+                    "type": "string"
+                },
+                "conceptName": {
+                    "description": "Resolved operational display for `conceptId` (the concept's rendered marking view), for a consumer that shows the warning next to the concept. `conceptId` stays as the machine key; this is the human-visible string.",
+                    "type": "string"
+                },
+                "kind": {
+                    "$ref": "#/definitions/WarningKind",
+                    "description": "Warning kind: 'deprecation' for a deprecated concept, 'rule' for a scheme's authored `warn` rule, 'notice' for the engine's own notice."
+                },
+                "message": {
+                    "description": "Human-readable message",
+                    "type": "string"
+                },
+                "replacement": {
+                    "description": "When kind=deprecation, the suggested replacement concept id (if any)",
+                    "type": "string"
+                },
+                "replacementName": {
+                    "description": "When kind=deprecation, the resolved operational display for `replacement` (the successor concept's rendered marking view). `replacement` stays as the machine key; this is the human-visible string.",
+                    "type": "string"
+                },
+                "ruleId": {
+                    "description": "The scheme rule that gave a `rule` warning, or the engine-reserved id of a `notice`. Absent on a deprecation warning.",
+                    "type": "string"
+                }
+            },
+            "required": ["kind", "message"],
+            "type": "object"
+        },
+        "WarningKind": {
+            "description": "Non-blocking warning category: a deprecated concept, a scheme's authored `warn` rule, or a notice the engine gives about the operation itself.",
+            "enum": ["deprecation", "rule", "notice"],
+            "type": "string"
         }
     },
     "description": "Overall access decision with per-rule breakdown.\n\nReturned by `AccessEngineAdapter.check()`. `granted` is `true` only when every non-skipped rule granted access. Inspect `rules` to surface per-category denial reasons in an authorization UI: each `AccessRuleResult` carries a human-readable `reason` field.",
@@ -413,8 +457,15 @@
                 "$ref": "#/definitions/AccessRuleResult"
             },
             "type": "array"
+        },
+        "warnings": {
+            "description": "Warnings from preparing and evaluating the target, including automatic changes. Present on granted and denied decisions; empty when none apply.",
+            "items": {
+                "$ref": "#/definitions/Warning"
+            },
+            "type": "array"
         }
     },
-    "required": ["granted", "rules"],
+    "required": ["granted", "rules", "warnings"],
     "type": "object"
 }

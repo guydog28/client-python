@@ -45,7 +45,6 @@ else to the server on every call. No wider and no narrower.
 | `access.check`                      | `POST access/check`                  | `decision` |
 | `context.checkAccess`               | `POST access/check`                  | `decision` |
 | `context.audit`                     | `POST document/audit`                | `never`    |
-| `context.assessDocumentAccess`      | `POST document/assess-access`        | `never`    |
 | `context.accessRequirements`        | `POST access/describe-requirements`  | `never`    |
 | `context.translate`                 | `POST crosswalk/translate`           | `never`    |
 | `scheme.buildSchemeView`            | `POST scheme/view`                   | `uncached` |
@@ -88,9 +87,7 @@ reach the server on every call unless the consumer turns on the opt-in
 described under [Access decisions](#access-decisions).
 
 **`never`** operations can never be served from a cache, and no option changes
-that. `context.audit` and `context.assessDocumentAccess` are document-scale
-decisions and carry the audit rationale below at the scale where it matters
-most. `context.accessRequirements` and `context.translate` are not decisions,
+that. `context.audit` carries the audit rationale below at document scale. `context.accessRequirements` and `context.translate` are not decisions,
 but they answer under the same resolved Context envelope and are held to the
 same rule.
 

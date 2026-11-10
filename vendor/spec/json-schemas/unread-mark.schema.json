@@ -1,0 +1,29 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {},
+    "description": "A wrapped mark a scan found but could not read.\n\nThe text matched the scheme's `embeddedMarking` pattern, which is how a part marking is written, but recognition read no marking in it, and it has no entry in `ScanOutcome.results`. Text that looks like a marking and carries none is reported rather than dropped, so a reader can see it and correct it. `start`/`end` are offsets in UTF-16 code units in the input text, as on `ScanResult`.",
+    "properties": {
+        "end": {
+            "description": "End position in the input text",
+            "type": "integer"
+        },
+        "inner": {
+            "description": "The text inside the wrapper: the capture group of the scheme's `embeddedMarking` pattern.",
+            "type": "string"
+        },
+        "leading": {
+            "description": "Whether the mark stands where a part mark goes: at the start of its paragraph. Both of these hold for a leading mark.\n\nIts line starts a paragraph. The line starts at the beginning of the text or just after the last line feed before `start`. It starts a paragraph when it is the first line, when the line before it is blank or ends in `.`, `!`, `?`, `:` or `;`, or when the line before it holds nothing but a marking read in the whole role, such as a banner.\n\nOnly whitespace and outline labels come before it on its line: at most three labels, each followed by whitespace, in no more than 64 UTF-16 code units after the line's leading whitespace. A line feed is not whitespace here. An outline label is one or more groups of one to four letters or digits, each closed by `.` or `)` and optionally opened by `(` (`1.`, `a)`, `(1)`, `iv.`, `1.a.`, `(a)(1)`); a dotted numeral (`1.2`, `1.2.3.`); one bullet (`-`, `*`, `•`, `‣`, `⁃`, `◦`, `▪` or `–`); or one to six `#`. So the mark in `(QQ) text`, `1. (QQ) text` and `a) 2. (QQ) text` leads, and the one in `See (QQ) text` does not.\n\nA mark that follows another mark on its line does not lead, whether the earlier mark was read or not: in `(S)(QQ)` and in `(S) (QQ)` only `(S)` leads. Wrapped text before a mark is a label rather than a mark when its text is one lowercase letter, that letter two or three times, one to three digits, or a lowercase roman numeral, so the mark in `(a) (QQ) text` leads.",
+            "type": "boolean"
+        },
+        "start": {
+            "description": "Start position in the input text",
+            "type": "integer"
+        },
+        "text": {
+            "description": "The wrapped text as found in the document, wrapper included.",
+            "type": "string"
+        }
+    },
+    "required": ["text", "start", "end", "inner", "leading"],
+    "type": "object"
+}

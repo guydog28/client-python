@@ -59,6 +59,49 @@
             "fixture": "ref-scheme-1",
             "method": "scan",
             "name": "scan-marking-at-nonzero-offset"
+        },
+        {
+            "args": [
+                "(LOW) First paragraph.\n(QZXJV) Second paragraph.\nThird paragraph cites (NOPE)."
+            ],
+            "expect": {
+                "count": 1,
+                "firstMarking": "(LOW)",
+                "firstStart": 0,
+                "unread": {
+                    "0": {
+                        "end": 30,
+                        "inner": "QZXJV",
+                        "leading": true,
+                        "start": 23,
+                        "text": "(QZXJV)"
+                    },
+                    "1": {
+                        "end": 77,
+                        "inner": "NOPE",
+                        "leading": false,
+                        "start": 71,
+                        "text": "(NOPE)"
+                    },
+                    "length": 2
+                }
+            },
+            "fixture": "ref-scheme-2",
+            "method": "scan",
+            "name": "scan-unread-wrapped-marks-reported"
+        },
+        {
+            "args": ["(LOW) First paragraph.\n(HIGH) Second paragraph."],
+            "expect": {
+                "count": 2,
+                "firstMarking": "(LOW)",
+                "unread": {
+                    "length": 0
+                }
+            },
+            "fixture": "ref-scheme-2",
+            "method": "scan",
+            "name": "scan-every-wrapped-mark-read"
         }
     ],
     "slice": "engine"

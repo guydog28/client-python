@@ -2,6 +2,107 @@
   "engineVersion": "1.0.0-dev.30",
   "openapiVersion": "1.0.0-dev.30",
   "responses": {
+    "19d19a140cb4ee8caf534227ddb8fc6167fcdefc162d1afa781c6f7161f31b46": {
+      "argsSummary": "[\"(LOW) First paragraph.\\n(HIGH) Second paragraph.\"]",
+      "method": "scan",
+      "response": {
+        "count": 2,
+        "firstMarking": "(LOW)",
+        "firstRendered": "LOW",
+        "firstStart": 0,
+        "results": [
+          {
+            "end": 5,
+            "inner": "LOW",
+            "marking": "(LOW)",
+            "result": {
+              "appliedFixes": [],
+              "assertions": [
+                {
+                  "categoryId": "level",
+                  "conceptId": "LOW",
+                  "confidence": "certain",
+                  "source": "parse"
+                }
+              ],
+              "assessment": {
+                "collapsed": [],
+                "conflicts": [],
+                "emitted": [
+                  {
+                    "categoryId": "level",
+                    "conceptId": "LOW"
+                  }
+                ],
+                "omitted": [],
+                "unrepresentable": []
+              },
+              "errors": [],
+              "inputWasValid": true,
+              "notices": [],
+              "recognition": {
+                "inputFormat": "default",
+                "status": "complete",
+                "surface": "banner",
+                "unmatched": []
+              },
+              "rendered": "LOW",
+              "valid": true,
+              "warnings": []
+            },
+            "role": "part",
+            "start": 0,
+            "type": "default",
+            "wrapped": true
+          },
+          {
+            "end": 29,
+            "inner": "HIGH",
+            "marking": "(HIGH)",
+            "result": {
+              "appliedFixes": [],
+              "assertions": [
+                {
+                  "categoryId": "level",
+                  "conceptId": "HIGH",
+                  "confidence": "certain",
+                  "source": "parse"
+                }
+              ],
+              "assessment": {
+                "collapsed": [],
+                "conflicts": [],
+                "emitted": [
+                  {
+                    "categoryId": "level",
+                    "conceptId": "HIGH"
+                  }
+                ],
+                "omitted": [],
+                "unrepresentable": []
+              },
+              "errors": [],
+              "inputWasValid": true,
+              "notices": [],
+              "recognition": {
+                "inputFormat": "default",
+                "status": "complete",
+                "surface": "banner",
+                "unmatched": []
+              },
+              "rendered": "HIGH",
+              "valid": true,
+              "warnings": []
+            },
+            "role": "part",
+            "start": 23,
+            "type": "default",
+            "wrapped": true
+          }
+        ],
+        "unread": []
+      }
+    },
     "2574cd5f77b13beff827f517bed8e71218ff82e3778135009b509a1bb7859049": {
       "argsSummary": "[\"no markings in this prose sentence\"]",
       "method": "scan",
@@ -10,7 +111,8 @@
         "firstMarking": null,
         "firstRendered": null,
         "firstStart": null,
-        "results": []
+        "results": [],
+        "unread": []
       }
     },
     "705846dcf9ec007014f975c8e8018bec36d754daf2669d247464e0125dc6daa3": {
@@ -108,7 +210,8 @@
             "type": "default",
             "wrapped": false
           }
-        ]
+        ],
+        "unread": []
       }
     },
     "718ae00f2dcc67379c4d1d8a166e353aefcb4ff5935c1dbcbac90708fc03e022": {
@@ -163,7 +266,8 @@
             "type": "default",
             "wrapped": false
           }
-        ]
+        ],
+        "unread": []
       }
     },
     "9b273227e13b296d3bfb3bf559550cfa44d25a45ba2dd6a31e58f2c325abd817": {
@@ -261,7 +365,8 @@
             "type": "default",
             "wrapped": false
           }
-        ]
+        ],
+        "unread": []
       }
     },
     "b3830cac1d635072f306025eb747b24b9d2435e9e497763f1fe4cb5620f47f4a": {
@@ -326,6 +431,79 @@
             "type": "default",
             "wrapped": false
           }
+        ],
+        "unread": []
+      }
+    },
+    "b877e800b0e3befadfa107275c8035c25b8c8b8d579a33d9f9bde0a24aa05980": {
+      "argsSummary": "[\"(LOW) First paragraph.\\n(QZXJV) Second paragraph.\\nThird paragraph cites (N...",
+      "method": "scan",
+      "response": {
+        "count": 1,
+        "firstMarking": "(LOW)",
+        "firstRendered": "LOW",
+        "firstStart": 0,
+        "results": [
+          {
+            "end": 5,
+            "inner": "LOW",
+            "marking": "(LOW)",
+            "result": {
+              "appliedFixes": [],
+              "assertions": [
+                {
+                  "categoryId": "level",
+                  "conceptId": "LOW",
+                  "confidence": "certain",
+                  "source": "parse"
+                }
+              ],
+              "assessment": {
+                "collapsed": [],
+                "conflicts": [],
+                "emitted": [
+                  {
+                    "categoryId": "level",
+                    "conceptId": "LOW"
+                  }
+                ],
+                "omitted": [],
+                "unrepresentable": []
+              },
+              "errors": [],
+              "inputWasValid": true,
+              "notices": [],
+              "recognition": {
+                "inputFormat": "default",
+                "status": "complete",
+                "surface": "banner",
+                "unmatched": []
+              },
+              "rendered": "LOW",
+              "valid": true,
+              "warnings": []
+            },
+            "role": "part",
+            "start": 0,
+            "type": "default",
+            "wrapped": true
+          }
+        ],
+        "unread": [
+          {
+            "end": 30,
+            "inner": "QZXJV",
+            "leading": true,
+            "start": 23,
+            "text": "(QZXJV)"
+          },
+          {
+            "end": 77,
+            "inner": "NOPE",
+            "leading": false,
+            "start": 71,
+            "text": "(NOPE)"
+          }
         ]
       }
     },
@@ -337,7 +515,8 @@
         "firstMarking": null,
         "firstRendered": null,
         "firstStart": null,
-        "results": []
+        "results": [],
+        "unread": []
       }
     }
   },

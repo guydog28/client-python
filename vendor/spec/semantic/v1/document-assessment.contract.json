@@ -175,7 +175,11 @@
         },
         {
             "assertions": [
-                { "operator": "equals", "path": "result.whole", "value": null },
+                {
+                    "operator": "equals",
+                    "path": "result.whole",
+                    "value": null
+                },
                 {
                     "operator": "equals",
                     "path": "result.guideAssessment.determinedWholeCoverage.covered",
@@ -193,110 +197,6 @@
             "requestId": "case-08",
             "required": true,
             "semanticId": "missing-whole"
-        },
-        {
-            "assertions": [
-                {
-                    "operator": "present",
-                    "path": "result.authoritative.contentRequirements[0].assertion"
-                }
-            ],
-            "implementation": "recorded",
-            "number": 9,
-            "operation": "assessDocumentAccess",
-            "requestId": "case-09",
-            "required": true,
-            "semanticId": "assertion-based-denial"
-        },
-        {
-            "assertions": [
-                {
-                    "operator": "present",
-                    "path": "result.authoritative.contextRequirements[0].contextPath"
-                }
-            ],
-            "implementation": "recorded",
-            "number": 10,
-            "operation": "assessDocumentAccess",
-            "requestId": "case-10",
-            "required": true,
-            "semanticId": "subject-context-denial"
-        },
-        {
-            "assertions": [
-                {
-                    "operator": "present",
-                    "path": "result.authoritative.decision.rules[0].activation.assertions"
-                },
-                {
-                    "operator": "present",
-                    "path": "result.authoritative.decision.rules[0].activation.contextPaths"
-                }
-            ],
-            "implementation": "recorded",
-            "number": 11,
-            "operation": "assessDocumentAccess",
-            "requestId": "case-11",
-            "required": true,
-            "semanticId": "combined-activation-comparison"
-        },
-        {
-            "assertions": [
-                {
-                    "operator": "equals",
-                    "path": "result.authoritative.status",
-                    "value": "granted"
-                },
-                {
-                    "operator": "equals",
-                    "path": "result.projected.status",
-                    "value": "denied"
-                },
-                {
-                    "operator": "equals",
-                    "path": "result.projected.advisory",
-                    "value": true
-                },
-                {
-                    "operator": "present",
-                    "path": "result.projected.contentRequirements"
-                }
-            ],
-            "implementation": "recorded",
-            "number": 12,
-            "operation": "assessDocumentAccess",
-            "requestId": "case-12",
-            "required": true,
-            "semanticId": "projected-only-denial"
-        },
-        {
-            "assertions": [
-                {
-                    "operator": "equals",
-                    "path": "result.authoritative.decision.rules[0].comparisons[0].right.source",
-                    "value": "literal"
-                }
-            ],
-            "implementation": "recorded",
-            "number": 13,
-            "operation": "assessDocumentAccess",
-            "requestId": "case-13",
-            "required": true,
-            "semanticId": "literal-policy-denial"
-        },
-        {
-            "assertions": [
-                {
-                    "operator": "present",
-                    "path": "result.authoritative.limitations[0].code"
-                }
-            ],
-            "implementation": "recorded",
-            "number": 14,
-            "operation": "assessDocumentAccess",
-            "requestId": "case-14",
-            "required": true,
-            "semanticId": "unsupported-authored-assertion"
         },
         {
             "assertions": [
@@ -327,15 +227,6 @@
             "requestId": "case-16",
             "required": true,
             "semanticId": "no-guide"
-        },
-        {
-            "assertions": [{ "operator": "present", "path": "error.code" }],
-            "implementation": "recorded",
-            "number": 17,
-            "operation": "assessDocumentAccess",
-            "requestId": "case-17",
-            "required": true,
-            "semanticId": "no-access-policy"
         },
         {
             "assertions": [
@@ -391,7 +282,10 @@
         },
         {
             "assertions": [
-                { "operator": "present", "path": "result.documentDigest" },
+                {
+                    "operator": "present",
+                    "path": "result.documentDigest"
+                },
                 {
                     "operator": "equals",
                     "path": "resolution.sources[0].reproducibility",
@@ -412,8 +306,14 @@
         },
         {
             "assertions": [
-                { "operator": "present", "path": "resolution.resolvedVersion" },
-                { "operator": "present", "path": "operationLimitations" }
+                {
+                    "operator": "present",
+                    "path": "resolution.resolvedVersion"
+                },
+                {
+                    "operator": "present",
+                    "path": "operationLimitations"
+                }
             ],
             "implementation": "recorded",
             "number": 21,
@@ -499,7 +399,10 @@
         },
         {
             "assertions": [
-                { "operator": "present", "path": "resolution.contextId" }
+                {
+                    "operator": "present",
+                    "path": "resolution.contextId"
+                }
             ],
             "implementation": "recorded",
             "number": 25,
@@ -595,35 +498,9 @@
         {
             "assertions": [
                 {
-                    "operator": "equals",
-                    "path": "responseProjection.profile",
-                    "value": "standard"
-                },
-                {
-                    "operator": "equals",
-                    "path": "responseProjection.detailsComplete",
-                    "value": false
-                },
-                {
-                    "operator": "contains",
-                    "path": "responseProjection.omittedFields",
-                    "value": "/result/audit/unmarkedSpans/*/text"
-                },
-                {
-                    "operator": "absent",
-                    "path": "result.audit.unmarkedSpans[0].text"
+                    "operator": "present",
+                    "path": "result.overallVerdict"
                 }
-            ],
-            "implementation": "recorded",
-            "number": 31,
-            "operation": "assessDocumentAccess",
-            "requestId": "case-31",
-            "required": true,
-            "semanticId": "sensitive-data-redaction"
-        },
-        {
-            "assertions": [
-                { "operator": "present", "path": "result.overallVerdict" }
             ],
             "implementation": "recorded",
             "number": 32,
@@ -631,35 +508,6 @@
             "requestId": "case-32",
             "required": true,
             "semanticId": "cli-parity"
-        },
-        {
-            "assertions": [
-                {
-                    "operator": "present",
-                    "path": "result.authoritative.contentRequirements[*].supportIds"
-                },
-                {
-                    "operator": "equals",
-                    "path": "result.audit.guideAssessment.evaluation.supportCatalog[0].factReferences[0].kind",
-                    "value": "accepted-finding"
-                },
-                {
-                    "operator": "equals",
-                    "path": "result.audit.guideAssessment.evaluation.determinations[0].reason",
-                    "value": "Applicable."
-                },
-                {
-                    "operator": "equals",
-                    "path": "result.audit.guideAssessment.evaluation.rejectedFindingIds",
-                    "value": []
-                }
-            ],
-            "implementation": "recorded",
-            "number": 33,
-            "operation": "assessDocumentAccess",
-            "requestId": "case-33",
-            "required": true,
-            "semanticId": "decision-reason-reachability"
         },
         {
             "assertions": [
@@ -681,7 +529,10 @@
                 {
                     "operator": "equals",
                     "path": "result.wholeCoversParts.excessLabels",
-                    "value": ["ALPHA", "CHARLIE"]
+                    "value": [
+                        "ALPHA",
+                        "CHARLIE"
+                    ]
                 }
             ],
             "implementation": "recorded",

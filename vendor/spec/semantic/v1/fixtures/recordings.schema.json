@@ -3,6 +3,6 @@
   "type": "object", "additionalProperties": false, "required": ["status", "cases"],
   "properties": {
     "status": { "const": "recorded-operation-output" },
-    "cases": { "type": "object", "minProperties": 34, "maxProperties": 34, "patternProperties": { "^case-[0-9]{2}$": { "type": "object", "additionalProperties": false, "required": ["execution", "output"], "properties": { "execution": { "type": "string", "minLength": 1 }, "output": { "type": "object" } } } }, "additionalProperties": false }
+    "cases": { "type": "object", "minProperties": 25, "maxProperties": 25, "patternProperties": { "^case-[0-9]{2}$": { "type": "object", "additionalProperties": false, "required": ["execution", "output"], "properties": { "execution": { "type": "string", "minLength": 1 }, "output": { "type": "object" } } } }, "additionalProperties": false }
   }
 }

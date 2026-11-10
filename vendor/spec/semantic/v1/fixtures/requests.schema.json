@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object", "minProperties": 34, "maxProperties": 34,
+  "type": "object", "minProperties": 25, "maxProperties": 25,
   "patternProperties": {
     "^case-(?!(?:23|26)$)[0-9]{2}$": {
       "type": "object", "additionalProperties": false,
@@ -8,9 +8,8 @@
         "text": { "type": "string" }, "marking": { "type": "string" },
         "responseProfile": { "enum": ["summary", "standard", "full"] },
         "responseProfiles": { "type": "array", "items": { "enum": ["summary", "standard", "full"] }, "uniqueItems": true },
-        "userAttributes": { "type": "object" }, "context": { "type": "object" },
-        "assertions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/assertion" } }, "fixtureVariant": { "enum": ["no-guide", "no-access", "share-list"] },
-        "contextVersion": { "type": "string" }, "contextVariants": { "type": "array", "items": { "enum": ["inline", "source-backed"] }, "minItems": 2, "maxItems": 2, "uniqueItems": true },
+        "assertions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/assertion" } }, "fixtureVariant": { "enum": ["no-guide", "share-list"] },
+        "contextVersion": { "type": "string" },
         "guideDeterminations": { "$ref": "#/$defs/determinations" },
         "projectedFindingIds": { "type": "array", "items": { "$ref": "#/$defs/sha" } },
         "computedOverrideFixture": { "type": "object", "required": ["computedRuleId", "overridesRuleId"], "additionalProperties": false, "properties": { "computedRuleId": { "type": "string" }, "overridesRuleId": { "type": "string" } } },
@@ -20,8 +19,8 @@
         "textRecipes": { "type": "array", "items": { "$ref": "#/$defs/textRecipe" } },
         "invalidInputRecipes": { "type": "array", "minItems": 3, "items": { "$ref": "#/$defs/invalidRecipe" } },
         "manualSelectionCollision": { "$ref": "#/$defs/manualCollision" },
-        "orderingRecipe": { "$ref": "#/$defs/orderingRecipe" }, "redactionContract": { "$ref": "#/$defs/redactionContract" },
-        "cliContract": { "$ref": "#/$defs/cliContract" }, "reachabilityContract": { "$ref": "#/$defs/reachabilityContract" }
+        "orderingRecipe": { "$ref": "#/$defs/orderingRecipe" },
+        "cliContract": { "$ref": "#/$defs/cliContract" }
       },
       "anyOf": [{ "required": ["text"] }, { "required": ["marking"] }, { "required": ["textRecipes"] }, { "required": ["invalidInputRecipes"] }]
     }
@@ -63,12 +62,10 @@
         }
       ]
     },
-    "profileContract": { "type": "object", "additionalProperties": false, "required": ["equalPaths", "summaryOmissions", "standardOmissions", "fullDetailsComplete", "supportCatalogDeduplicated", "omittedArraysAbsentNotEmpty"], "properties": { "equalPaths": { "type": "array", "minItems": 4, "items": { "type": "string" } }, "summaryOmissions": { "type": "array", "minItems": 2, "items": { "type": "string" } }, "standardOmissions": { "type": "array", "minItems": 3, "items": { "type": "string" } }, "fullDetailsComplete": { "const": true }, "supportCatalogDeduplicated": { "const": true }, "omittedArraysAbsentNotEmpty": { "const": true } } },
+    "profileContract": { "type": "object", "additionalProperties": false, "required": ["equalPaths", "summaryOmissions", "standardOmissions", "fullDetailsComplete", "supportCatalogDeduplicated", "omittedArraysAbsentNotEmpty"], "properties": { "equalPaths": { "type": "array", "minItems": 4, "items": { "type": "string" } }, "summaryOmissions": { "type": "array", "minItems": 1, "items": { "type": "string" } }, "standardOmissions": { "type": "array", "minItems": 3, "items": { "type": "string" } }, "fullDetailsComplete": { "const": true }, "supportCatalogDeduplicated": { "const": true }, "omittedArraysAbsentNotEmpty": { "const": true } } },
     "genericScenario": { "type": "object", "additionalProperties": false, "required": ["scheme", "inputs", "expectedOperator"], "properties": { "scheme": { "enum": ["cvss", "tlp", "geography"] }, "inputs": { "type": "array", "minItems": 2, "items": { "type": "string" } }, "expectedOperator": { "enum": ["composition", "taxonomy", "union-first"] } } },
     "orderingRecipe": { "type": "object", "additionalProperties": false, "required": ["shuffleDeterminations", "shuffleManualSelections", "randomizeSourceCompletion", "reverseMapInsertion", "expectedEqualSemanticJson", "expectedEqualIds"], "properties": { "shuffleDeterminations": { "const": true }, "shuffleManualSelections": { "const": true }, "randomizeSourceCompletion": { "const": true }, "reverseMapInsertion": { "const": true }, "expectedEqualSemanticJson": { "const": true }, "expectedEqualIds": { "const": true } } },
-    "redactionContract": { "type": "object", "additionalProperties": false, "required": ["forbiddenByDefault", "surfaces", "fullExplicitlyReturns", "fullDoesNotChangeLogging"], "properties": { "forbiddenByDefault": { "type": "array", "minItems": 5, "items": { "type": "string", "minLength": 1 } }, "surfaces": { "type": "array", "minItems": 5, "items": { "enum": ["logs", "telemetry", "errors", "cli-process-arguments", "standard-response"] }, "uniqueItems": true }, "fullExplicitlyReturns": { "type": "array", "items": { "enum": ["matched-text", "authored-part-text"] }, "minItems": 2, "maxItems": 2, "uniqueItems": true }, "fullDoesNotChangeLogging": { "const": true } } },
-    "cliContract": { "type": "object", "additionalProperties": false, "required": ["commands", "modes", "fixtures", "exitCodes", "requireJsonParity", "sensitiveInputs"], "properties": { "commands": { "type": "array", "items": { "enum": ["document-audit", "document-assess-access"] }, "minItems": 2, "maxItems": 2, "uniqueItems": true }, "modes": { "type": "array", "items": { "enum": ["local", "remote"] }, "minItems": 2, "maxItems": 2, "uniqueItems": true }, "fixtures": { "type": "array", "minItems": 6, "items": { "type": "string" } }, "exitCodes": { "type": "object", "additionalProperties": false, "required": ["sufficient-or-granted", "authoritative-failure", "operational-or-stale", "indeterminate-or-projected-only"], "properties": { "sufficient-or-granted": { "const": 0 }, "authoritative-failure": { "const": 1 }, "operational-or-stale": { "const": 2 }, "indeterminate-or-projected-only": { "const": 3 } } }, "requireJsonParity": { "const": true }, "sensitiveInputs": { "type": "array", "items": { "enum": ["stdin", "file"] }, "minItems": 2, "maxItems": 2, "uniqueItems": true } } },
-    "reachabilityContract": { "type": "object", "additionalProperties": false, "required": ["determinedFactKinds", "projectedFactKind", "rejectedFindingReachable", "joins", "requiredDecisionFields"], "properties": { "determinedFactKinds": { "type": "array", "items": { "enum": ["accepted-finding", "manual-selection"] }, "minItems": 2, "maxItems": 2, "uniqueItems": true }, "projectedFactKind": { "const": "projected-finding" }, "rejectedFindingReachable": { "const": false }, "joins": { "type": "array", "minItems": 3, "items": { "type": "string" } }, "requiredDecisionFields": { "type": "array", "items": { "enum": ["decision", "reason"] }, "minItems": 2, "maxItems": 2, "uniqueItems": true } } },
+    "cliContract": { "type": "object", "additionalProperties": false, "required": ["commands", "modes", "fixtures", "exitCodes", "requireJsonParity", "sensitiveInputs"], "properties": { "commands": { "type": "array", "items": { "enum": ["document-audit"] }, "minItems": 1, "maxItems": 1, "uniqueItems": true }, "modes": { "type": "array", "items": { "enum": ["local", "remote"] }, "minItems": 2, "maxItems": 2, "uniqueItems": true }, "fixtures": { "type": "array", "minItems": 6, "items": { "type": "string" } }, "exitCodes": { "type": "object", "additionalProperties": false, "required": ["sufficient-or-granted", "authoritative-failure", "operational-or-stale", "indeterminate-or-projected-only"], "properties": { "sufficient-or-granted": { "const": 0 }, "authoritative-failure": { "const": 1 }, "operational-or-stale": { "const": 2 }, "indeterminate-or-projected-only": { "const": 3 } } }, "requireJsonParity": { "const": true }, "sensitiveInputs": { "type": "array", "items": { "enum": ["stdin", "file"] }, "minItems": 2, "maxItems": 2, "uniqueItems": true } } },
     "determinationPermutations": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sha" } } },
     "conflictingDuplicate": { "type": "object", "additionalProperties": false, "required": ["findingId", "decision", "reason"], "properties": { "findingId": { "$ref": "#/$defs/sha" }, "decision": { "const": "rejected" }, "reason": { "type": "string", "minLength": 1 } } },
     "case23": { "type": "object", "additionalProperties": false, "required": ["marking", "assertions"], "properties": { "marking": { "type": "string", "minLength": 1 }, "assertions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/assertion" } } } },

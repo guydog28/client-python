@@ -56,7 +56,6 @@
                     "operation": {
                         "enum": [
                             "auditDocument",
-                            "assessDocumentAccess",
                             "documentAccessRequirements",
                             "cliDocument"
                         ]
@@ -82,8 +81,8 @@
                 ],
                 "type": "object"
             },
-            "maxItems": 34,
-            "minItems": 34,
+            "maxItems": 25,
+            "minItems": 25,
             "type": "array"
         },
         "fixtureSet": { "minLength": 1, "type": "string" },
