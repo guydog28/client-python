@@ -1986,6 +1986,18 @@ class TestSchemeResources:
         assert summary.embedded_marking[0]["template"] == "({marking}) "
 
     @respx.mock
+    def test_summary_reads_the_scheme_documents_own_whole_marking(self):
+        route = respx.get(_ctx_url("scheme")).mock(
+            return_value=httpx.Response(
+                200, json={**_SUMMARY_BODY, "marking": "HIGH"}, headers=_HDR
+            )
+        )
+        assert _connect().scheme.summary().marking == "HIGH"
+        # Absent when the scheme document declares none.
+        route.mock(return_value=httpx.Response(200, json=_SUMMARY_BODY, headers=_HDR))
+        assert _connect().scheme.summary().marking is None
+
+    @respx.mock
     def test_concepts(self):
         route = respx.get(_ctx_url("scheme/concepts")).mock(
             return_value=httpx.Response(200, json=[_full_concept_view()], headers=_HDR)

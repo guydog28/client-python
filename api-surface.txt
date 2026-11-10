@@ -937,6 +937,7 @@ module ezclassify_rest_contract.models
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
     guidance: Optional[str] = None
     id: str
+    marking: Optional[str] = None
     model_config = ConfigDict(populate_by_name=True)
     name: str
     reference_surface_label: ReferenceSurfaceLabel = Field(alias='referenceSurfaceLabel')

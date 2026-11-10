@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@599af01a83a7afa507ba4ff1649fd0eae7ba810bc3c9286c97465b64185d67de. DO NOT EDIT.
+# Code generated from vendored contracts@c66287d7471a68345886d8193214cb36716b3fe740d1c1b2d79641a09a681a92. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -1744,6 +1744,10 @@ class SchemeSummary(_WireModel):
     """Human-readable definition of the scheme, for tooltips and about panels."""
     guidance: Optional[str] = None
     """Usage guidance for the scheme, shown in reference views."""
+    marking: Optional[str] = None
+    """The scheme document's own overall marking, exactly as its `scheme.marking` writes
+    it. Display only: never interpreted. Omitted when the document declares none.
+    """
     color_from: Optional[str] = Field(default=None, alias='colorFrom')
     """Single-category scheme-default color source, when category mode is used."""
     color_rules: Optional[List[MarkingColorRule]] = Field(default=None, alias='colorRules')
