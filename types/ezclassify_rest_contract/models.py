@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@74132eb07476181af647bb65748262d7ee3fe78d05760bec0520e54cb6fec3b3. DO NOT EDIT.
+# Code generated from vendored contracts@8f0795cde47a5e01bc67c420c8e577319ca823b67567941cb72f61376524817c. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
