@@ -1,0 +1,118 @@
+{
+  "scheme": {
+    "data": {
+      "categories": [
+        {
+          "id": "level",
+          "label": "Level",
+          "marking": "L",
+          "position": 0,
+          "required": true,
+          "rollup": "max",
+          "single": true
+        },
+        {
+          "id": "controls",
+          "label": "Controls",
+          "marking": "M",
+          "position": 1,
+          "required": false,
+          "rollup": "union",
+          "single": false
+        }
+      ],
+      "concepts": {
+        "inline": [
+          {
+            "categories": ["level"],
+            "id": "LOW",
+            "marking": "L",
+            "name": "Low",
+            "parents": [],
+            "position": 0,
+            "rank": 0,
+            "views": { "default": "LOW", "portion": "L" }
+          },
+          {
+            "categories": ["level"],
+            "id": "MED",
+            "name": "Med",
+            "parents": [],
+            "position": 1,
+            "rank": 1,
+            "views": { "default": "MED", "portion": "M" }
+          },
+          {
+            "categories": ["level"],
+            "id": "HIGH",
+            "name": "High",
+            "parents": [],
+            "position": 2,
+            "rank": 2,
+            "views": { "default": "HIGH", "portion": "H" }
+          },
+          {
+            "categories": ["controls"],
+            "id": "CTRL-A",
+            "marking": "H/CTRL-A",
+            "name": "Control A",
+            "parents": ["HIGH"],
+            "position": 0,
+            "views": { "default": "CTRL-A" }
+          }
+        ]
+      }
+    },
+    "default_scope": "banner",
+    "description": "Marked conformance scheme. The same shape as ref-scheme-1, marked in its own scheme: the scheme block carries the whole marking, and a category, a concept, a render format and a rule each carry a part. An engine loads and answers it exactly as it would the same document with every marking left out.",
+    "id": "ref-marked-1",
+    "marking": "HIGH/CTRL-A",
+    "marking_scheme": "self",
+    "name": "Reference Marked Scheme 1",
+    "parse": {
+      "case_sensitive": false,
+      "normalize": [],
+      "strip_whitespace": true
+    },
+    "render": {
+      "default": "default",
+      "formats": [
+        {
+          "fields": [
+            { "category": "level", "separator": "/" },
+            { "category": "controls", "separator": "/" }
+          ],
+          "id": "default",
+          "marking": "L",
+          "mode": "inline",
+          "separator": "/",
+          "surface": "banner"
+        },
+        {
+          "fields": [
+            { "category": "level", "separator": "/" },
+            { "category": "controls", "separator": "/" }
+          ],
+          "id": "portion",
+          "mode": "inline",
+          "separator": "/",
+          "surface": "banner",
+          "view": "portion"
+        }
+      ],
+      "of_invalid": "drop_unmatched"
+    },
+    "rules": [
+      {
+        "action": "forbid",
+        "id": "control-needs-high",
+        "marking": "M",
+        "message": "Control A is only for a HIGH marking.",
+        "target": "CTRL-A",
+        "when": { "category": "level", "has": "LOW" }
+      }
+    ],
+    "scopes": [{ "id": "banner", "label": "Banner" }],
+    "version": "1.0.0"
+  }
+}
