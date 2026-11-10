@@ -343,8 +343,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme to read. Defaults to the context's primary
-            scheme; a crosswalk's source or target scheme is named here. A key the context does not hold answers 404.
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       responses:
@@ -399,8 +401,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme to read. Defaults to the context's primary
-            scheme; a crosswalk's source or target scheme is named here. A key the context does not hold answers 404.
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       responses:
@@ -457,8 +461,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme to read. Defaults to the context's primary
-            scheme; a crosswalk's source or target scheme is named here. A key the context does not hold answers 404.
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       responses:
@@ -515,8 +521,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme to read. Defaults to the context's primary
-            scheme; a crosswalk's source or target scheme is named here. A key the context does not hold answers 404.
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       responses:
@@ -573,8 +581,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme to read. Defaults to the context's primary
-            scheme; a crosswalk's source or target scheme is named here. A key the context does not hold answers 404.
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       responses:
@@ -628,8 +638,10 @@ paths:
           in: query
           required: false
           description: >-
-            Context-local key, or unambiguous artifact id, of the scheme to read. Defaults to the context's primary
-            scheme; a crosswalk's source or target scheme is named here. A key the context does not hold answers 404.
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       responses:
@@ -659,11 +671,10 @@ paths:
       operationId: ctxSchemeLabelPresets
       summary: List the label presets in a context
       description: >-
-        Returns the label presets of the context's primary scheme, the scheme apply-preset expands them in, as preset
-        views: id, label, description, and scope. Empty when the scheme declares none. The marking string and tag list
-        stay server-side; expand a preset with POST /v1/ctx/{ctxId}/{version}/scheme/apply-preset. The :version segment
-        may be omitted to default to "latest"; the resolved version is returned in the X-EzClassify-Resolved-Version
-        response header.
+        Returns the label presets of the selected scheme as preset views: id, label, description, and scope. Empty when
+        the scheme declares none. The marking string and tag list stay server-side; expand a preset with POST
+        /v1/ctx/{ctxId}/{version}/scheme/apply-preset under the same selector. The :version segment may be omitted to
+        default to "latest"; the resolved version is returned in the X-EzClassify-Resolved-Version response header.
       tags:
         - context
         - scheme
@@ -679,6 +690,16 @@ paths:
           description: >-
             A concrete semver version, or `latest`. The version served is reported in the X-EzClassify-Resolved-Version
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
+          schema:
+            type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       responses:
@@ -731,6 +752,16 @@ paths:
           description: >-
             A concrete semver version, or `latest`. The version served is reported in the X-EzClassify-Resolved-Version
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
+          schema:
+            type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       requestBody:
@@ -789,6 +820,16 @@ paths:
           description: >-
             A concrete semver version, or `latest`. The version served is reported in the X-EzClassify-Resolved-Version
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
+          schema:
+            type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       requestBody:
@@ -854,6 +895,16 @@ paths:
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
           schema:
             type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -915,6 +966,16 @@ paths:
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
           schema:
             type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -974,6 +1035,16 @@ paths:
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
           schema:
             type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1027,6 +1098,16 @@ paths:
           description: >-
             A concrete semver version, or `latest`. The version served is reported in the X-EzClassify-Resolved-Version
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
+          schema:
+            type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       requestBody:
@@ -1083,6 +1164,16 @@ paths:
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
           schema:
             type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1135,6 +1226,16 @@ paths:
           description: >-
             A concrete semver version, or `latest`. The version served is reported in the X-EzClassify-Resolved-Version
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
+          schema:
+            type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       requestBody:
@@ -1191,6 +1292,16 @@ paths:
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
           schema:
             type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1243,6 +1354,16 @@ paths:
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
           schema:
             type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1293,6 +1414,16 @@ paths:
           description: >-
             A concrete semver version, or `latest`. The version served is reported in the X-EzClassify-Resolved-Version
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
+          schema:
+            type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       requestBody:
@@ -1352,6 +1483,16 @@ paths:
           description: >-
             A concrete semver version, or `latest`. The version served is reported in the X-EzClassify-Resolved-Version
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
+          schema:
+            type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       requestBody:
@@ -1414,6 +1555,16 @@ paths:
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
           schema:
             type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1474,6 +1625,16 @@ paths:
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
           schema:
             type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1532,6 +1693,16 @@ paths:
           description: >-
             A concrete semver version, or `latest`. The version served is reported in the X-EzClassify-Resolved-Version
             response header. The segment may also be left out of the URL, which the server reads as `latest`.
+          schema:
+            type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       requestBody:
@@ -1608,6 +1779,16 @@ paths:
           in: query
           required: false
           description: "The view to name the concept in: a key of the concept's `views`. Omitted, its default view."
+          schema:
+            type: string
+        - name: scheme
+          in: query
+          required: false
+          description: >-
+            Context-local key, or unambiguous artifact id, of the scheme the request is answered in. Without it the
+            context's primary scheme answers. Any scheme the context holds may be named, a crosswalk's source or target
+            among them. A selector that names no scheme the context holds answers 404; it never falls back to the
+            primary.
           schema:
             type: string
       responses:
@@ -4101,9 +4282,9 @@ components:
         plays these `roles`.
 
 
-        `selector` is the whole point. A Context keys its schemes locally, and an operation that addresses one takes
-        that key, so a caller that cannot enumerate the keys cannot reach anything but the primary. On the REST surface
-        the same value is what `?scheme=` takes.
+        `selector` is the whole point. A Context keys its schemes locally, and a caller reaches a scheme by its key: an
+        adapter's `schemeView` takes it, and so does `?scheme=` on the REST surface. A caller that cannot enumerate the
+        keys cannot reach anything but the primary.
     ContextSchemeDiffResult:
       type: object
       properties:

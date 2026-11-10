@@ -1,0 +1,8 @@
+{
+  "context": {
+    "description": "Reference Context for the server-slice plans: ref-scheme-1 and nothing else.",
+    "id": "ref-ctx-1",
+    "scheme": { "id": "ref-scheme-1", "version": "1.0.0" },
+    "version": "1.0.0"
+  }
+}

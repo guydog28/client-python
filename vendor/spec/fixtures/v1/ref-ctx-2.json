@@ -1,0 +1,9 @@
+{
+  "context": {
+    "crosswalks": [{ "id": "ref-crosswalk-1", "version": "1.0.0" }],
+    "description": "Reference Context that holds two schemes: ref-scheme-1 as its primary and, through ref-crosswalk-1, ref-scheme-2 as the crosswalk's target. The server-slice plans select ref-scheme-2 to mark in the scheme that is not primary.",
+    "id": "ref-ctx-2",
+    "scheme": { "id": "ref-scheme-1", "version": "1.0.0" },
+    "version": "1.0.0"
+  }
+}

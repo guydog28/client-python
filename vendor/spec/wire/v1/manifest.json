@@ -2,7 +2,7 @@
     "contractDivergences": [],
     "corpusVersion": "v1",
     "coverage": {
-        "cases": 119,
+        "cases": 123,
         "operationsCovered": 40
     },
     "determinism": {
@@ -37,14 +37,14 @@
     "generation": {
         "contractVersion": "1.0.0-dev.30",
         "generator": "ezclassify-wire-corpus-recorder",
-        "generatorDigest": "sha256:8aafbf7a3583dcbff209634aaa9866d57be9026bae224769adff2a7735c63663"
+        "generatorDigest": "sha256:cc2a41077f3aacf82e33b01461a4c3aef45ffe13fa338d5ce40563b5671bd05e"
     },
     "runtime": {
         "engineVersion": "1.0.0-dev.30",
         "restApiVersion": "1.0.0-dev.30"
     },
     "spec": {
-        "digest": "sha256:57bd298b71064b4752d7661b92399cad7797705a4ff840283306c4ce10c39de8",
+        "digest": "sha256:b83ffe08c6e45854b1d07e0052c5c7d09895df6abcec963be11df12039b73f37",
         "infoVersion": "1.0.0-dev.30",
         "package": "@ezclassify/openapi",
         "packageVersion": "1.0.0-dev.30"

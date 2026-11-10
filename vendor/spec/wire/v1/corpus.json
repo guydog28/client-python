@@ -5760,6 +5760,333 @@
                 "credential": "context-token",
                 "deployment": "open"
             },
+            "id": "ctx-scheme-process.selected-scheme",
+            "operationId": "ctxSchemeProcess",
+            "request": {
+                "body": {
+                    "input": "SENSITIVE / EXPORT"
+                },
+                "headers": {
+                    "content-type": "application/json"
+                },
+                "method": "POST",
+                "path": "/v1/ctx/ez-crosswalk/1.0.0/scheme/process?scheme=ez-gated",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/scheme/process"
+            },
+            "response": {
+                "body": {
+                    "operationLimitations": [],
+                    "resolution": {
+                        "artifacts": [
+                            {
+                                "id": "ez-test",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-gated",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-test-to-ez-gated",
+                                "kind": "crosswalk",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-crosswalk",
+                                "kind": "context",
+                                "version": "1.0.0"
+                            }
+                        ],
+                        "contextId": "ez-crosswalk",
+                        "requestedVersion": "1.0.0",
+                        "resolvedVersion": "1.0.0",
+                        "sources": []
+                    },
+                    "result": {
+                        "appliedFixes": [],
+                        "assertions": [
+                            {
+                                "categoryId": "level",
+                                "conceptId": "SENSITIVE",
+                                "confidence": "certain",
+                                "source": "parse"
+                            },
+                            {
+                                "categoryId": "handling",
+                                "conceptId": "EXPORT",
+                                "confidence": "certain",
+                                "source": "parse"
+                            }
+                        ],
+                        "assessment": {
+                            "collapsed": [],
+                            "conflicts": [],
+                            "emitted": [
+                                {
+                                    "categoryId": "level",
+                                    "conceptId": "SENSITIVE"
+                                },
+                                {
+                                    "categoryId": "handling",
+                                    "conceptId": "EXPORT"
+                                }
+                            ],
+                            "omitted": [],
+                            "unrepresentable": []
+                        },
+                        "errors": [],
+                        "inputWasValid": true,
+                        "notices": [],
+                        "proposedFixes": [],
+                        "recognition": {
+                            "corrections": [],
+                            "inputFormat": "default",
+                            "status": "complete",
+                            "surface": "default",
+                            "unmatched": []
+                        },
+                        "rendered": "SENSITIVE / EXPORT",
+                        "renders": {},
+                        "valid": true,
+                        "warnings": []
+                    }
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "Process in the Context's second scheme, named by ?scheme: a marking only that scheme declares."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
+            "id": "ctx-scheme-validate.selected-scheme",
+            "operationId": "ctxSchemeValidate",
+            "request": {
+                "body": {
+                    "input": "SENSITIVE / EXPORT"
+                },
+                "headers": {
+                    "content-type": "application/json"
+                },
+                "method": "POST",
+                "path": "/v1/ctx/ez-crosswalk/1.0.0/scheme/validate?scheme=ez-gated",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/scheme/validate"
+            },
+            "response": {
+                "body": {
+                    "operationLimitations": [],
+                    "resolution": {
+                        "artifacts": [
+                            {
+                                "id": "ez-test",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-gated",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-test-to-ez-gated",
+                                "kind": "crosswalk",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-crosswalk",
+                                "kind": "context",
+                                "version": "1.0.0"
+                            }
+                        ],
+                        "contextId": "ez-crosswalk",
+                        "requestedVersion": "1.0.0",
+                        "resolvedVersion": "1.0.0",
+                        "sources": []
+                    },
+                    "result": {
+                        "appliedFixes": [],
+                        "assertions": [
+                            {
+                                "categoryId": "level",
+                                "conceptId": "SENSITIVE",
+                                "confidence": "certain",
+                                "source": "parse"
+                            },
+                            {
+                                "categoryId": "handling",
+                                "conceptId": "EXPORT",
+                                "confidence": "certain",
+                                "source": "parse"
+                            }
+                        ],
+                        "assessment": {
+                            "collapsed": [],
+                            "conflicts": [],
+                            "emitted": [
+                                {
+                                    "categoryId": "level",
+                                    "conceptId": "SENSITIVE"
+                                },
+                                {
+                                    "categoryId": "handling",
+                                    "conceptId": "EXPORT"
+                                }
+                            ],
+                            "omitted": [],
+                            "unrepresentable": []
+                        },
+                        "errors": [],
+                        "inputWasValid": true,
+                        "notices": [],
+                        "recognition": {
+                            "inputFormat": "default",
+                            "status": "complete",
+                            "surface": "default",
+                            "unmatched": []
+                        },
+                        "rendered": "SENSITIVE / EXPORT",
+                        "valid": true,
+                        "warnings": []
+                    }
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "Validate in the Context's second scheme, named by ?scheme: a marking only that scheme declares is valid there."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
+            "id": "ctx-scheme-aggregate.selected-scheme",
+            "operationId": "ctxSchemeAggregate",
+            "request": {
+                "body": {
+                    "inputs": [
+                        "OPEN / EXPORT",
+                        "SENSITIVE"
+                    ]
+                },
+                "headers": {
+                    "content-type": "application/json"
+                },
+                "method": "POST",
+                "path": "/v1/ctx/ez-crosswalk/1.0.0/scheme/aggregate?scheme=ez-gated",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/scheme/aggregate"
+            },
+            "response": {
+                "body": {
+                    "operationLimitations": [],
+                    "resolution": {
+                        "artifacts": [
+                            {
+                                "id": "ez-test",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-gated",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-test-to-ez-gated",
+                                "kind": "crosswalk",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-crosswalk",
+                                "kind": "context",
+                                "version": "1.0.0"
+                            }
+                        ],
+                        "contextId": "ez-crosswalk",
+                        "requestedVersion": "1.0.0",
+                        "resolvedVersion": "1.0.0",
+                        "sources": []
+                    },
+                    "result": {
+                        "appliedFixes": [],
+                        "assertions": [
+                            {
+                                "categoryId": "level",
+                                "conceptId": "SENSITIVE",
+                                "confidence": "certain",
+                                "source": "aggregate"
+                            },
+                            {
+                                "categoryId": "handling",
+                                "conceptId": "EXPORT",
+                                "confidence": "certain",
+                                "source": "parse"
+                            }
+                        ],
+                        "errors": [],
+                        "notices": [],
+                        "proposedFixes": [],
+                        "rendered": "SENSITIVE / EXPORT",
+                        "valid": true,
+                        "warnings": []
+                    }
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "Aggregate in the Context's second scheme, named by ?scheme: the parts roll up by that scheme's rules."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
+            "id": "ctx-scheme-process.unknown-scheme",
+            "operationId": "ctxSchemeProcess",
+            "request": {
+                "body": {
+                    "input": "OPEN"
+                },
+                "headers": {
+                    "content-type": "application/json"
+                },
+                "method": "POST",
+                "path": "/v1/ctx/ez-crosswalk/1.0.0/scheme/process?scheme=no-such-scheme",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/scheme/process"
+            },
+            "response": {
+                "body": {
+                    "error": "Scheme not found in context: no-such-scheme"
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 404,
+                "statusDeclaredInContract": true
+            },
+            "summary": "A ?scheme key the Context does not hold: a resource-level 404, and the marking is not processed in the primary."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
             "id": "ctx-scheme-process.undeclared-request-field-fix",
             "operationId": "ctxSchemeProcess",
             "request": {
@@ -6700,13 +7027,13 @@
             "request": {
                 "headers": {},
                 "method": "GET",
-                "path": "/v1/ctx/ez-presets/1.0.0/scheme/label-presets?scheme=ez-presets",
+                "path": "/v1/ctx/ez-presets/1.0.0/scheme/label-presets?layers=ez-layer",
                 "pathTemplate": "/v1/ctx/{ctxId}/{version}/scheme/label-presets"
             },
             "response": {
                 "body": {
                     "code": "INVALID_INPUT",
-                    "detail": "query: scheme",
+                    "detail": "query: layers",
                     "error": "invalid_input"
                 },
                 "headers": {
@@ -6715,7 +7042,7 @@
                 "status": 400,
                 "statusDeclaredInContract": true
             },
-            "summary": "Label presets take no scheme selector: they are the primary scheme's, the scheme apply-preset expands them in, so ?scheme is refused."
+            "summary": "Scheme routes take no layer selector: the layers are the Context's, signed into its manifest, so ?layers is refused."
         },
         {
             "auth": {

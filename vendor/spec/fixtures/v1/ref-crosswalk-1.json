@@ -1,0 +1,32 @@
+{
+  "crosswalk": {
+    "description": "Directional crosswalk from ref-scheme-1 onto ref-scheme-2. Composing it gives a Context two schemes, so the server-slice plans can mark in the one that is not primary. LOW and HIGH carry; MED has no counterpart and is forbidden.",
+    "id": "ref-crosswalk-1",
+    "mappings": [
+      {
+        "disposition": "carry",
+        "id": "low",
+        "reason": "Low is low in both schemes.",
+        "source": { "categoryId": "level", "conceptId": "LOW" },
+        "targets": [{ "categoryId": "level", "conceptId": "LOW" }]
+      },
+      {
+        "disposition": "forbid",
+        "id": "med",
+        "reason": "ref-scheme-2 has no middle level.",
+        "source": { "categoryId": "level", "conceptId": "MED" }
+      },
+      {
+        "disposition": "carry",
+        "id": "high",
+        "reason": "High is high in both schemes.",
+        "source": { "categoryId": "level", "conceptId": "HIGH" },
+        "targets": [{ "categoryId": "level", "conceptId": "HIGH" }]
+      }
+    ],
+    "name": "Reference Crosswalk 1",
+    "sourceScheme": { "id": "ref-scheme-1", "version": "1.0.0" },
+    "targetScheme": { "id": "ref-scheme-2", "version": "1.0.0" },
+    "version": "1.0.0"
+  }
+}

@@ -1,0 +1,108 @@
+{
+    "cases": [
+        {
+            "args": ["HIGH//ALPHA"],
+            "ctxId": "ref-ctx-2",
+            "ctxVersion": "1.0.0",
+            "expect": {
+                "rendered": "HIGH//ALPHA",
+                "valid": true
+            },
+            "fixture": "ref-scheme-1",
+            "method": "ctxProcess",
+            "name": "ctx process in the non-primary scheme",
+            "scheme": "ref-scheme-2"
+        },
+        {
+            "args": ["HIGH//ALPHA"],
+            "ctxId": "ref-ctx-2",
+            "ctxVersion": "1.0.0",
+            "expect": {
+                "valid": false
+            },
+            "fixture": "ref-scheme-1",
+            "method": "ctxProcess",
+            "name": "ctx process without a selector answers in the primary scheme"
+        },
+        {
+            "args": ["MED"],
+            "ctxId": "ref-ctx-2",
+            "ctxVersion": "1.0.0",
+            "expect": {
+                "rendered": "MED",
+                "valid": true
+            },
+            "fixture": "ref-scheme-1",
+            "method": "ctxProcess",
+            "name": "ctx process with the primary scheme selected",
+            "scheme": "ref-scheme-1"
+        },
+        {
+            "args": ["LOW//ALPHA"],
+            "ctxId": "ref-ctx-2",
+            "ctxVersion": "1.0.0",
+            "expect": {
+                "valid": true
+            },
+            "fixture": "ref-scheme-1",
+            "method": "ctxValidate",
+            "name": "ctx validate in the non-primary scheme",
+            "scheme": "ref-scheme-2"
+        },
+        {
+            "args": ["MED"],
+            "ctxId": "ref-ctx-2",
+            "ctxVersion": "1.0.0",
+            "expect": {
+                "valid": false
+            },
+            "fixture": "ref-scheme-1",
+            "method": "ctxValidate",
+            "name": "ctx validate in the non-primary scheme refuses a concept only the primary holds",
+            "scheme": "ref-scheme-2"
+        },
+        {
+            "args": [["HIGH//ALPHA/BRAVO", "LOW//ALPHA"]],
+            "ctxId": "ref-ctx-2",
+            "ctxVersion": "1.0.0",
+            "expect": {
+                "rendered": "HIGH//ALPHA"
+            },
+            "fixture": "ref-scheme-1",
+            "method": "ctxAggregate",
+            "name": "ctx aggregate in the non-primary scheme rolls up by its rules",
+            "scheme": "ref-scheme-2"
+        },
+        {
+            "args": ["HIGH"],
+            "ctxId": "ref-ctx-2",
+            "ctxVersion": "1.0.0",
+            "fixture": "ref-scheme-1",
+            "method": "ctxProcess",
+            "name": "ctx process refuses a selector the context does not hold",
+            "refusedWith": 404,
+            "scheme": "ref-scheme-3"
+        },
+        {
+            "args": ["HIGH"],
+            "ctxId": "ref-ctx-2",
+            "ctxVersion": "1.0.0",
+            "fixture": "ref-scheme-1",
+            "method": "ctxValidate",
+            "name": "ctx validate refuses a selector the context does not hold",
+            "refusedWith": 404,
+            "scheme": "ref-scheme-3"
+        },
+        {
+            "args": [["HIGH"]],
+            "ctxId": "ref-ctx-2",
+            "ctxVersion": "1.0.0",
+            "fixture": "ref-scheme-1",
+            "method": "ctxAggregate",
+            "name": "ctx aggregate refuses a selector the context does not hold",
+            "refusedWith": 404,
+            "scheme": "ref-scheme-3"
+        }
+    ],
+    "slice": "server"
+}

@@ -15,7 +15,7 @@
                     "type": "array"
                 },
                 "ctxId": {
-                    "description": "Context ID for ctx-family methods (ctxProcess, ctxScan, ctxDocumentAudit). Identifies the server-side context that pins scheme, guides, and access policy.",
+                    "description": "Context ID for ctx-family methods (ctxProcess, ctxValidate, ctxAggregate, ctxScan, ctxDocumentAudit). Names the Context fixture of the same name in fixtures/v1, which pins the scheme, crosswalks, guides and access policy the server composes.",
                     "type": "string"
                 },
                 "ctxVersion": {
@@ -28,7 +28,7 @@
                     "type": "object"
                 },
                 "fixture": {
-                    "description": "Fixture file name (without .json) to load as the scheme, or an array for fromLayers.",
+                    "description": "Fixture file name (without .json) to load as the scheme, or an array for fromLayers. For ctx-family methods, the Context's primary scheme.",
                     "oneOf": [
                         { "type": "string" },
                         {
@@ -43,7 +43,7 @@
                     "type": "string"
                 },
                 "method": {
-                    "description": "Engine method to invoke. normalize/render/diff wrap their return value as {result}. aggregateAssertions takes a single arg: an array of assertion arrays (each inner array is one marking's already-parsed assertions). evaluateMany takes a single arg: an array of {guideId, ruleId} selections, each naming the guide that holds the rule. evaluateGuide/evaluateMany/guideScan require guideFixture. checkAccess requires accessFixture. registry* methods register the fixture engine in a SchemeRegistry. ctx* methods use ctxId and ctxVersion to target a server-side context.",
+                    "description": "Engine method to invoke. normalize/render/diff wrap their return value as {result}. aggregateAssertions takes a single arg: an array of assertion arrays (each inner array is one marking's already-parsed assertions). evaluateMany takes a single arg: an array of {guideId, ruleId} selections, each naming the guide that holds the rule. evaluateGuide/evaluateMany/guideScan require guideFixture. checkAccess requires accessFixture. registry* methods register the fixture engine in a SchemeRegistry. ctx* methods use ctxId and ctxVersion to target a server-side context, and scheme to select one of its schemes. ctxAggregate takes a single arg: an array of marking strings.",
                     "enum": [
                         "process",
                         "aggregate",
@@ -61,6 +61,8 @@
                         "registryProcessAll",
                         "registrySuggestAcross",
                         "ctxProcess",
+                        "ctxValidate",
+                        "ctxAggregate",
                         "ctxScan",
                         "ctxDocumentAudit"
                     ],
@@ -75,9 +77,20 @@
                 "name": {
                     "description": "Human-readable identifier for this test case.",
                     "type": "string"
+                },
+                "refusedWith": {
+                    "description": "HTTP status the server refuses the call with, for a ctx-family case that exists to be refused. The runner asserts the call fails with this status and returns no result. A case carries either expect or refusedWith.",
+                    "maximum": 599,
+                    "minimum": 400,
+                    "type": "integer"
+                },
+                "scheme": {
+                    "description": "Scheme selector for ctx-family methods: the Context-local key, or unambiguous id, of the scheme the operation answers in, sent as ?scheme=. Omitted, the Context's primary scheme answers.",
+                    "type": "string"
                 }
             },
-            "required": ["name", "fixture", "method", "args", "expect"],
+            "oneOf": [{ "required": ["expect"] }, { "required": ["refusedWith"] }],
+            "required": ["name", "fixture", "method", "args"],
             "type": "object"
         }
     },
