@@ -104,6 +104,7 @@ MODEL_ORDER = [
     "ManualGuideSelectionInput",
     "ManualGuideSelection",
     "GuideDeterminationInput",
+    "GuideRuleSelection",
     "GuideFactReference",
     "AssertionSupport",
     "GuideCompiledDetail",
@@ -147,6 +148,7 @@ MODEL_ORDER = [
     "ContextSchemeDescriptor",
     "ContextDescription",
     "ContextCrosswalkTranslationResult",
+    "CtxCrosswalkDescribeResponseBody",
     "ContextDocumentAuditResult",
 ]
 
@@ -332,6 +334,10 @@ TYPE_OVERRIDES: dict[tuple[str, str], str | EnumOverride] = {
     # typed while preserving the complete union payload as JSON until this
     # deliberately small generator supports named union variants.
     ("ContextCrosswalkTranslationResult", "result"): "Dict[str, Any]",
+    # Each crosswalk's mappings and selections carry the same union-shaped
+    # reviewed decisions as a translation, so the inventory keeps each entry
+    # as JSON on the same terms.
+    ("CtxCrosswalkDescribeResponseBody", "crosswalks"): "List[Dict[str, Any]]",
 }
 
 

@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const generator = resolve(root, 'scripts/gen_models.py')
-const expectedGeneratorHash = '073d178155677657106be97e45ad27bf24fe4ea4164e0533a477279d53777267'
+const expectedGeneratorHash = 'd3fe92119c7bc926e2753b846e5e60dedce5d400e2ec72fa3dced9c635535e9d'
 const actualGeneratorHash = createHash('sha256').update(readFileSync(generator)).digest('hex')
 if (actualGeneratorHash !== expectedGeneratorHash) {
   throw new Error(`gen_models.py hash mismatch: expected ${expectedGeneratorHash}, got ${actualGeneratorHash}`)
