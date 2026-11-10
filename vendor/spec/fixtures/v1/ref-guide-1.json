@@ -1,6 +1,6 @@
 {
     "guide": {
-        "description": "Canonical conformance test guide. Three rules: rule-high (keywords: critical, sensitive → outcome HIGH), rule-low (keywords: public, open → outcome LOW), rule-ctrl-a (keywords: controlled, restricted → outcome HIGH/CTRL-A). Tests: scan finds keyword hits, evaluate aggregates outcomes, evaluateMany delegates to first guide.",
+        "description": "Canonical conformance test guide. Three rules: rule-high (keywords: critical, sensitive → outcome HIGH), rule-low (keywords: public, open → outcome LOW), rule-ctrl-a (keywords: controlled, restricted → outcome HIGH/CTRL-A). Tests: scan finds keyword hits, evaluate aggregates outcomes, evaluateMany rolls up the outcomes of the rules selected from each guide.",
         "id": "ref-guide-1",
         "name": "Reference Guide 1",
         "rules": {

@@ -137,7 +137,7 @@
             "name": "guideScan-span-position-first-hit"
         },
         {
-            "args": [["rule-high"]],
+            "args": [[{ "guideId": "ref-guide-1", "ruleId": "rule-high" }]],
             "expect": {
                 "aggregatedMarking": "HIGH",
                 "selectedRules": [
@@ -152,7 +152,7 @@
             "name": "evaluateMany-single-guide-rule-high"
         },
         {
-            "args": [["rule-high", "rule-low"]],
+            "args": [[{ "guideId": "ref-guide-1", "ruleId": "rule-high" }, { "guideId": "ref-guide-1", "ruleId": "rule-low" }]],
             "expect": {
                 "aggregatedMarking": "HIGH",
                 "selectedRules": [

@@ -1,25 +1,25 @@
 {
   "openapiVersion": "1.0.0-dev.30",
-  "openapiSha256": "65cd29d9216ffb5f587d8bae8c7861666430ef1a5145d74b9c320927ee4f44b1",
-  "specBundleSha256": "71b37b9fd8b9a3c06c3165ebee8ba032859bf3e77ad49edfdc99765f8b79ccd5",
-  "specDigest": "2fe0e0d9332dbed237776eef00c0ae161b19a9b6216705264277beee0d6c94c0",
-  "contractsSha": "8783b0322e53de16cc0467c77378350aa33b48e2",
+  "openapiSha256": "57bd298b71064b4752d7661b92399cad7797705a4ff840283306c4ce10c39de8",
+  "specBundleSha256": "ace769b5f98b7914787d9ba216842270a67ac5f24154774e47dc14d6079f34af",
+  "specDigest": "5fcc2f25422d1972412f5c034f46ce977b87257388f9b7a285c7e63f2c9c2541",
+  "contractsSha": "00796ea9c951a62a84b3bbc26786f41ea278f7f2",
   "sourcePackages": {
     "@ezclassify/openapi": "1.0.0-dev.30",
     "@ezclassify/schemas": "1.0.0-dev.30",
     "@ezclassify/conformance": "1.0.0-dev.30"
   },
-  "generatedAt": "2026-11-10T12:47:16.000Z",
+  "generatedAt": "2026-11-10T19:37:17.000Z",
   "generators": {
     "python": {
       "binary": "node",
       "script": "scripts/gen.mjs",
       "version": "node",
-      "sha256": "e7492ecfffa2ca3b02d5d9f6405501e1ece349f267f20d4c4eb8055d025e4240",
+      "sha256": "e91e3959182c11a7a14649a7e4a14abff851d4dd55a1ee270eb4dbe022e632cb",
       "additionalInputs": [
         {
           "path": "scripts/gen_models.py",
-          "sha256": "073d178155677657106be97e45ad27bf24fe4ea4164e0533a477279d53777267"
+          "sha256": "d3fe92119c7bc926e2753b846e5e60dedce5d400e2ec72fa3dced9c635535e9d"
         },
         {
           "path": "tools/requirements-regen.txt",
@@ -27,7 +27,7 @@
         }
       ],
       "note": "sha256 is of scripts/gen.mjs; additionalInputs pins its Python implementation and native regeneration dependency requirements",
-      "jsonSchemasSha256": "bc798ca7b6faa8f03998a3a780ae8d35ba3ed5ffb269f95d9d441953f03ba5fe"
+      "jsonSchemasSha256": "12a177cb252b6ae3d9a2a027593ed8582ee31a350008e131d8df85a7f9d1185f"
     }
   },
   "generatedPaths": [

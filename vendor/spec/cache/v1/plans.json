@@ -90,6 +90,12 @@
             "treatment": "cached"
         },
         {
+            "name": "context.describeCrosswalks",
+            "method": "GET",
+            "route": "crosswalk/describe",
+            "treatment": "cached"
+        },
+        {
             "name": "access.check",
             "method": "POST",
             "route": "access/check",
@@ -151,12 +157,6 @@
         },
         {
             "name": "guide.evaluate",
-            "method": "POST",
-            "route": "guide/evaluate",
-            "treatment": "uncached"
-        },
-        {
-            "name": "guide.evaluateAll",
             "method": "POST",
             "route": "guide/evaluate",
             "treatment": "uncached"
@@ -678,6 +678,31 @@
             ]
         },
         {
+            "id": "cached-repeat.context.describeCrosswalks",
+            "title": "A repeated context.describeCrosswalks on a pinned binding is answered from the entry the first call filed.",
+            "covers": [
+                "C01"
+            ],
+            "capabilities": [],
+            "client": {
+                "binding": "pinned",
+                "context": "ez-crosswalk"
+            },
+            "steps": [
+                {
+                    "step": "call",
+                    "operation": "context.describeCrosswalks",
+                    "case": "ctx-crosswalk-describe.ok",
+                    "times": 2
+                },
+                {
+                    "step": "expectWireCount",
+                    "case": "ctx-crosswalk-describe.ok",
+                    "count": 1
+                }
+            ]
+        },
+        {
             "id": "cached-repeat.unpinned",
             "title": "An unpinned binding also answers an immediate repeat from its entry; only the lifetime differs.",
             "covers": [
@@ -948,30 +973,6 @@
                 {
                     "step": "expectWireCount",
                     "case": "ctx-guide-evaluate.ok",
-                    "count": 2
-                }
-            ]
-        },
-        {
-            "id": "uncached.guide.evaluateAll",
-            "title": "guide.evaluateAll is outside the cached set and reaches the wire on every call.",
-            "covers": [
-                "C03"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned"
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "guide.evaluateAll",
-                    "case": "ctx-guide-evaluate.all-guides",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-guide-evaluate.all-guides",
                     "count": 2
                 }
             ]

@@ -10,19 +10,6 @@
         "selectedRules": []
       }
     },
-    "0e46bdd20d05955c5dd16aabe1dda13a325831367a91e608a6f5dbbbf98eb8f4": {
-      "argsSummary": "[[\"rule-high\"]]",
-      "method": "evaluateMany",
-      "response": {
-        "aggregatedMarking": "HIGH",
-        "selectedRules": [
-          {
-            "id": "rule-high",
-            "name": "High Sensitivity"
-          }
-        ]
-      }
-    },
     "10cccfa42799ca789918e440771e3082785886337e1e53d7aaf15ed7aa85d9c3": {
       "argsSummary": "[\"sensitive and controlled data\"]",
       "method": "guideScan",
@@ -114,8 +101,21 @@
         "firstStart": null
       }
     },
-    "c9feaf8784fd3e679e09c1be8470f550ba71feffe3a478ea26ebef553220e9c6": {
-      "argsSummary": "[[\"rule-high\",\"rule-low\"]]",
+    "e48545ef5981c649f9aa46f1fc8a4ca2bc21b452a2e25f415f69cbe2002fccae": {
+      "argsSummary": "[[{\"guideId\":\"ref-guide-1\",\"ruleId\":\"rule-high\"}]]",
+      "method": "evaluateMany",
+      "response": {
+        "aggregatedMarking": "HIGH",
+        "selectedRules": [
+          {
+            "id": "rule-high",
+            "name": "High Sensitivity"
+          }
+        ]
+      }
+    },
+    "f3edd7da9e632808b2818fd4e9ed90ad35b9bc3a0371d876bb3bae5c549664b6": {
+      "argsSummary": "[[{\"guideId\":\"ref-guide-1\",\"ruleId\":\"rule-high\"},{\"guideId\":\"ref-guide-1\",\"ru...",
       "method": "evaluateMany",
       "response": {
         "aggregatedMarking": "HIGH",

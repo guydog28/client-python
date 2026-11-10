@@ -42,6 +42,7 @@ else to the server on every call. No wider and no narrower.
 | `scheme.scan`                       | `POST scheme/scan`                   | `cached`   |
 | `scheme.describeConcept`            | `GET scheme/describe-concept`        | `cached`   |
 | `access.describeAllAccessRules`     | `GET access/rules`                   | `cached`   |
+| `context.describeCrosswalks`        | `GET crosswalk/describe`             | `cached`   |
 | `access.check`                      | `POST access/check`                  | `decision` |
 | `context.checkAccess`               | `POST access/check`                  | `decision` |
 | `context.audit`                     | `POST document/audit`                | `never`    |
@@ -53,7 +54,6 @@ else to the server on every call. No wider and no narrower.
 | `scheme.collectNotices`             | `POST scheme/notices`                | `uncached` |
 | `guide.scan`                        | `POST guide/scan`                    | `uncached` |
 | `guide.evaluate`                    | `POST guide/evaluate`                | `uncached` |
-| `guide.evaluateAll`                 | `POST guide/evaluate`                | `uncached` |
 | `guide.describeRule`                | `POST guide/describe-rule`           | `uncached` |
 | `guide.filterRules`                 | `POST guide/filter-rules`            | `uncached` |
 | `guide.buildGuideView`              | `POST guide/view`                    | `uncached` |
@@ -79,8 +79,9 @@ substitute a different operation.
 **`cached`** operations go through every rule below: the key, in-flight
 de-duplication, cancellation, lifetime, and invalidation. The set follows
 interactive traffic: typeahead `suggest`, per-edit `process`, on-hover
-`describeConcept`, and the whole-rule-list route that rule-id lookups read
-through.
+`describeConcept`, the whole-rule-list route that rule-id lookups read
+through, and the crosswalk inventory every translation view and handbook on a
+page reads when it mounts.
 
 **`decision`** operations are the two single-target access decisions. They
 reach the server on every call unless the consumer turns on the opt-in

@@ -2,8 +2,8 @@
     "contractDivergences": [],
     "corpusVersion": "v1",
     "coverage": {
-        "cases": 118,
-        "operationsCovered": 39
+        "cases": 119,
+        "operationsCovered": 40
     },
     "determinism": {
         "objectKeyOrder": "Object keys are ordered on serialization, recursively, including inside recorded response bodies. Array order is the server's own and is preserved.",
@@ -37,14 +37,14 @@
     "generation": {
         "contractVersion": "1.0.0-dev.30",
         "generator": "ezclassify-wire-corpus-recorder",
-        "generatorDigest": "sha256:a855f486afbf9e7bcc705ee72280d5a6c5525268176d08ecd5178b22ec40b238"
+        "generatorDigest": "sha256:8aafbf7a3583dcbff209634aaa9866d57be9026bae224769adff2a7735c63663"
     },
     "runtime": {
         "engineVersion": "1.0.0-dev.30",
         "restApiVersion": "1.0.0-dev.30"
     },
     "spec": {
-        "digest": "sha256:65cd29d9216ffb5f587d8bae8c7861666430ef1a5145d74b9c320927ee4f44b1",
+        "digest": "sha256:57bd298b71064b4752d7661b92399cad7797705a4ff840283306c4ce10c39de8",
         "infoVersion": "1.0.0-dev.30",
         "package": "@ezclassify/openapi",
         "packageVersion": "1.0.0-dev.30"

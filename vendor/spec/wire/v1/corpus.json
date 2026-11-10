@@ -4548,7 +4548,7 @@
                 "status": 200,
                 "statusDeclaredInContract": true
             },
-            "summary": "Every rule in the access policy. A flat list, not an envelope: the one context route that is not wrapped."
+            "summary": "Every rule in the access policy. A flat list, not an envelope, like the crosswalk inventory."
         },
         {
             "auth": {
@@ -4785,13 +4785,15 @@
                 "credential": "context-token",
                 "deployment": "open"
             },
-            "id": "ctx-guide-evaluate.all-guides",
+            "id": "ctx-guide-evaluate.selections",
             "operationId": "ctxGuideEvaluate",
             "request": {
                 "body": {
-                    "allGuides": true,
-                    "selectedRuleIds": [
-                        "rule-sensitive"
+                    "selections": [
+                        {
+                            "guideId": "ez-test",
+                            "ruleId": "rule-sensitive"
+                        }
                     ]
                 },
                 "headers": {
@@ -4896,7 +4898,7 @@
                 "status": 200,
                 "statusDeclaredInContract": true
             },
-            "summary": "Combine selected rules across the context guides in the engine."
+            "summary": "Roll up a selection that names each rule with its guide, the form a selection across guides takes."
         },
         {
             "auth": {
@@ -5250,6 +5252,67 @@
                 "statusDeclaredInContract": true
             },
             "summary": "Structural view of the context guide."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
+            "id": "ctx-crosswalk-describe.ok",
+            "operationId": "ctxCrosswalkDescribe",
+            "request": {
+                "headers": {},
+                "method": "GET",
+                "path": "/v1/ctx/ez-crosswalk/1.0.0/crosswalk/describe",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/crosswalk/describe"
+            },
+            "response": {
+                "body": {
+                    "crosswalks": [
+                        {
+                            "id": "ez-test-to-ez-gated",
+                            "mappings": [
+                                {
+                                    "disposition": "carry",
+                                    "id": "open",
+                                    "reason": "Open material is open in both schemes.",
+                                    "source": {
+                                        "categoryId": "level",
+                                        "conceptId": "OPEN"
+                                    },
+                                    "targets": [
+                                        {
+                                            "categoryId": "level",
+                                            "conceptId": "OPEN"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "disposition": "forbid",
+                                    "id": "sensitive",
+                                    "reason": "Sensitive material is not translated into the gated scheme.",
+                                    "source": {
+                                        "categoryId": "level",
+                                        "conceptId": "SENSITIVE"
+                                    }
+                                }
+                            ],
+                            "name": "EzTest to EzGated",
+                            "selections": [],
+                            "source": "ez-test",
+                            "target": "ez-gated",
+                            "version": "1.0.0"
+                        }
+                    ]
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "Every crosswalk the context holds, with its source and target as scheme selectors and the reviewed mappings. A flat inventory, not an envelope."
         },
         {
             "auth": {

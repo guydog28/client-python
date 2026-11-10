@@ -39,11 +39,11 @@
                     ]
                 },
                 "guideFixture": {
-                    "description": "Fixture file name (without .json) for a guide document. Required for evaluateGuide and guideScan methods.",
+                    "description": "Fixture file name (without .json) for a guide document. Required for evaluateGuide, evaluateMany and guideScan methods.",
                     "type": "string"
                 },
                 "method": {
-                    "description": "Engine method to invoke. normalize/render/diff wrap their return value as {result}. aggregateAssertions takes a single arg: an array of assertion arrays (each inner array is one marking's already-parsed assertions). evaluateGuide/guideScan require guideFixture. checkAccess requires accessFixture. registry* methods register the fixture engine in a SchemeRegistry. ctx* methods use ctxId and ctxVersion to target a server-side context.",
+                    "description": "Engine method to invoke. normalize/render/diff wrap their return value as {result}. aggregateAssertions takes a single arg: an array of assertion arrays (each inner array is one marking's already-parsed assertions). evaluateMany takes a single arg: an array of {guideId, ruleId} selections, each naming the guide that holds the rule. evaluateGuide/evaluateMany/guideScan require guideFixture. checkAccess requires accessFixture. registry* methods register the fixture engine in a SchemeRegistry. ctx* methods use ctxId and ctxVersion to target a server-side context.",
                     "enum": [
                         "process",
                         "aggregate",

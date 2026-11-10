@@ -1331,10 +1331,12 @@ paths:
       operationId: ctxSchemeAggregate
       summary: Aggregate marking strings in a context
       description: >-
-        Combines part markings into a single aggregate marking using the context's composed scheme aggregation rules.
-        Supply either `inputs` (marking strings) or `assertionSets` (already-parsed assertion arrays for lossless
-        transport of scope-only assertions and capture values): exactly one, not both. The :version segment may be
-        omitted to default to "latest".
+        Rolls markings up into the one whole marking that covers them, using the context's composed scheme rollup rules.
+        With no `context` the inputs are read as wholes, as in an aggregate such as the documents in a folder; `context`
+        names the role the inputs are read in, and `{ role: 'part', partOf }` reads each as a part of that whole, as in
+        a whole's parts rollup. Supply either `inputs` (marking strings) or `assertionSets` (already-parsed assertion
+        arrays for lossless transport of scope-only assertions and capture values): exactly one, not both. The :version
+        segment may be omitted to default to "latest".
       tags:
         - context
         - scheme
@@ -1929,9 +1931,10 @@ paths:
       operationId: ctxGuideEvaluate
       summary: Evaluate selected guide rules in a context
       description: >-
-        Supply exactly one of guideId or allGuides: true. A named guide is evaluated alone. allGuides combines every
-        loaded guide in load order through the context's composed scheme, with the later guide owning duplicate rule
-        IDs. Returns the engine's structured evaluation result.
+        Send `guideId` with `selectedRuleIds` to evaluate that one guide, or `selections` to roll up rules selected from
+        several guides. Each selection names its guide, so two guides that use the same rule ID hold two rules. Each
+        guide evaluates its own selected rules, with its own dependencies and overrides, and the outcomes are rolled up
+        per target scheme. No guide overrides or depends on another. Returns the engine's structured evaluation result.
       tags:
         - context
         - guide
@@ -1972,9 +1975,12 @@ paths:
                 $ref: "#/components/schemas/ContextGuideEvaluationResult"
         "400":
           $ref: "#/components/responses/BadRequest"
+          description: >-
+            Invalid or missing request fields, or a request that is not exactly one of the two forms: `guideId` with
+            `selectedRuleIds`, or `selections`.
         "404":
           $ref: "#/components/responses/NotFound"
-          description: Context or version not found, or the Context has no guide with that `guideId`.
+          description: Context or version not found, or the Context has no guide with a `guideId` the request names.
         "422":
           $ref: "#/components/responses/UnprocessableEntity"
           description: Context has no guides attached.
@@ -2211,6 +2217,55 @@ paths:
         "422":
           $ref: "#/components/responses/UnprocessableEntity"
           description: Context has no crosswalks attached.
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalError"
+      security:
+        - bearerAuth: []
+          contextToken: []
+        - applicationCredential: []
+  /v1/ctx/{ctxId}/{version}/crosswalk/describe:
+    get:
+      operationId: ctxCrosswalkDescribe
+      summary: Describe every crosswalk in a context
+      description: >-
+        Returns every crosswalk the context holds, in declaration order: its id and the concrete version that answers,
+        its name, guidance and citation, the source and target schemes as the selectors the context description lists
+        under `schemes`, and the mappings and selections a translation applies, each with its disposition and reason. A
+        context that declares no crosswalk answers with an empty list. The :version segment may be omitted to default to
+        "latest".
+      tags:
+        - context
+        - crosswalk
+      parameters:
+        - name: ctxId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: path
+          required: true
+          description: >-
+            A concrete semver version, or `latest`. The version served is reported in the X-EzClassify-Resolved-Version
+            response header. The segment may also be left out of the URL, which the server reads as `latest`.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Every crosswalk in the context
+          headers:
+            X-EzClassify-Resolved-Version:
+              $ref: "#/components/headers/ResolvedVersion"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CtxCrosswalkDescribeResponseBody"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "429":
           $ref: "#/components/responses/TooManyRequests"
         "500":
@@ -2572,12 +2627,12 @@ components:
         - proposedFixes
         - notices
       description: >-
-        Output of SchemeEngine.aggregate(): the combined marking produced from multiple portion inputs. By design
-        aggregate always produces the proper aggregate: fixes are applied, never proposed. Every field it shares with
-        `ValidateResult` means what it means there, `valid` included. It differs in that:
+        Output of SchemeEngine.aggregate(): the combined marking produced from several input markings, always a whole.
+        By design aggregate always produces the proper rollup: fixes are applied, never proposed. Every field it shares
+        with `ValidateResult` means what it means there, `valid` included. It differs in that:
 
 
-        - There is no `inputWasValid` (input is N portions, not a single string)
+        - There is no `inputWasValid` (input is N markings, not a single string)
 
         - `proposedFixes` is always empty (aggregate applies what it can)
     AggregatedMarkings:
@@ -3633,6 +3688,136 @@ components:
         - result
         - operationLimitations
       description: Context envelope returned by access-rule description.
+    ContextCrosswalkCandidate:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable candidate identifier within its selection.
+        disposition:
+          $ref: "#/components/schemas/CrosswalkDisposition"
+          description: Treatment applied when this candidate is selected.
+        when:
+          $ref: "#/components/schemas/CrosswalkSelectionCondition"
+          description: Predicate used by a `first-match` selection; omission makes this the fallback.
+        score:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssertionReference"
+          description: Assertions counted by a `most-matches` selection.
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssertionReference"
+          description: Source assertions covered when this candidate is selected.
+        mappings:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrosswalkMapping"
+          description: Per-assertion mappings activated when this candidate is selected.
+        targets:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrosswalkTarget"
+          description: Targets emitted once when this candidate is selected.
+        reason:
+          type: string
+          description: Human-readable basis for selecting and applying this candidate.
+        authority:
+          type: string
+          description: Authority behind the candidate decision, when one exists.
+        guidance:
+          type: string
+          description: Operator guidance for the candidate decision.
+        citation:
+          type: string
+          description: Citation supporting the candidate decision.
+      required:
+        - disposition
+        - id
+        - reason
+      description: >-
+        One candidate of a cross-field decision a Context's crosswalk applies.
+
+
+        A candidate document may leave its disposition out to mean `carry`. The description always states it, so a
+        reader never applies that default itself.
+    ContextCrosswalkDescriptor:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Crosswalk id, from the crosswalk document; what `translate` takes.
+        version:
+          type: string
+          description: Concrete crosswalk version that answers in this Context.
+        name:
+          type: string
+          description: Human-readable crosswalk name.
+        source:
+          type: string
+          description: Selector of the scheme this crosswalk translates from.
+        target:
+          type: string
+          description: Selector of the scheme this crosswalk translates to.
+        guidance:
+          type: string
+          description: General usage and review guidance, when the crosswalk declares it.
+        citation:
+          type: string
+          description: Primary citation for the crosswalk, when it declares one.
+        mappings:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrosswalkMapping"
+          description: How each source assertion translates, in declared order.
+        selections:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContextCrosswalkSelection"
+          description: Cross-field decisions, in declared order. Empty when there are none.
+      required:
+        - id
+        - version
+        - name
+        - source
+        - target
+        - mappings
+        - selections
+      description: >-
+        One crosswalk a Context holds, with the reviewed decisions it applies.
+
+
+        Read it as a sentence: this Context translates markings from the scheme `source` selects to the scheme `target`
+        selects with crosswalk `id` at `version`, and these are its mappings and selections.
+
+
+        `source` and `target` are scheme selectors, the `selector` values `describeSchemes` reports, not scheme ids. A
+        view bound to one of the Context's schemes finds the crosswalk that reads from it by comparing selectors. The
+        mappings and selections are the effective set after any crosswalk layer the Context stacks, which is the set a
+        translation applies.
+    ContextCrosswalkSelection:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Selection id, as reviewed.
+        strategy:
+          $ref: "#/components/schemas/CrosswalkSelectionStrategy"
+          description: How one candidate is chosen.
+        candidates:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContextCrosswalkCandidate"
+          description: Candidates in declared order; order breaks ties, a fallback is last.
+      required:
+        - id
+        - strategy
+        - candidates
+      description: |-
+        One cross-field decision a Context's crosswalk applies.
+
+        The document form of a selection, with every candidate's treatment written out.
     ContextCrosswalkTranslationResult:
       type: object
       properties:
@@ -4318,6 +4503,43 @@ components:
         - status
         - targetScheme
       description: Translation aborted before target processing by one or more prohibitions.
+    CrosswalkMapping:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stable identifier for audit and review.
+        source:
+          $ref: "#/components/schemas/AssertionReference"
+          description: Source assertion matched by this mapping.
+        targets:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrosswalkTarget"
+          description: >-
+            Target assertions. `carry` mappings emit these automatically; `review` mappings expose them only as
+            proposals. `omit` and `forbid` mappings have no targets.
+        disposition:
+          $ref: "#/components/schemas/CrosswalkDisposition"
+          description: Whether the value is carried, reviewed, omitted, or forbids translation.
+        reason:
+          type: string
+          description: Human-readable basis for the decision.
+        authority:
+          type: string
+          description: Authority or reviewed source behind the mapping, when one exists.
+        guidance:
+          type: string
+          description: Operator guidance for applying or reviewing this mapping.
+        citation:
+          type: string
+          description: Citation supporting this mapping decision.
+      required:
+        - id
+        - source
+        - disposition
+        - reason
+      description: Reviewed treatment of one source assertion in a directional crosswalk.
     CrosswalkMappingForbidMatch:
       type: object
       properties:
@@ -4387,6 +4609,25 @@ components:
         - targets
         - reason
       description: Per-assertion decision produced by a crosswalk translation.
+    CrosswalkSelectionCondition:
+      type: object
+      properties:
+        any:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssertionReference"
+          description: At least one referenced assertion must be present.
+        all:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssertionReference"
+          description: Every referenced assertion must be present.
+        none:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssertionReference"
+          description: None of the referenced assertions may be present.
+      description: Boolean test over source assertions used to choose a crosswalk candidate.
     CrosswalkSelectionForbidMatch:
       type: object
       properties:
@@ -4460,6 +4701,12 @@ components:
         - targets
         - reason
       description: Selected branch of one cross-field crosswalk decision.
+    CrosswalkSelectionStrategy:
+      type: string
+      enum:
+        - first-match
+        - most-matches
+      description: Strategy for choosing one candidate from a reviewed cross-field decision.
     CrosswalkTarget:
       type: object
       properties:
@@ -4583,6 +4830,22 @@ components:
         - version
         - resolvedVersion
       description: Component reference echoed in a `CtxDescribeResponseBody`.
+    CtxCrosswalkDescribeResponseBody:
+      type: object
+      properties:
+        crosswalks:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContextCrosswalkDescriptor"
+          description: Every crosswalk in the context, in declaration order.
+      required:
+        - crosswalks
+      description: >-
+        Response body for GET /v1/ctx/{ctxId}/{version?}/crosswalk/describe: every crosswalk the context holds.
+
+
+        A dedicated read rather than a member of the context description, because a crosswalk's reviewed mappings run to
+        tens of kilobytes and every client reads the description when it connects, translating or not.
     CtxCrosswalkTranslateRequestBody:
       type: object
       properties:
@@ -4651,7 +4914,8 @@ components:
             $ref: "#/components/schemas/CtxComponentDescriptor"
           description: >-
             Crosswalk components in declaration order, or omitted when the context declares none. A crosswalk the
-            context follows at `latest` reports here the concrete version that answered.
+            context follows at `latest` reports here the concrete version that answered. This is provenance; the source
+            and target schemes and the reviewed mappings are on `crosswalk/describe`.
       required:
         - id
         - version
@@ -4692,19 +4956,28 @@ components:
       properties:
         guideId:
           type: string
-          description: "ID of one guide within the context. Supply this or `allGuides: true`."
-        allGuides:
-          type: boolean
-          description: Evaluate and combine every loaded guide through the context's scheme.
+          description: ID of the one guide to evaluate, with `selectedRuleIds`. Refused with `selections`.
         selectedRuleIds:
           type: array
           items:
             type: string
-          description: Rule IDs the user selected (checked) in the guide wizard.
-      required:
-        - selectedRuleIds
+          description: IDs of the rules selected in the guide `guideId` names. Required with `guideId`, refused with `selections`.
+        selections:
+          type: array
+          items:
+            $ref: "#/components/schemas/GuideRuleSelection"
+          description: >-
+            The selected rules, each named by its guide, rolled up across guides: each guide evaluates the rules
+            selected from it, and the outcomes are rolled up per target scheme. No guide overrides or depends on
+            another, so every selected rule's outcome counts. Refused with `guideId` or `selectedRuleIds`.
       additionalProperties: false
-      description: POST /v1/ctx/{ctxId}/{version?}/guide/evaluate
+      description: >-
+        POST /v1/ctx/{ctxId}/{version?}/guide/evaluate
+
+
+        Two forms, exactly one per request: `guideId` with `selectedRuleIds` evaluates one guide, and `selections` rolls
+        up a selection that spans guides. Any other combination is a 400. The rule is stated here rather than as a root
+        `oneOf`, which would make every generated SDK model this request as a union of two request types.
     CtxGuideFilterRulesRequestBody:
       type: object
       properties:
@@ -4782,15 +5055,18 @@ components:
             `render.surfaces` defines it.
         context:
           $ref: "#/components/schemas/ProcessingContext"
-          description: Optional ProcessingContext forwarded verbatim to the engine.
+          description: >-
+            The role the inputs are read in, never the rollup's. Omitted, the inputs are wholes, as in an aggregate such
+            as the documents in a folder. `{ role: 'part', partOf }` reads each input as a part of that whole, as in a
+            whole's parts rollup. The rollup is always a whole marking.
         surface:
           type: string
           description: >-
             Validation surface of the rollup, using the scheme's scope ids. Names what the combined marking is, not what
             any one contributor was. Omitted, the rollup is a whole marking and every required category belonging to the
-            marking as a whole must be covered by the combined result, which is the whole-document case: a portion that
-            omits one is not faulted for it. Given a scope id, the inputs are fragments of that one surface and only the
-            required categories that surface owns are demanded of the rollup.
+            marking as a whole must be covered by the combined result: a contributor that omits one is not faulted for
+            it. Given a scope id, the inputs are fragments of that one surface and only the required categories that
+            surface owns are demanded of the rollup.
       additionalProperties: false
       description: POST /v1/ctx/{ctxId}/{version?}/scheme/aggregate
     CtxSchemeCheckCoverageRequestBody:
@@ -6436,6 +6712,25 @@ components:
             $ref: "#/components/schemas/ConceptRef"
           description: "Direct concept references: converted to assertions, then engine.process()'d."
       description: "The effect of a guide rule: what it contributes to the marking."
+    GuideRuleSelection:
+      type: object
+      properties:
+        guideId:
+          type: string
+          description: Id of the guide that holds the rule.
+        ruleId:
+          type: string
+          description: Id of the rule within that guide.
+      required:
+        - guideId
+        - ruleId
+      additionalProperties: false
+      description: >-
+        One selected rule, named by the guide that holds it.
+
+
+        Guides in a Context are independent, so two of them may use the same rule id. A selection names the guide as
+        well as the rule, and the two pairs are two rules.
     GuideRuleView:
       type: object
       properties:
@@ -7379,7 +7674,9 @@ components:
       properties:
         role:
           $ref: "#/components/schemas/ProcessingRole"
-          description: "Role of this marking: 'whole' for overall markings, 'part' for portions"
+          description: >-
+            Role of the marking being read: `'whole'` (the default) or `'part'`. On a rollup, the role of each
+            contributor.
         partOf:
           type: object
           properties:
@@ -7442,11 +7739,20 @@ components:
 
 
             Without a verified whole, what needs the whole is left open instead of guessed: a rule condition with
-            `target: 'context'` is unresolved, so its rule never fires, as `RuleConditionTarget` describes.
+            `target: 'context'` is unresolved, so its rule never fires, as `RuleConditionTarget` describes. A stand-in
+            is the exception, because it is shorthand for the whole's values and means nothing without them: a part that
+            leaves a category to a concept that declares `stands_for_whole` carries a `_stand_in_requires_whole` error
+            naming it.
       additionalProperties: false
       description: >-
-        Caller-supplied context describing the role of a marking being processed. No context (or role='whole') means an
-        overall/document-level marking. role='part' means a portion/paragraph that belongs to another marking.
+        Caller-supplied context naming the role the marking being read plays. No context, or `role: 'whole'`, means a
+        whole: a marking that stands for everything it covers. `role: 'part'` means a part that belongs to a whole,
+        named in `partOf` when it is known.
+
+
+        On a rollup the context names the contributors' role, never the rollup's: the rollup is always a whole. So no
+        context rolls wholes up into an aggregate, and `{ role: 'part', partOf }` rolls a whole's parts up. See
+        `SchemeEngineAdapter.aggregate`.
     ProcessingRole:
       type: string
       enum:
@@ -7993,7 +8299,8 @@ components:
         around it whose answer depends on it. A rule whose `when` is unresolved never fires, changes no value, reports
         no error and offers no fix; a check rule (`require`, `require_any`, `restrict`, `forbid`, `exclusive`,
         `cardinality`) that the marking already meets still passes, and any other unresolved rule gives the part the
-        `_whole_unverified` notice.
+        `_whole_unverified` notice. A part's stand-in for its whole's values is not left open this way: without a
+        verified whole it is a `_stand_in_requires_whole` error. See `ProcessingContext.partOf`.
 
         - `'contributors'`: each contributing assertion set that went into an aggregate, evaluated separately. The
         condition holds only when EVERY contributor satisfies it, and it is never satisfied outside aggregation, where
@@ -9189,6 +9496,11 @@ components:
         change if rolled up with the part. It is given only for a part that is valid on its own, read in a whole that
         reads and is valid. `affectedConcepts` names every finding, and no fix answers it. See
         `ProcessingContext.partOf`.
+
+
+        And `_stand_in_requires_whole` is a part that leaves a category to a stand-in, a concept that declares
+        `stands_for_whole`, with no verified whole to take the values from. `affectedConcepts` names the stand-in and
+        `categoryId` its category.
     ValidationSeverity:
       type: string
       enum:
