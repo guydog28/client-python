@@ -45,10 +45,26 @@ def _subset_match(actual: Any, expected: Any) -> bool:
             return False
         return all(_subset_match(actual[i], expected[i]) for i in range(len(expected)))
     if isinstance(expected, dict):
+        if isinstance(actual, list):
+            # An object read against an array addresses it as a JavaScript
+            # lookup does, the way the Node reference matcher reads it: decimal
+            # keys name elements and "length" pins the exact count.
+            return all(
+                _subset_match(_array_member(actual, k), v) for k, v in expected.items()
+            )
         if not isinstance(actual, dict):
             return False
         return all(_subset_match(actual.get(k), v) for k, v in expected.items())
     return expected == actual
+
+
+def _array_member(actual: list, key: str) -> Any:
+    """Read ``key`` from ``actual`` as a JavaScript property lookup would."""
+    if key == "length":
+        return len(actual)
+    if key.isdecimal() and str(int(key)) == key and int(key) < len(actual):
+        return actual[int(key)]
+    return None
 
 
 def _load_corpus() -> dict:

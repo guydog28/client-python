@@ -559,6 +559,7 @@ class TestAccessDecisionWireFields:
             {
                 "granted": True,
                 "rules": [],
+                "warnings": [],
                 "provenance": {
                     "providerId": "idp-1",
                     "attribution": {"name": "IdP", "license": "internal"},
@@ -970,6 +971,7 @@ class TestUnknownResponseEnumValues:
                 },
                 "result": {
                     "results": [],
+                    "unread": [],
                     "limits": {
                         "status": "paused",
                         "limitHit": "memory",
@@ -1000,6 +1002,7 @@ class TestUnknownResponseEnumValues:
             {
                 "granted": True,
                 "rules": [],
+                "warnings": [],
                 "provenance": {
                     "providerId": "idp-1",
                     "attribution": {"name": "IdP", "license": "internal"},

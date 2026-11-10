@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@d126153634cba5dc48c3561cb7671f86bad535cb1fbb19a01113022329262d36. DO NOT EDIT.
+# Code generated from vendored contracts@599af01a83a7afa507ba4ff1649fd0eae7ba810bc3c9286c97465b64185d67de. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -932,6 +932,52 @@ class ScanLimits(_WireModel):
     regions_capped: Optional[StrictBool] = Field(default=None, alias='regionsCapped')
     """Whether the per-document region cap was reached."""
 
+class UnreadMark(_WireModel):
+    """A wrapped mark a scan found but could not read.
+
+    The text matched the scheme's `embeddedMarking` pattern, which is how a part marking
+    is written, but recognition read no marking in it, and it has no entry in
+    `ScanOutcome.results`. Text that looks like a marking and carries none is reported
+    rather than dropped, so a reader can see it and correct it. `start`/`end` are
+    offsets in UTF-16 code units in the input text, as on `ScanResult`.
+    """
+
+    text: str
+    """The wrapped text as found in the document, wrapper included."""
+    start: int
+    """Start position in the input text"""
+    end: int
+    """End position in the input text"""
+    inner: str
+    """The text inside the wrapper: the capture group of the scheme's `embeddedMarking`
+    pattern.
+    """
+    leading: StrictBool
+    """Whether the mark stands where a part mark goes: at the start of its paragraph. Both
+    of these hold for a leading mark.
+
+    Its line starts a paragraph. The line starts at the beginning of the text or just
+    after the last line feed before `start`. It starts a paragraph when it is the first
+    line, when the line before it is blank or ends in `.`, `!`, `?`, `:` or `;`, or when
+    the line before it holds nothing but a marking read in the whole role, such as a
+    banner.
+
+    Only whitespace and outline labels come before it on its line: at most three labels,
+    each followed by whitespace, in no more than 64 UTF-16 code units after the line's
+    leading whitespace. A line feed is not whitespace here. An outline label is one or
+    more groups of one to four letters or digits, each closed by `.` or `)` and
+    optionally opened by `(` (`1.`, `a)`, `(1)`, `iv.`, `1.a.`, `(a)(1)`); a dotted
+    numeral (`1.2`, `1.2.3.`); one bullet (`-`, `*`, `•`, `‣`, `⁃`, `◦`, `▪` or `–`); or
+    one to six `#`. So the mark in `(QQ) text`, `1. (QQ) text` and `a) 2. (QQ) text`
+    leads, and the one in `See (QQ) text` does not.
+
+    A mark that follows another mark on its line does not lead, whether the earlier mark
+    was read or not: in `(S)(QQ)` and in `(S) (QQ)` only `(S)` leads. Wrapped text
+    before a mark is a label rather than a mark when its text is one lowercase letter,
+    that letter two or three times, one to three digits, or a lowercase roman numeral,
+    so the mark in `(a) (QQ) text` leads.
+    """
+
 class ScanResponseBody(_WireModel):
     """What a scan answers on the wire.
 
@@ -943,6 +989,11 @@ class ScanResponseBody(_WireModel):
 
     results: List[ScanMatch]
     """The markings the scan found, in document order."""
+    unread: List[UnreadMark]
+    """The wrapped marks the scan found but could not read, in document order. Empty when
+    every wrapped mark it reached was read. Text past where the scan stopped was never
+    offered to recognition, so none of it is listed.
+    """
     limits: ScanLimits
     """How far the scan got, and what stopped it."""
 
@@ -1001,6 +1052,10 @@ class AccessDecision(_WireModel):
     """
     rules: List[AccessRuleResult]
     """One result per rule in the policy, in policy order."""
+    warnings: List[EngineWarning]
+    """Warnings from preparing and evaluating the target, including automatic changes.
+    Present on granted and denied decisions; empty when none apply.
+    """
 
 class GuideRule(_WireModel):
     """A rule in a marking guide: a data-element description with an outcome that
@@ -1207,17 +1262,11 @@ class CoverageReport(_WireModel):
     never under `excess`. In such a category that holds several values, values the
     parent states beyond the picked one are not reported.
 
-    In a `symmetric_difference`, `exclusive_or` or `complement` category the children
-    roll up to a set and the rollup has no restrictive direction, so the parent must
-    state exactly that set. Rolled-up values the parent does not state are missing.
-    Values the parent states beyond that set are excess: stated, but not what the
-    children roll up to. Neither side is more restrictive than the other here.
-
     In a category where the scheme has an `expand_group` rule, a parent that carries
     every member a group declares in that category states the group, and the group is
     not missing from it. This does not apply to a category whose rollup has no
-    restrictive direction (`first`, `last`, `symmetric_difference`, `exclusive_or`,
-    `complement`), where the parent must state what the children roll up to as it is.
+    restrictive direction (`first`, `last`), where the parent must state what the
+    children roll up to as it is.
 
     In a `union` or `pipeline` category the scheme marks as a hierarchy root, a parent
     value ranked at or above a needed value also covers it.
@@ -1248,12 +1297,10 @@ class CoverageReport(_WireModel):
     """
     excess: List[Assertion]
     """Concepts the parent carries that the children do not account for, judged per
-    category as described on this type. In a `symmetric_difference`, `exclusive_or` or
-    `complement` category that means values the parent states beyond the set the
-    children roll up to. In a `pipeline` category whose findings are not narrowed it
-    means every parent value the rollup of parent and children drops, which can include
-    values the children carry. Everywhere else it means values the children do not
-    allow.
+    category as described on this type. In a `pipeline` category whose findings are not
+    narrowed it means every parent value the rollup of parent and children drops, which
+    can include values the children carry. Everywhere else it means values the children
+    do not allow.
 
     Concepts appear as the author wrote them. When a written value brought others with
     it, such as a group that stands for its members, only the written value is listed,
@@ -2280,88 +2327,6 @@ class DocumentResponseProjection(_WireModel):
     counts: DocumentResponseCounts
     """Counts from the full result before projection."""
 
-class EffectiveDocumentTarget(_WireModel):
-    """Effective marking/assertion target evaluated in one access scenario."""
-
-    basis: Union[Literal['authored', 'authoritative', 'projected'], str]
-    """Authority basis used to construct the target."""
-    marking: str
-    """Scheme-rendered effective marking."""
-    assertions: List[Assertion]
-    """Effective assertions evaluated by access policy, listed in print order: the order
-    `marking` places each concept; a concept it leaves out appears where it would print.
-    """
-    authored_whole: Optional[str] = Field(default=None, alias='authoredWhole')
-    """Authored document-wide marking when present."""
-    authored_parts: List[str] = Field(alias='authoredParts')
-    """Authored part markings."""
-    determined_guide_required_whole: Optional[str] = Field(default=None, alias='determinedGuideRequiredWhole')
-    """Whole required by accepted/manual guide facts."""
-    projected_guide_required_whole: Optional[str] = Field(default=None, alias='projectedGuideRequiredWhole')
-    """Advisory whole additionally assuming unresolved nominations."""
-
-class ContentChangeRequirement(_WireModel):
-    """Traceable document-side route for causing an assertion to cease applying."""
-
-    rule: RuleReference
-    """Access rule that denied the effective target."""
-    assertion: AssertionReference
-    """Blocking content-derived assertion."""
-    support_ids: List[str] = Field(alias='supportIds')
-    """Assertion support records proving the content lineage."""
-    instruction: str
-    """Conditional instruction that does not synthesize replacement text."""
-    verification_required: Literal[True] = Field(alias='verificationRequired')
-    """Revised content must always be reassessed."""
-
-class SubjectContextRequirement(_WireModel):
-    """Conditional external relationship needed by a subject-context comparison."""
-
-    rule: RuleReference
-    """Access rule requiring the relationship."""
-    subject_path: str = Field(alias='subjectPath')
-    """Immutable subject operand path."""
-    context_path: str = Field(alias='contextPath')
-    """Supplied context operand path."""
-    operator: str
-    """Comparison operator."""
-    acceptable_values: Optional[List[Any]] = Field(default=None, alias='acceptableValues')
-    """Context values that would satisfy the relationship, when known."""
-    instruction: str
-    """Conditional explanation of the external-state prerequisite."""
-
-class AccessScenarioAssessment(_WireModel):
-    """Access result for one authored, authoritative, or projected target."""
-
-    basis: Union[Literal['authored', 'authoritative', 'projected'], str]
-    """Authority basis of this scenario."""
-    advisory: StrictBool
-    """Whether the scenario is advisory rather than authoritative."""
-    status: Union[Literal['granted', 'denied', 'not-evaluated'], str]
-    """Closed evaluation status."""
-    target: Optional[EffectiveDocumentTarget]
-    """Effective target, or null when none can be derived."""
-    decision: Optional[AccessDecision] = None
-    """Access decision, omitted for summary and not-evaluated scenarios."""
-    content_requirements: Optional[List[ContentChangeRequirement]] = Field(default=None, alias='contentRequirements')
-    """Traceable document-side requirements, omitted by summary."""
-    context_requirements: Optional[List[SubjectContextRequirement]] = Field(default=None, alias='contextRequirements')
-    """Conditional relationship requirements, omitted by summary."""
-    limitations: List[AssessmentLimitation]
-    """Scenario-specific limitations."""
-
-class DocumentAccessAssessment(_WireModel):
-    """Three-scenario document access result with no fused grant or denial."""
-
-    audit: DocumentAuditReport
-    """Structural and guide audit used to build every scenario."""
-    authored: AccessScenarioAssessment
-    """Decision based only on authored markings."""
-    authoritative: AccessScenarioAssessment
-    """Decision including accepted findings and manual selections."""
-    projected: Optional[AccessScenarioAssessment]
-    """Advisory unresolved-nomination scenario when it adds an assertion."""
-
 class RenderResponse(_WireModel):
     """Response body for Context rendering."""
 
@@ -2791,21 +2756,9 @@ class ContextDocumentAuditResult(_WireModel):
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
-class ContextDocumentAccessAssessmentResult(_WireModel):
-    """Resolved Context envelope returned by document access assessment."""
-
-    resolution: ContextResolution
-    """Single resolved composition used throughout the operation."""
-    result: DocumentAccessAssessment
-    """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
-    response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
-    """Projection metadata, present only for document operations."""
-
 
 # Resolve postponed references after every generated declaration exists.
-for _model_name in ['Attribution', 'ArtifactReference', 'SourceReference', 'RuleSourceReference', 'RuleReference', 'AssertionReference', 'AccessOperand', 'AccessComparisonResult', 'AccessRuleActivation', 'Assertion', 'ValidationError', 'EngineWarning', 'FixConceptReference', 'Fix', 'Change', 'ConceptColor', 'ValidateResult', 'ProcessResult', 'TraceEntry', 'TraceRepair', 'TraceValidationIssue', 'TraceInference', 'ExplanationTrace', 'Suggestion', 'AggregateResult', 'DiffResult', 'ScanMatch', 'ScanLimits', 'ScanResponseBody', 'AccessRuleResult', 'AccessDecision', 'GuideRule', 'GuideScanSpan', 'GuideScanResult', 'GuideBreakdownEntry', 'EvaluationResult', 'CoverageReport', 'ConceptDescription', 'FilterCount', 'FilterResult', 'Notice', 'SuggestResult', 'RuleDescription', 'AccessRuleDescription', 'AccessRequirementsDescription', 'ConceptView', 'StructuralViewCategory', 'StructuralView', 'MarkingValidation', 'AuditWhole', 'UnmarkedSpan', 'AuditPart', 'Term', 'ReferenceSurfaceLabel', 'MarkingColorRule', 'SchemeSummary', 'CategoryView', 'FormatView', 'SchemeGrammar', 'LabelPresetView', 'SchemeScope', 'DocumentAuditReport', 'ContextResolution', 'AssessmentLimitation', 'ContentEvidenceSpan', 'GuideNomination', 'GuideFindingDetermination', 'ManualGuideSelectionInput', 'ManualGuideSelection', 'GuideDeterminationInput', 'GuideFactReference', 'AssertionSupport', 'GuideCompiledDetail', 'GuideCompiledResult', 'GuideUnitEvaluation', 'GuideContentEvaluation', 'GuideScopeCoverage', 'DocumentGuideAssessment', 'DocumentResponseCounts', 'DocumentResponseProjection', 'EffectiveDocumentTarget', 'ContentChangeRequirement', 'SubjectContextRequirement', 'AccessScenarioAssessment', 'DocumentAccessAssessment', 'RenderResponse', 'NormalizeResponse', 'ContextSchemeProcessResult', 'ContextSchemeValidateResult', 'ContextSchemeExplainResult', 'ContextSchemeSuggestResult', 'ContextSchemeSuggestForCategoriesResult', 'ContextSchemeAggregateResult', 'ContextSchemeScanResult', 'ContextSchemeRenderResult', 'ContextSchemeNormalizeResult', 'ContextSchemeCoverageResult', 'ContextSchemeConceptDescriptionResult', 'ContextSchemeDiffResult', 'ContextSchemeFilterConceptsResult', 'ContextSchemeNoticesResult', 'ContextSchemeViewResult', 'ContextGuideScanResult', 'ContextGuideEvaluationResult', 'ContextGuideFilterRulesResult', 'ContextGuideRuleDescriptionResult', 'ContextGuideViewResult', 'ContextAccessDecisionResult', 'ContextAccessRequirementsResult', 'ContextAccessRuleDescriptionResult', 'CtxAccessRulesResponseBody', '_HealthResponse', '_CtxListResponseBody', '_CtxVersionsResponseBody', 'ContextComponent', 'ContextSchemeDescriptor', 'ContextDescription', 'ContextCrosswalkTranslationResult', 'ContextDocumentAuditResult', 'ContextDocumentAccessAssessmentResult']:
+for _model_name in ['Attribution', 'ArtifactReference', 'SourceReference', 'RuleSourceReference', 'RuleReference', 'AssertionReference', 'AccessOperand', 'AccessComparisonResult', 'AccessRuleActivation', 'Assertion', 'ValidationError', 'EngineWarning', 'FixConceptReference', 'Fix', 'Change', 'ConceptColor', 'ValidateResult', 'ProcessResult', 'TraceEntry', 'TraceRepair', 'TraceValidationIssue', 'TraceInference', 'ExplanationTrace', 'Suggestion', 'AggregateResult', 'DiffResult', 'ScanMatch', 'ScanLimits', 'UnreadMark', 'ScanResponseBody', 'AccessRuleResult', 'AccessDecision', 'GuideRule', 'GuideScanSpan', 'GuideScanResult', 'GuideBreakdownEntry', 'EvaluationResult', 'CoverageReport', 'ConceptDescription', 'FilterCount', 'FilterResult', 'Notice', 'SuggestResult', 'RuleDescription', 'AccessRuleDescription', 'AccessRequirementsDescription', 'ConceptView', 'StructuralViewCategory', 'StructuralView', 'MarkingValidation', 'AuditWhole', 'UnmarkedSpan', 'AuditPart', 'Term', 'ReferenceSurfaceLabel', 'MarkingColorRule', 'SchemeSummary', 'CategoryView', 'FormatView', 'SchemeGrammar', 'LabelPresetView', 'SchemeScope', 'DocumentAuditReport', 'ContextResolution', 'AssessmentLimitation', 'ContentEvidenceSpan', 'GuideNomination', 'GuideFindingDetermination', 'ManualGuideSelectionInput', 'ManualGuideSelection', 'GuideDeterminationInput', 'GuideFactReference', 'AssertionSupport', 'GuideCompiledDetail', 'GuideCompiledResult', 'GuideUnitEvaluation', 'GuideContentEvaluation', 'GuideScopeCoverage', 'DocumentGuideAssessment', 'DocumentResponseCounts', 'DocumentResponseProjection', 'RenderResponse', 'NormalizeResponse', 'ContextSchemeProcessResult', 'ContextSchemeValidateResult', 'ContextSchemeExplainResult', 'ContextSchemeSuggestResult', 'ContextSchemeSuggestForCategoriesResult', 'ContextSchemeAggregateResult', 'ContextSchemeScanResult', 'ContextSchemeRenderResult', 'ContextSchemeNormalizeResult', 'ContextSchemeCoverageResult', 'ContextSchemeConceptDescriptionResult', 'ContextSchemeDiffResult', 'ContextSchemeFilterConceptsResult', 'ContextSchemeNoticesResult', 'ContextSchemeViewResult', 'ContextGuideScanResult', 'ContextGuideEvaluationResult', 'ContextGuideFilterRulesResult', 'ContextGuideRuleDescriptionResult', 'ContextGuideViewResult', 'ContextAccessDecisionResult', 'ContextAccessRequirementsResult', 'ContextAccessRuleDescriptionResult', 'CtxAccessRulesResponseBody', '_HealthResponse', '_CtxListResponseBody', '_CtxVersionsResponseBody', 'ContextComponent', 'ContextSchemeDescriptor', 'ContextDescription', 'ContextCrosswalkTranslationResult', 'ContextDocumentAuditResult']:
     globals()[_model_name].model_rebuild()
 del _model_name
 
@@ -2818,8 +2771,9 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                   ('right', False),
                                   ('matched', False)],
                             'p': {'left': 'AccessOperand', 'right': 'AccessOperand'}},
- 'AccessDecision': {'r': [('granted', False), ('rules', False)],
+ 'AccessDecision': {'r': [('granted', False), ('rules', False), ('warnings', False)],
                     'p': {'rules': {'i': 'AccessRuleResult'},
+                          'warnings': {'i': 'Warning'},
                           'provenance': 'SourceReference'}},
  'AccessOperand': {'r': [('source', False)],
                    'p': {'assertions': {'i': 'AssertionReference'}}},
@@ -2866,16 +2820,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                             'comparisons': {'i': 'AccessComparisonResult'},
                             'rule': 'RuleReference',
                             'modernizedFrom': {'i': 'ConceptModernization'}}},
- 'AccessScenarioAssessment': {'r': [('basis', False),
-                                    ('advisory', False),
-                                    ('status', False),
-                                    ('target', True),
-                                    ('limitations', False)],
-                              'p': {'target': 'EffectiveDocumentTarget',
-                                    'decision': 'AccessDecision',
-                                    'contentRequirements': {'i': 'ContentChangeRequirement'},
-                                    'contextRequirements': {'i': 'SubjectContextRequirement'},
-                                    'limitations': {'i': 'AssessmentLimitation'}}},
  'AggregateResult': {'r': [('assertions', False),
                            ('rendered', False),
                            ('valid', False),
@@ -2961,13 +2905,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                        'textInput': {'p': {'encoding': 'ValueEncoding'}}}},
  'ConditionalDefaultConcept': {'r': [('concept', False), ('when', False)],
                                'p': {'when': 'RuleWhen'}},
- 'ContentChangeRequirement': {'r': [('rule', False),
-                                    ('assertion', False),
-                                    ('supportIds', False),
-                                    ('instruction', False),
-                                    ('verificationRequired', False)],
-                              'p': {'rule': 'RuleReference',
-                                    'assertion': 'AssertionReference'}},
  'ContentEvidenceSpan': {'r': [('start', False),
                                ('end', False),
                                ('offsetEncoding', False),
@@ -3001,13 +2938,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                              'result': 'CrosswalkTranslationResult',
                                              'operationLimitations': {'i': 'AssessmentLimitation'},
                                              'responseProjection': 'DocumentResponseProjection'}},
- 'ContextDocumentAccessAssessmentResult': {'r': [('resolution', False),
-                                                 ('result', False),
-                                                 ('operationLimitations', False)],
-                                           'p': {'resolution': 'ContextResolution',
-                                                 'result': 'DocumentAccessAssessment',
-                                                 'operationLimitations': {'i': 'AssessmentLimitation'},
-                                                 'responseProjection': 'DocumentResponseProjection'}},
  'ContextDocumentAuditResult': {'r': [('resolution', False),
                                       ('result', False),
                                       ('operationLimitations', False)],
@@ -3279,14 +3209,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                 'p': {'added': {'i': 'Assertion'},
                       'removed': {'i': 'Assertion'},
                       'common': {'i': 'Assertion'}}},
- 'DocumentAccessAssessment': {'r': [('audit', False),
-                                    ('authored', False),
-                                    ('authoritative', False),
-                                    ('projected', True)],
-                              'p': {'audit': 'DocumentAuditReport',
-                                    'authored': 'AccessScenarioAssessment',
-                                    'authoritative': 'AccessScenarioAssessment',
-                                    'projected': 'AccessScenarioAssessment'}},
  'DocumentAuditReport': {'r': [('markingRequirements', False),
                                ('whole', True),
                                ('wholes', False),
@@ -3351,11 +3273,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                    ('start', False),
                                    ('end', False),
                                    ('offsetEncoding', False)]},
- 'EffectiveDocumentTarget': {'r': [('basis', False),
-                                   ('marking', False),
-                                   ('assertions', False),
-                                   ('authoredParts', False)],
-                             'p': {'assertions': {'i': 'Assertion'}}},
  'EmbeddedMarkingStyle': {'r': [('pattern', False), ('template', False)]},
  'EvaluationResult': {'r': [('selectedRules', False),
                             ('activeComputedRules', False),
@@ -3695,8 +3612,10 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                               'all': {'i': 'RuleWhenNode'},
                               'none': {'i': 'RuleWhenNode'}}},
  'ScanLimits': {'r': [('status', False), ('regionsFound', False)]},
- 'ScanResponseBody': {'r': [('results', False), ('limits', False)],
-                      'p': {'results': {'i': 'ScanResult'}, 'limits': 'ScanLimits'}},
+ 'ScanResponseBody': {'r': [('results', False), ('unread', False), ('limits', False)],
+                      'p': {'results': {'i': 'ScanResult'},
+                            'unread': {'i': 'UnreadMark'},
+                            'limits': 'ScanLimits'}},
  'ScanResult': {'r': [('marking', False),
                       ('start', False),
                       ('end', False),
@@ -3739,12 +3658,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                             'r': [('attribution', False),
                                   ('providerId', False),
                                   ('reproducibility', False)]}]},
- 'SubjectContextRequirement': {'r': [('rule', False),
-                                     ('subjectPath', False),
-                                     ('contextPath', False),
-                                     ('operator', False),
-                                     ('instruction', False)],
-                               'p': {'rule': 'RuleReference'}},
  'SuggestResult': {'r': [('suggestions', False), ('warnings', False)],
                    'p': {'suggestions': {'i': 'Suggestion'},
                          'warnings': {'i': 'Warning'}}},
@@ -3771,6 +3684,11 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                        ('before', False),
                        ('after', False)]},
  'TraceValidationIssue': {'r': [('constraintId', False), ('message', False)]},
+ 'UnreadMark': {'r': [('text', False),
+                      ('start', False),
+                      ('end', False),
+                      ('inner', False),
+                      ('leading', False)]},
  'UnrepresentableFact': {'r': [('conceptId', False), ('reason', False)]},
  'UnrepresentableOutput': {'r': [('output', False), ('reason', False)]},
  'UnrepresentableValue': {'u': [{'k': 'object',
@@ -3854,6 +3772,7 @@ _MODEL_SHAPES: Dict[str, str] = {
     'DiffResult': 'DiffResult',
     'ScanMatch': 'ScanResult',
     'ScanLimits': 'ScanLimits',
+    'UnreadMark': 'UnreadMark',
     'ScanResponseBody': 'ScanResponseBody',
     'AccessRuleResult': 'AccessRuleResult',
     'AccessDecision': 'AccessDecision',
@@ -3902,11 +3821,6 @@ _MODEL_SHAPES: Dict[str, str] = {
     'DocumentGuideAssessment': 'DocumentGuideAssessment',
     'DocumentResponseCounts': 'DocumentResponseCounts',
     'DocumentResponseProjection': 'DocumentResponseProjection',
-    'EffectiveDocumentTarget': 'EffectiveDocumentTarget',
-    'ContentChangeRequirement': 'ContentChangeRequirement',
-    'SubjectContextRequirement': 'SubjectContextRequirement',
-    'AccessScenarioAssessment': 'AccessScenarioAssessment',
-    'DocumentAccessAssessment': 'DocumentAccessAssessment',
     'RenderResponse': 'RenderResponse',
     'NormalizeResponse': 'NormalizeResponse',
     'ContextSchemeProcessResult': 'ContextSchemeProcessResult',
@@ -3941,5 +3855,4 @@ _MODEL_SHAPES: Dict[str, str] = {
     'ContextDescription': 'CtxDescribeResponseBody',
     'ContextCrosswalkTranslationResult': 'ContextCrosswalkTranslationResult',
     'ContextDocumentAuditResult': 'ContextDocumentAuditResult',
-    'ContextDocumentAccessAssessmentResult': 'ContextDocumentAccessAssessmentResult',
 }

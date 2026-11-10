@@ -10,7 +10,7 @@
 package ezclassify-rest-contract (types/ezclassify_rest_contract)
 
 module ezclassify_rest_contract
-  __all__ = [AccessComparisonResult, AccessDecision, AccessOperand, AccessRequirementsDescription, AccessRuleActivation, AccessRuleDescription, AccessRuleResult, AccessScenarioAssessment, AggregateResult, ArtifactReference, Assertion, AssertionReference, AssertionSupport, AssessmentLimitation, Attribution, AuditPart, AuditWhole, CategoryView, Change, ConceptColor, ConceptDescription, ConceptView, Confidence, ContentChangeRequirement, ContentEvidenceSpan, ContextAccessDecisionResult, ContextAccessRequirementsResult, ContextAccessRuleDescriptionResult, ContextComponent, ContextCrosswalkTranslationResult, ContextDescription, ContextDocumentAccessAssessmentResult, ContextDocumentAuditResult, ContextGuideEvaluationResult, ContextGuideFilterRulesResult, ContextGuideRuleDescriptionResult, ContextGuideScanResult, ContextGuideViewResult, ContextResolution, ContextSchemeAggregateResult, ContextSchemeConceptDescriptionResult, ContextSchemeCoverageResult, ContextSchemeDescriptor, ContextSchemeDiffResult, ContextSchemeExplainResult, ContextSchemeFilterConceptsResult, ContextSchemeNormalizeResult, ContextSchemeNoticesResult, ContextSchemeProcessResult, ContextSchemeRenderResult, ContextSchemeScanResult, ContextSchemeSuggestForCategoriesResult, ContextSchemeSuggestResult, ContextSchemeValidateResult, ContextSchemeViewResult, CoverageReport, CtxAccessRulesResponseBody, DiffResult, DocumentAccessAssessment, DocumentAuditReport, DocumentGuideAssessment, DocumentResponseCounts, DocumentResponseProjection, EffectiveDocumentTarget, EngineWarning, EvaluationResult, ExplanationTrace, FilterCount, FilterResult, Fix, FixConceptReference, FormatView, GuideBreakdownEntry, GuideCompiledDetail, GuideCompiledResult, GuideContentEvaluation, GuideDeterminationInput, GuideFactReference, GuideFindingDetermination, GuideNomination, GuideRule, GuideScanResult, GuideScanSpan, GuideScopeCoverage, GuideUnitEvaluation, LabelPresetView, ManualGuideSelection, ManualGuideSelectionInput, MarkingColorRule, MarkingValidation, NormalizeResponse, Notice, ProcessResult, ReferenceSurfaceLabel, RenderResponse, RuleDescription, RuleReference, RuleSourceReference, ScanLimits, ScanMatch, ScanResponseBody, SchemeGrammar, SchemeScope, SchemeSummary, SourceReference, StructuralView, StructuralViewCategory, SubjectContextRequirement, SuggestResult, Suggestion, Term, TraceEntry, TraceInference, TraceRepair, TraceValidationIssue, UnmarkedSpan, ValidateResult, ValidationError]
+  __all__ = [AccessComparisonResult, AccessDecision, AccessOperand, AccessRequirementsDescription, AccessRuleActivation, AccessRuleDescription, AccessRuleResult, AggregateResult, ArtifactReference, Assertion, AssertionReference, AssertionSupport, AssessmentLimitation, Attribution, AuditPart, AuditWhole, CategoryView, Change, ConceptColor, ConceptDescription, ConceptView, Confidence, ContentEvidenceSpan, ContextAccessDecisionResult, ContextAccessRequirementsResult, ContextAccessRuleDescriptionResult, ContextComponent, ContextCrosswalkTranslationResult, ContextDescription, ContextDocumentAuditResult, ContextGuideEvaluationResult, ContextGuideFilterRulesResult, ContextGuideRuleDescriptionResult, ContextGuideScanResult, ContextGuideViewResult, ContextResolution, ContextSchemeAggregateResult, ContextSchemeConceptDescriptionResult, ContextSchemeCoverageResult, ContextSchemeDescriptor, ContextSchemeDiffResult, ContextSchemeExplainResult, ContextSchemeFilterConceptsResult, ContextSchemeNormalizeResult, ContextSchemeNoticesResult, ContextSchemeProcessResult, ContextSchemeRenderResult, ContextSchemeScanResult, ContextSchemeSuggestForCategoriesResult, ContextSchemeSuggestResult, ContextSchemeValidateResult, ContextSchemeViewResult, CoverageReport, CtxAccessRulesResponseBody, DiffResult, DocumentAuditReport, DocumentGuideAssessment, DocumentResponseCounts, DocumentResponseProjection, EngineWarning, EvaluationResult, ExplanationTrace, FilterCount, FilterResult, Fix, FixConceptReference, FormatView, GuideBreakdownEntry, GuideCompiledDetail, GuideCompiledResult, GuideContentEvaluation, GuideDeterminationInput, GuideFactReference, GuideFindingDetermination, GuideNomination, GuideRule, GuideScanResult, GuideScanSpan, GuideScopeCoverage, GuideUnitEvaluation, LabelPresetView, ManualGuideSelection, ManualGuideSelectionInput, MarkingColorRule, MarkingValidation, NormalizeResponse, Notice, ProcessResult, ReferenceSurfaceLabel, RenderResponse, RuleDescription, RuleReference, RuleSourceReference, ScanLimits, ScanMatch, ScanResponseBody, SchemeGrammar, SchemeScope, SchemeSummary, SourceReference, StructuralView, StructuralViewCategory, SuggestResult, Suggestion, Term, TraceEntry, TraceInference, TraceRepair, TraceValidationIssue, UnmarkedSpan, UnreadMark, ValidateResult, ValidationError]
 
 module ezclassify_rest_contract.models
   class AccessComparisonResult(_WireModel)
@@ -29,6 +29,7 @@ module ezclassify_rest_contract.models
     model_config = ConfigDict(populate_by_name=True)
     provenance: Optional[SourceReference] = None
     rules: List[AccessRuleResult]
+    warnings: List[EngineWarning]
   class AccessOperand(_WireModel)
     def __init__(self, /, **data: Any) -> None
     assertions: Optional[List[AssertionReference]] = None
@@ -87,18 +88,6 @@ module ezclassify_rest_contract.models
     rule: RuleReference
     rule_index: int = Field(alias='ruleIndex')
     skipped: StrictBool
-  class AccessScenarioAssessment(_WireModel)
-    def __init__(self, /, **data: Any) -> None
-    advisory: StrictBool
-    basis: Union[Literal['authored', 'authoritative', 'projected'], str]
-    content_requirements: Optional[List[ContentChangeRequirement]] = Field(default=None, alias='contentRequirements')
-    context_requirements: Optional[List[SubjectContextRequirement]] = Field(default=None, alias='contextRequirements')
-    decision: Optional[AccessDecision] = None
-    @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
-    limitations: List[AssessmentLimitation]
-    model_config = ConfigDict(populate_by_name=True)
-    status: Union[Literal['granted', 'denied', 'not-evaluated'], str]
-    target: Optional[EffectiveDocumentTarget]
   class AggregateResult(_WireModel)
     def __init__(self, /, **data: Any) -> None
     applied_fixes: List[Change] = Field(alias='appliedFixes')
@@ -256,15 +245,6 @@ module ezclassify_rest_contract.models
     inferred = 'inferred'
     repaired = 'repaired'
     uncertain = 'uncertain'
-  class ContentChangeRequirement(_WireModel)
-    def __init__(self, /, **data: Any) -> None
-    assertion: AssertionReference
-    @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
-    instruction: str
-    model_config = ConfigDict(populate_by_name=True)
-    rule: RuleReference
-    support_ids: List[str] = Field(alias='supportIds')
-    verification_required: Literal[True] = Field(alias='verificationRequired')
   class ContentEvidenceSpan(_WireModel)
     def __init__(self, /, **data: Any) -> None
     end: int
@@ -327,14 +307,6 @@ module ezclassify_rest_contract.models
     scheme: ContextComponent
     schemes: List[ContextSchemeDescriptor]
     version: str
-  class ContextDocumentAccessAssessmentResult(_WireModel)
-    def __init__(self, /, **data: Any) -> None
-    @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
-    model_config = ConfigDict(populate_by_name=True)
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    resolution: ContextResolution
-    response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
-    result: DocumentAccessAssessment
   class ContextDocumentAuditResult(_WireModel)
     def __init__(self, /, **data: Any) -> None
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
@@ -543,14 +515,6 @@ module ezclassify_rest_contract.models
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
     model_config = ConfigDict(populate_by_name=True)
     removed: List[Assertion]
-  class DocumentAccessAssessment(_WireModel)
-    def __init__(self, /, **data: Any) -> None
-    audit: DocumentAuditReport
-    authored: AccessScenarioAssessment
-    authoritative: AccessScenarioAssessment
-    @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
-    model_config = ConfigDict(populate_by_name=True)
-    projected: Optional[AccessScenarioAssessment]
   class DocumentAuditReport(_WireModel)
     def __init__(self, /, **data: Any) -> None
     document_digest: str = Field(alias='documentDigest')
@@ -602,17 +566,6 @@ module ezclassify_rest_contract.models
     model_config = ConfigDict(populate_by_name=True)
     omitted_fields: List[str] = Field(alias='omittedFields')
     profile: Union[Literal['summary', 'standard', 'full'], str]
-  class EffectiveDocumentTarget(_WireModel)
-    def __init__(self, /, **data: Any) -> None
-    assertions: List[Assertion]
-    authored_parts: List[str] = Field(alias='authoredParts')
-    authored_whole: Optional[str] = Field(default=None, alias='authoredWhole')
-    basis: Union[Literal['authored', 'authoritative', 'projected'], str]
-    determined_guide_required_whole: Optional[str] = Field(default=None, alias='determinedGuideRequiredWhole')
-    @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
-    marking: str
-    model_config = ConfigDict(populate_by_name=True)
-    projected_guide_required_whole: Optional[str] = Field(default=None, alias='projectedGuideRequiredWhole')
   class EngineWarning(_WireModel)
     def __init__(self, /, **data: Any) -> None
     category_id: Optional[str] = Field(default=None, alias='categoryId')
@@ -956,6 +909,7 @@ module ezclassify_rest_contract.models
     limits: ScanLimits
     model_config = ConfigDict(populate_by_name=True)
     results: List[ScanMatch]
+    unread: List[UnreadMark]
   class SchemeGrammar(_WireModel)
     def __init__(self, /, **data: Any) -> None
     case_sensitive: StrictBool = Field(alias='caseSensitive')
@@ -1016,16 +970,6 @@ module ezclassify_rest_contract.models
     items: List[Dict[str, Any]]
     label: str
     model_config = ConfigDict(populate_by_name=True)
-  class SubjectContextRequirement(_WireModel)
-    def __init__(self, /, **data: Any) -> None
-    acceptable_values: Optional[List[Any]] = Field(default=None, alias='acceptableValues')
-    context_path: str = Field(alias='contextPath')
-    @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
-    instruction: str
-    model_config = ConfigDict(populate_by_name=True)
-    operator: str
-    rule: RuleReference
-    subject_path: str = Field(alias='subjectPath')
   class SuggestResult(_WireModel)
     def __init__(self, /, **data: Any) -> None
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
@@ -1099,6 +1043,15 @@ module ezclassify_rest_contract.models
     offset_encoding: Literal['utf-8-bytes'] = Field(alias='offsetEncoding')
     start: int
     text: Optional[str] = None
+  class UnreadMark(_WireModel)
+    def __init__(self, /, **data: Any) -> None
+    end: int
+    @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
+    inner: str
+    leading: StrictBool
+    model_config = ConfigDict(populate_by_name=True)
+    start: int
+    text: str
   class ValidateResult(_WireModel)
     def __init__(self, /, **data: Any) -> None
     applied_fixes: List[Change] = Field(alias='appliedFixes')
@@ -1172,7 +1125,6 @@ module ezclassify_rest_client.context
     def translate(self, crosswalk_id: str, *, marking: str | None = None, assertions: List[Assertion] | None = None) -> ContextCrosswalkTranslationResult
   class CtxDocument
     def __init__(self, ctx: EzClassifyContext) -> None
-    def assess_access(self, text: str, user_attributes: Dict[str, Any], *, context: Dict[str, Any] | None = None, guide_determinations: GuideDeterminationInput | Dict[str, Any] | None = None, response_profile: Literal["summary", "standard", "full"] | None = None) -> ContextDocumentAccessAssessmentResult
     def audit(self, text: str, *, guide_determinations: GuideDeterminationInput | Dict[str, Any] | None = None, response_profile: Literal["summary", "standard", "full"] | None = None) -> ContextDocumentAuditResult
   class CtxGuide
     def __init__(self, ctx: EzClassifyContext) -> None

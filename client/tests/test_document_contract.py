@@ -253,6 +253,7 @@ def test_full_nested_document_models_are_lossless_and_strict() -> None:
                 "reason": "Team mismatch.",
             }
         ],
+        "warnings": [],
         "provenance": {
             "providerId": "catalog",
             "attribution": {

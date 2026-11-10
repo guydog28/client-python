@@ -41,7 +41,7 @@ _RECORDINGS_DIR = _ENGINE_SPEC / "recordings" / "v1"
 # the vendored bundle deliberately adds or removes plan cases, update it in the
 # same commit. Without the pin, a missing recording or unreadable fixture would
 # silently shrink the suite.
-_EXPECTED_CASE_COUNT = 144
+_EXPECTED_CASE_COUNT = 146
 
 
 def _context_base(fixture: Any, guide_fixture: str) -> str:
@@ -273,10 +273,34 @@ def _subset_match(actual: Any, expected: Any) -> bool:
             return False
         return all(_subset_match(actual[i], expected[i]) for i in range(len(expected)))
     if isinstance(expected, dict):
+        if isinstance(actual, list):
+            # An object read against an array addresses it as a JavaScript
+            # lookup does, the way the Node reference matcher reads it: decimal
+            # keys name elements and "length" pins the exact count.
+            return all(
+                _subset_match(_array_member(actual, k), v) for k, v in expected.items()
+            )
         if not isinstance(actual, dict):
             return False
         return all(_subset_match(actual.get(k), v) for k, v in expected.items())
     return expected == actual
+
+
+def _array_member(actual: list, key: str) -> Any:
+    """Read ``key`` from ``actual`` as a JavaScript property lookup would."""
+    if key == "length":
+        return len(actual)
+    if key.isdecimal() and str(int(key)) == key and int(key) < len(actual):
+        return actual[int(key)]
+    return None
+
+
+def test_subset_match_reads_an_object_against_an_array_by_index_and_length():
+    spans = [{"inner": "A", "start": 0}, {"inner": "B", "start": 9}]
+    assert _subset_match(spans, {"1": {"inner": "B"}, "length": 2})
+    assert not _subset_match(spans, {"length": 1})
+    assert not _subset_match([], {"0": {"inner": "A"}})
+    assert not _subset_match(spans, {"01": {"inner": "B"}})
 
 
 def test_subset_match_rejects_boolean_for_expected_number():

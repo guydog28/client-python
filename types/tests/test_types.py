@@ -210,7 +210,7 @@ class TestVerdictsAreDecodedStrictly:
     @pytest.mark.parametrize("value", ["true", 1])
     def test_an_access_grant_that_is_not_a_boolean_is_refused(self, value):
         with pytest.raises(PydanticValidationError):
-            AccessDecision.from_dict({"granted": value, "rules": []})
+            AccessDecision.from_dict({"granted": value, "rules": [], "warnings": []})
 
     def test_a_boolean_verdict_decodes_as_sent(self):
         r = ValidateResult.from_dict({**self._VALIDATE, "valid": False})
@@ -566,7 +566,7 @@ class TestAccessModels:
             )
 
     def test_access_decision(self):
-        d = AccessDecision.from_dict({"granted": True, "rules": []})
+        d = AccessDecision.from_dict({"granted": True, "rules": [], "warnings": []})
         assert d.granted is True
         assert d.rules == []
 
