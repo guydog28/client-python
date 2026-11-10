@@ -429,8 +429,7 @@ class EzClassifyContext:
 
         Args:
             selector: Context-local key of the scheme, as
-                ``describe().schemes[i].selector`` reports it, or an
-                unambiguous scheme id.
+                ``describe().schemes[i].selector`` reports it.
 
         Returns:
             The scheme view bound to ``selector``.

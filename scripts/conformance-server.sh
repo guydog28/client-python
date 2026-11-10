@@ -21,6 +21,7 @@ import os
 import json
 import urllib.request
 import urllib.error
+import urllib.parse
 import pathlib
 
 url = sys.argv[1].rstrip('/')
@@ -52,15 +53,36 @@ def subset_match(actual, expected):
 
 CTX_PATHS = {
     'ctxProcess':        lambda ci, cv: f'/v1/ctx/{ci}/{cv}/scheme/process',
+    'ctxValidate':       lambda ci, cv: f'/v1/ctx/{ci}/{cv}/scheme/validate',
+    'ctxAggregate':      lambda ci, cv: f'/v1/ctx/{ci}/{cv}/scheme/aggregate',
     'ctxScan':           lambda ci, cv: f'/v1/ctx/{ci}/{cv}/scheme/scan',
     'ctxDocumentAudit':  lambda ci, cv: f'/v1/ctx/{ci}/{cv}/document/audit',
 }
 
 CTX_BODIES = {
     'ctxProcess':        lambda args: {'input': args[0] if args else ''},
+    'ctxValidate':       lambda args: {'input': args[0] if args else ''},
+    'ctxAggregate':      lambda args: {'inputs': args[0] if args else []},
     'ctxScan':           lambda args: {'text':  args[0] if args else ''},
     'ctxDocumentAudit':  lambda args: {'text':  args[0] if args else ''},
 }
+
+
+def case_path(path, tc):
+    """Add the case's scheme selector, when it names one, as the declared ?scheme= query."""
+    scheme = tc.get('scheme')
+    if scheme is None:
+        return path
+    return f"{path}?{urllib.parse.urlencode({'scheme': scheme})}"
+
+
+def refusal_failure(refused_with, status):
+    """Judge a case that exists to be refused: None when it was, else the reason it failed."""
+    if status is None:
+        return f'expected HTTP {refused_with}, got a result'
+    if status != refused_with:
+        return f'expected HTTP {refused_with}, got HTTP {status}'
+    return None
 
 def request_headers():
     """Carry operator credentials without changing the closed request payload."""
@@ -109,6 +131,7 @@ for plan_file in sorted(plans_dir.glob('*.json')):
         ctx_ver  = tc.get('ctxVersion', '')
         args     = tc.get('args', [])
         expect   = tc.get('expect', {})
+        refused_with = tc.get('refusedWith')
         name     = tc.get('name', f'{plan_file.stem}/{method}')
         path_fn  = CTX_PATHS.get(method)
         body_fn  = CTX_BODIES.get(method)
@@ -117,7 +140,7 @@ for plan_file in sorted(plans_dir.glob('*.json')):
             failed += 1
             unsupported_methods.add(method)
             continue
-        api_path = path_fn(ctx_id, ctx_ver)
+        api_path = case_path(path_fn(ctx_id, ctx_ver), tc)
         body_bytes = json.dumps(body_fn(args)).encode()
         req = urllib.request.Request(
             url + api_path,
@@ -127,7 +150,12 @@ for plan_file in sorted(plans_dir.glob('*.json')):
         )
         try:
             with urllib.request.urlopen(req, timeout=10) as resp:
-                actual = response_value(json.load(resp), method)
+                envelope = json.load(resp)
+            if refused_with is not None:
+                print(f'  FAIL  {name}: {refusal_failure(refused_with, None)}')
+                failed += 1
+                continue
+            actual = response_value(envelope, method)
             if subset_match(actual, expect):
                 print(f'  pass  {name}')
                 passed += 1
@@ -140,6 +168,15 @@ for plan_file in sorted(plans_dir.glob('*.json')):
                 failed += 1
         except urllib.error.HTTPError as exc:
             body_text = exc.read().decode(errors='replace')[:200]
+            if refused_with is not None:
+                reason = refusal_failure(refused_with, exc.code)
+                if reason is None:
+                    print(f'  pass  {name}')
+                    passed += 1
+                else:
+                    print(f'  FAIL  {name}: {reason} {body_text}')
+                    failed += 1
+                continue
             print(f'  FAIL  {name}: HTTP {exc.code} {body_text}')
             failed += 1
         except Exception as exc:

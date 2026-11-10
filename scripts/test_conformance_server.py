@@ -5,13 +5,14 @@ import os
 from pathlib import Path
 import unittest
 from unittest.mock import patch
+import urllib.parse
 
 SCRIPT = Path(__file__).with_name("conformance-server.sh")
 source = SCRIPT.read_text().split("<<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
 functions = [
     node for node in ast.parse(source).body if isinstance(node, ast.FunctionDef)
 ]
-helpers = {"os": os}
+helpers = {"os": os, "urllib": urllib}
 # Evaluate only local helper definitions, excluding the network-driving script body.
 exec(compile(ast.Module(body=functions, type_ignores=[]), str(SCRIPT), "exec"), helpers)  # noqa: S102
 
@@ -84,6 +85,27 @@ class ServerConformanceHelpers(unittest.TestCase):
         with self.assertRaises(ValueError):
             helpers["response_value"]({"result": {}}, "ctxScan")
 
+
+    def test_a_scheme_selector_is_sent_as_the_declared_query(self):
+        path = "/v1/ctx/ref-ctx-2/1.0.0/scheme/process"
+        self.assertEqual(helpers["case_path"](path, {}), path)
+        self.assertEqual(
+            helpers["case_path"](path, {"scheme": "ref-scheme-2"}),
+            path + "?scheme=ref-scheme-2",
+        )
+        self.assertEqual(
+            helpers["case_path"](path, {"scheme": "a b&c"}),
+            path + "?scheme=a+b%26c",
+        )
+
+    def test_a_refused_case_passes_only_on_its_status(self):
+        self.assertIsNone(helpers["refusal_failure"](404, 404))
+        self.assertEqual(
+            helpers["refusal_failure"](404, 400), "expected HTTP 404, got HTTP 400"
+        )
+        self.assertEqual(
+            helpers["refusal_failure"](404, None), "expected HTTP 404, got a result"
+        )
 
 if __name__ == "__main__":
     unittest.main()
