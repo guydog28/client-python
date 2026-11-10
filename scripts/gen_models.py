@@ -61,6 +61,7 @@ MODEL_ORDER = [
     "DiffResult",
     "ScanMatch",
     "ScanLimits",
+    "UnreadMark",
     "ScanResponseBody",
     "AccessRuleResult",
     "AccessDecision",
