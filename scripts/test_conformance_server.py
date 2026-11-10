@@ -85,7 +85,6 @@ class ServerConformanceHelpers(unittest.TestCase):
         with self.assertRaises(ValueError):
             helpers["response_value"]({"result": {}}, "ctxScan")
 
-
     def test_a_scheme_selector_is_sent_as_the_declared_query(self):
         path = "/v1/ctx/ref-ctx-2/1.0.0/scheme/process"
         self.assertEqual(helpers["case_path"](path, {}), path)
@@ -106,6 +105,7 @@ class ServerConformanceHelpers(unittest.TestCase):
         self.assertEqual(
             helpers["refusal_failure"](404, None), "expected HTTP 404, got a result"
         )
+
 
 if __name__ == "__main__":
     unittest.main()
