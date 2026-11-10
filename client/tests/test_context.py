@@ -51,6 +51,8 @@ from ezclassify_rest_contract import (
     ContextSchemeSuggestForCategoriesResult,
     ContextSchemeSuggestResult,
     CtxAccessRulesResponseBody,
+    CtxCrosswalkDescribeResponseBody,
+    GuideRuleSelection,
     ContextSchemeValidateResult,
     ContextSchemeViewResult,
     LabelPresetView,
@@ -723,6 +725,7 @@ class TestResponseCache:
         assert set(context._CACHED_GETS) == {
             "scheme/describe-concept",
             "access/rules",
+            "crosswalk/describe",
         }
 
     @respx.mock
@@ -2389,12 +2392,28 @@ class TestGuide:
                 headers=_HDR,
             )
         )
-        result = _connect().guide.evaluate_many("r2")
+        result = _connect().guide.evaluate_many(
+            GuideRuleSelection(guide_id="g1", rule_id="r2"),
+            GuideRuleSelection(guide_id="g2", rule_id="r2"),
+        )
         assert result.result.aggregated_marking == "H"
         assert json.loads(route.calls.last.request.content) == {
-            "allGuides": True,
-            "selectedRuleIds": ["r2"],
+            "selections": [
+                {"guideId": "g1", "ruleId": "r2"},
+                {"guideId": "g2", "ruleId": "r2"},
+            ]
         }
+
+    @respx.mock
+    def test_evaluate_many_refuses_a_blank_guide(self):
+        route = respx.post(_ctx_url("guide/evaluate")).mock(
+            return_value=httpx.Response(200, json=_envelope({}), headers=_HDR)
+        )
+        with pytest.raises(ValueError, match="guide_id"):
+            _connect().guide.evaluate_many(
+                GuideRuleSelection(guide_id=" ", rule_id="r2")
+            )
+        assert not route.called
 
     @respx.mock
     def test_filter_rules(self):
@@ -2675,6 +2694,27 @@ class TestAccess:
 
 
 class TestCrosswalk:
+    @respx.mock
+    def test_describe_reads_the_flat_inventory(self):
+        crosswalk = {
+            "id": "a-to-b",
+            "version": "1.0.0",
+            "name": "A to B",
+            "source": "a",
+            "target": "b",
+            "mappings": [],
+            "selections": [],
+        }
+        route = respx.get(_ctx_url("crosswalk/describe")).mock(
+            return_value=httpx.Response(
+                200, json={"crosswalks": [crosswalk]}, headers=_HDR
+            )
+        )
+        result = _connect().crosswalk.describe()
+        assert isinstance(result, CtxCrosswalkDescribeResponseBody)
+        assert result.crosswalks == [crosswalk]
+        assert route.called
+
     @respx.mock
     def test_translate_marking(self):
         route = respx.post(_ctx_url("crosswalk/translate")).mock(

@@ -76,6 +76,7 @@ from .models import (
     ManualGuideSelectionInput,
     ManualGuideSelection,
     GuideDeterminationInput,
+    GuideRuleSelection,
     GuideFactReference,
     AssertionSupport,
     GuideCompiledDetail,
@@ -114,6 +115,7 @@ from .models import (
     ContextSchemeDescriptor,
     ContextDescription,
     ContextCrosswalkTranslationResult,
+    CtxCrosswalkDescribeResponseBody,
 )
 
 try:
@@ -199,6 +201,7 @@ __all__ = [
     "ManualGuideSelectionInput",
     "ManualGuideSelection",
     "GuideDeterminationInput",
+    "GuideRuleSelection",
     "GuideFactReference",
     "AssertionSupport",
     "GuideCompiledDetail",
@@ -237,4 +240,5 @@ __all__ = [
     "ContextSchemeDescriptor",
     "ContextDescription",
     "ContextCrosswalkTranslationResult",
+    "CtxCrosswalkDescribeResponseBody",
 ]

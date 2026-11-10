@@ -167,11 +167,11 @@ def _build_plan_body(
             body = {"text": str_arg(0), "guideId": guide_id}
             return f"{ctx_base}/guide/scan", body, None
 
-        # evaluateMany over the plan's single-guide fixtures is equivalent to a
-        # single-guide evaluate, so both fold onto the ctx guide/evaluate route
-        # (the same fold the client runner uses). The guide is bound to the
-        # context; the body carries only the guide id and the selected rules.
+        # evaluateGuide names the plan's guide; evaluateMany sends the plan's
+        # selections, each already naming its guide.
         selected = args[0] if args and isinstance(args[0], list) else []
+        if method == "evaluateMany":
+            return f"{ctx_base}/guide/evaluate", {"selections": selected}, None
         body = {"guideId": guide_id, "selectedRuleIds": selected}
         return f"{ctx_base}/guide/evaluate", body, None
 

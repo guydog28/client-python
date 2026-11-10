@@ -34,6 +34,7 @@ from ezclassify_rest_client import EzClassifyClient, EzClassifyContext
 from ezclassify_rest_contract import (
     Assertion,
     GuideDeterminationInput,
+    GuideRuleSelection,
     GuideFindingDetermination,
 )
 
@@ -499,7 +500,12 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     ),
     "guide.scan": ("guide/scan", lambda c: c.guide.scan("secret text", guide_id="g1")),
     "guide.evaluate": ("guide/evaluate", lambda c: c.guide.evaluate("g1", "r1")),
-    "guide.evaluate_many": ("guide/evaluate", lambda c: c.guide.evaluate_many("r1")),
+    "guide.evaluate_many": (
+        "guide/evaluate",
+        lambda c: c.guide.evaluate_many(
+            GuideRuleSelection(guide_id="g1", rule_id="r1")
+        ),
+    ),
     "guide.filter-rules": (
         "guide/filter-rules",
         lambda c: c.guide.filter_rules("sec", guide_id="g1"),
@@ -696,6 +702,10 @@ QUERY_CASES: Dict[str, Tuple[str, Callable[[_Harness], Any]]] = {
         lambda h: h.ctx.scheme.describe_concept("HIGH", "level", view="default"),
     ),
     "access.rules": (_ROUTE_PREFIX + "access/rules", lambda h: h.ctx.access.rules()),
+    "crosswalk.describe": (
+        _ROUTE_PREFIX + "crosswalk/describe",
+        lambda h: h.ctx.crosswalk.describe(),
+    ),
 }
 
 

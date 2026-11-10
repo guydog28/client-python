@@ -10,7 +10,7 @@
 package ezclassify-rest-contract (types/ezclassify_rest_contract)
 
 module ezclassify_rest_contract
-  __all__ = [AccessComparisonResult, AccessDecision, AccessOperand, AccessRequirementsDescription, AccessRuleActivation, AccessRuleDescription, AccessRuleResult, AggregateResult, ArtifactReference, Assertion, AssertionReference, AssertionSupport, AssessmentLimitation, Attribution, AuditPart, AuditWhole, CategoryView, Change, ConceptColor, ConceptDescription, ConceptView, Confidence, ContentEvidenceSpan, ContextAccessDecisionResult, ContextAccessRequirementsResult, ContextAccessRuleDescriptionResult, ContextComponent, ContextCrosswalkTranslationResult, ContextDescription, ContextDocumentAuditResult, ContextGuideEvaluationResult, ContextGuideFilterRulesResult, ContextGuideRuleDescriptionResult, ContextGuideScanResult, ContextGuideViewResult, ContextResolution, ContextSchemeAggregateResult, ContextSchemeConceptDescriptionResult, ContextSchemeCoverageResult, ContextSchemeDescriptor, ContextSchemeDiffResult, ContextSchemeExplainResult, ContextSchemeFilterConceptsResult, ContextSchemeNormalizeResult, ContextSchemeNoticesResult, ContextSchemeProcessResult, ContextSchemeRenderResult, ContextSchemeScanResult, ContextSchemeSuggestForCategoriesResult, ContextSchemeSuggestResult, ContextSchemeValidateResult, ContextSchemeViewResult, CoverageReport, CtxAccessRulesResponseBody, DiffResult, DocumentAuditReport, DocumentGuideAssessment, DocumentResponseCounts, DocumentResponseProjection, EngineWarning, EvaluationResult, ExplanationTrace, FilterCount, FilterResult, Fix, FixConceptReference, FormatView, GuideBreakdownEntry, GuideCompiledDetail, GuideCompiledResult, GuideContentEvaluation, GuideDeterminationInput, GuideFactReference, GuideFindingDetermination, GuideNomination, GuideRule, GuideScanResult, GuideScanSpan, GuideScopeCoverage, GuideUnitEvaluation, LabelPresetView, ManualGuideSelection, ManualGuideSelectionInput, MarkingColorRule, MarkingValidation, NormalizeResponse, Notice, ProcessResult, ReferenceSurfaceLabel, RenderResponse, RuleDescription, RuleReference, RuleSourceReference, ScanLimits, ScanMatch, ScanResponseBody, SchemeGrammar, SchemeScope, SchemeSummary, SourceReference, StructuralView, StructuralViewCategory, SuggestResult, Suggestion, Term, TraceEntry, TraceInference, TraceRepair, TraceValidationIssue, UnmarkedSpan, UnreadMark, ValidateResult, ValidationError]
+  __all__ = [AccessComparisonResult, AccessDecision, AccessOperand, AccessRequirementsDescription, AccessRuleActivation, AccessRuleDescription, AccessRuleResult, AggregateResult, ArtifactReference, Assertion, AssertionReference, AssertionSupport, AssessmentLimitation, Attribution, AuditPart, AuditWhole, CategoryView, Change, ConceptColor, ConceptDescription, ConceptView, Confidence, ContentEvidenceSpan, ContextAccessDecisionResult, ContextAccessRequirementsResult, ContextAccessRuleDescriptionResult, ContextComponent, ContextCrosswalkTranslationResult, ContextDescription, ContextDocumentAuditResult, ContextGuideEvaluationResult, ContextGuideFilterRulesResult, ContextGuideRuleDescriptionResult, ContextGuideScanResult, ContextGuideViewResult, ContextResolution, ContextSchemeAggregateResult, ContextSchemeConceptDescriptionResult, ContextSchemeCoverageResult, ContextSchemeDescriptor, ContextSchemeDiffResult, ContextSchemeExplainResult, ContextSchemeFilterConceptsResult, ContextSchemeNormalizeResult, ContextSchemeNoticesResult, ContextSchemeProcessResult, ContextSchemeRenderResult, ContextSchemeScanResult, ContextSchemeSuggestForCategoriesResult, ContextSchemeSuggestResult, ContextSchemeValidateResult, ContextSchemeViewResult, CoverageReport, CtxAccessRulesResponseBody, CtxCrosswalkDescribeResponseBody, DiffResult, DocumentAuditReport, DocumentGuideAssessment, DocumentResponseCounts, DocumentResponseProjection, EngineWarning, EvaluationResult, ExplanationTrace, FilterCount, FilterResult, Fix, FixConceptReference, FormatView, GuideBreakdownEntry, GuideCompiledDetail, GuideCompiledResult, GuideContentEvaluation, GuideDeterminationInput, GuideFactReference, GuideFindingDetermination, GuideNomination, GuideRule, GuideRuleSelection, GuideScanResult, GuideScanSpan, GuideScopeCoverage, GuideUnitEvaluation, LabelPresetView, ManualGuideSelection, ManualGuideSelectionInput, MarkingColorRule, MarkingValidation, NormalizeResponse, Notice, ProcessResult, ReferenceSurfaceLabel, RenderResponse, RuleDescription, RuleReference, RuleSourceReference, ScanLimits, ScanMatch, ScanResponseBody, SchemeGrammar, SchemeScope, SchemeSummary, SourceReference, StructuralView, StructuralViewCategory, SuggestResult, Suggestion, Term, TraceEntry, TraceInference, TraceRepair, TraceValidationIssue, UnmarkedSpan, UnreadMark, ValidateResult, ValidationError]
 
 module ezclassify_rest_contract.models
   class AccessComparisonResult(_WireModel)
@@ -508,6 +508,11 @@ module ezclassify_rest_contract.models
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
     model_config = ConfigDict(populate_by_name=True)
     rules: List[AccessRuleDescription]
+  class CtxCrosswalkDescribeResponseBody(_WireModel)
+    def __init__(self, /, **data: Any) -> None
+    crosswalks: List[Dict[str, Any]]
+    @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
+    model_config = ConfigDict(populate_by_name=True)
   class DiffResult(_WireModel)
     def __init__(self, /, **data: Any) -> None
     added: List[Assertion]
@@ -742,6 +747,12 @@ module ezclassify_rest_contract.models
     overrides: Optional[List[str]] = None
     rationale: Optional[str] = None
     when: Optional[Union[str, List[str], Dict[str, Any]]] = None
+  class GuideRuleSelection(_WireModel)
+    def __init__(self, /, **data: Any) -> None
+    @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
+    guide_id: str = Field(alias='guideId')
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+    rule_id: str = Field(alias='ruleId')
   class GuideScanResult(_WireModel)
     def __init__(self, /, **data: Any) -> None
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
@@ -1121,6 +1132,7 @@ module ezclassify_rest_client.context
     def rules(self) -> CtxAccessRulesResponseBody
   class CtxCrosswalk
     def __init__(self, ctx: EzClassifyContext) -> None
+    def describe(self) -> CtxCrosswalkDescribeResponseBody
     @overload def translate(self, crosswalk_id: str, *, marking: str) -> ContextCrosswalkTranslationResult
     @overload def translate(self, crosswalk_id: str, *, assertions: List[Assertion]) -> ContextCrosswalkTranslationResult
     def translate(self, crosswalk_id: str, *, marking: str | None = None, assertions: List[Assertion] | None = None) -> ContextCrosswalkTranslationResult
@@ -1131,7 +1143,7 @@ module ezclassify_rest_client.context
     def __init__(self, ctx: EzClassifyContext) -> None
     def describe_rule(self, rule_id: str, guide_id: Optional[str] = None) -> ContextGuideRuleDescriptionResult
     def evaluate(self, guide_id: str, *rule_ids: str) -> ContextGuideEvaluationResult
-    def evaluate_many(self, *rule_ids: str) -> ContextGuideEvaluationResult
+    def evaluate_many(self, *selections: GuideRuleSelection) -> ContextGuideEvaluationResult
     def filter_rules(self, query: str, guide_id: Optional[str] = None) -> ContextGuideFilterRulesResult
     def scan(self, text: str, guide_id: Optional[str] = None) -> ContextGuideScanResult
     def view(self, guide_id: Optional[str] = None) -> ContextGuideViewResult

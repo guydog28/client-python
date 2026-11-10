@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@c66287d7471a68345886d8193214cb36716b3fe740d1c1b2d79641a09a681a92. DO NOT EDIT.
+# Code generated from vendored contracts@e9f2156fa0b1ba06c1ce5414aad155749525c987702cc350e9a692ddc787fe14. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -255,6 +255,10 @@ class ValidationError(_WireModel):
     the part. It is given only for a part that is valid on its own, read in a whole that
     reads and is valid. `affectedConcepts` names every finding, and no fix answers it.
     See `ProcessingContext.partOf`.
+
+    And `_stand_in_requires_whole` is a part that leaves a category to a stand-in, a
+    concept that declares `stands_for_whole`, with no verified whole to take the values
+    from. `affectedConcepts` names the stand-in and `categoryId` its category.
     """
 
     affected_concepts: Optional[List[str]] = Field(default=None, alias='affectedConcepts')
@@ -791,12 +795,12 @@ class Suggestion(_WireModel):
     """All views for this concept."""
 
 class AggregateResult(_WireModel):
-    """Output of SchemeEngine.aggregate(): the combined marking produced from multiple
-    portion inputs. By design aggregate always produces the proper aggregate: fixes are
-    applied, never proposed. Every field it shares with `ValidateResult` means what it
-    means there, `valid` included. It differs in that:
+    """Output of SchemeEngine.aggregate(): the combined marking produced from several input
+    markings, always a whole. By design aggregate always produces the proper rollup:
+    fixes are applied, never proposed. Every field it shares with `ValidateResult` means
+    what it means there, `valid` included. It differs in that:
 
-    - There is no `inputWasValid` (input is N portions, not a single string)
+    - There is no `inputWasValid` (input is N markings, not a single string)
     - `proposedFixes` is always empty (aggregate applies what it can)
     """
 
@@ -2163,6 +2167,20 @@ class GuideDeterminationInput(_WireModel):
     manual_selections: List[ManualGuideSelectionInput] = Field(alias='manualSelections')
     """Qualified rules manually selected by the analyst."""
 
+class GuideRuleSelection(_WireModel):
+    """One selected rule, named by the guide that holds it.
+
+    Guides in a Context are independent, so two of them may use the same rule id. A
+    selection names the guide as well as the rule, and the two pairs are two rules.
+    """
+
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+
+    guide_id: str = Field(alias='guideId')
+    """Id of the guide that holds the rule."""
+    rule_id: str = Field(alias='ruleId')
+    """Id of the rule within that guide."""
+
 class GuideFactReference(_WireModel):
     """Joins assertion support to the guide fact that supplied its authority."""
 
@@ -2733,7 +2751,8 @@ class ContextDescription(_ContextDescriptionMixin):
     crosswalks: List[ContextComponent] = Field(default_factory=list)
     """Crosswalk components in declaration order, or omitted when the context declares
     none. A crosswalk the context follows at `latest` reports here the concrete version
-    that answered.
+    that answered. This is provenance; the source and target schemes and the reviewed
+    mappings are on `crosswalk/describe`.
     """
 
 class ContextCrosswalkTranslationResult(_WireModel):
@@ -2747,6 +2766,18 @@ class ContextCrosswalkTranslationResult(_WireModel):
     """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
+
+class CtxCrosswalkDescribeResponseBody(_WireModel):
+    """Response body for GET /v1/ctx/{ctxId}/{version?}/crosswalk/describe: every crosswalk
+    the context holds.
+
+    A dedicated read rather than a member of the context description, because a
+    crosswalk's reviewed mappings run to tens of kilobytes and every client reads the
+    description when it connects, translating or not.
+    """
+
+    crosswalks: List[Dict[str, Any]]
+    """Every crosswalk in the context, in declaration order."""
 
 class ContextDocumentAuditResult(_WireModel):
     """Resolved Context envelope returned by document audit operations."""
@@ -2762,7 +2793,7 @@ class ContextDocumentAuditResult(_WireModel):
 
 
 # Resolve postponed references after every generated declaration exists.
-for _model_name in ['Attribution', 'ArtifactReference', 'SourceReference', 'RuleSourceReference', 'RuleReference', 'AssertionReference', 'AccessOperand', 'AccessComparisonResult', 'AccessRuleActivation', 'Assertion', 'ValidationError', 'EngineWarning', 'FixConceptReference', 'Fix', 'Change', 'ConceptColor', 'ValidateResult', 'ProcessResult', 'TraceEntry', 'TraceRepair', 'TraceValidationIssue', 'TraceInference', 'ExplanationTrace', 'Suggestion', 'AggregateResult', 'DiffResult', 'ScanMatch', 'ScanLimits', 'UnreadMark', 'ScanResponseBody', 'AccessRuleResult', 'AccessDecision', 'GuideRule', 'GuideScanSpan', 'GuideScanResult', 'GuideBreakdownEntry', 'EvaluationResult', 'CoverageReport', 'ConceptDescription', 'FilterCount', 'FilterResult', 'Notice', 'SuggestResult', 'RuleDescription', 'AccessRuleDescription', 'AccessRequirementsDescription', 'ConceptView', 'StructuralViewCategory', 'StructuralView', 'MarkingValidation', 'AuditWhole', 'UnmarkedSpan', 'AuditPart', 'Term', 'ReferenceSurfaceLabel', 'MarkingColorRule', 'SchemeSummary', 'CategoryView', 'FormatView', 'SchemeGrammar', 'LabelPresetView', 'SchemeScope', 'DocumentAuditReport', 'ContextResolution', 'AssessmentLimitation', 'ContentEvidenceSpan', 'GuideNomination', 'GuideFindingDetermination', 'ManualGuideSelectionInput', 'ManualGuideSelection', 'GuideDeterminationInput', 'GuideFactReference', 'AssertionSupport', 'GuideCompiledDetail', 'GuideCompiledResult', 'GuideUnitEvaluation', 'GuideContentEvaluation', 'GuideScopeCoverage', 'DocumentGuideAssessment', 'DocumentResponseCounts', 'DocumentResponseProjection', 'RenderResponse', 'NormalizeResponse', 'ContextSchemeProcessResult', 'ContextSchemeValidateResult', 'ContextSchemeExplainResult', 'ContextSchemeSuggestResult', 'ContextSchemeSuggestForCategoriesResult', 'ContextSchemeAggregateResult', 'ContextSchemeScanResult', 'ContextSchemeRenderResult', 'ContextSchemeNormalizeResult', 'ContextSchemeCoverageResult', 'ContextSchemeConceptDescriptionResult', 'ContextSchemeDiffResult', 'ContextSchemeFilterConceptsResult', 'ContextSchemeNoticesResult', 'ContextSchemeViewResult', 'ContextGuideScanResult', 'ContextGuideEvaluationResult', 'ContextGuideFilterRulesResult', 'ContextGuideRuleDescriptionResult', 'ContextGuideViewResult', 'ContextAccessDecisionResult', 'ContextAccessRequirementsResult', 'ContextAccessRuleDescriptionResult', 'CtxAccessRulesResponseBody', '_HealthResponse', '_CtxListResponseBody', '_CtxVersionsResponseBody', 'ContextComponent', 'ContextSchemeDescriptor', 'ContextDescription', 'ContextCrosswalkTranslationResult', 'ContextDocumentAuditResult']:
+for _model_name in ['Attribution', 'ArtifactReference', 'SourceReference', 'RuleSourceReference', 'RuleReference', 'AssertionReference', 'AccessOperand', 'AccessComparisonResult', 'AccessRuleActivation', 'Assertion', 'ValidationError', 'EngineWarning', 'FixConceptReference', 'Fix', 'Change', 'ConceptColor', 'ValidateResult', 'ProcessResult', 'TraceEntry', 'TraceRepair', 'TraceValidationIssue', 'TraceInference', 'ExplanationTrace', 'Suggestion', 'AggregateResult', 'DiffResult', 'ScanMatch', 'ScanLimits', 'UnreadMark', 'ScanResponseBody', 'AccessRuleResult', 'AccessDecision', 'GuideRule', 'GuideScanSpan', 'GuideScanResult', 'GuideBreakdownEntry', 'EvaluationResult', 'CoverageReport', 'ConceptDescription', 'FilterCount', 'FilterResult', 'Notice', 'SuggestResult', 'RuleDescription', 'AccessRuleDescription', 'AccessRequirementsDescription', 'ConceptView', 'StructuralViewCategory', 'StructuralView', 'MarkingValidation', 'AuditWhole', 'UnmarkedSpan', 'AuditPart', 'Term', 'ReferenceSurfaceLabel', 'MarkingColorRule', 'SchemeSummary', 'CategoryView', 'FormatView', 'SchemeGrammar', 'LabelPresetView', 'SchemeScope', 'DocumentAuditReport', 'ContextResolution', 'AssessmentLimitation', 'ContentEvidenceSpan', 'GuideNomination', 'GuideFindingDetermination', 'ManualGuideSelectionInput', 'ManualGuideSelection', 'GuideDeterminationInput', 'GuideRuleSelection', 'GuideFactReference', 'AssertionSupport', 'GuideCompiledDetail', 'GuideCompiledResult', 'GuideUnitEvaluation', 'GuideContentEvaluation', 'GuideScopeCoverage', 'DocumentGuideAssessment', 'DocumentResponseCounts', 'DocumentResponseProjection', 'RenderResponse', 'NormalizeResponse', 'ContextSchemeProcessResult', 'ContextSchemeValidateResult', 'ContextSchemeExplainResult', 'ContextSchemeSuggestResult', 'ContextSchemeSuggestForCategoriesResult', 'ContextSchemeAggregateResult', 'ContextSchemeScanResult', 'ContextSchemeRenderResult', 'ContextSchemeNormalizeResult', 'ContextSchemeCoverageResult', 'ContextSchemeConceptDescriptionResult', 'ContextSchemeDiffResult', 'ContextSchemeFilterConceptsResult', 'ContextSchemeNoticesResult', 'ContextSchemeViewResult', 'ContextGuideScanResult', 'ContextGuideEvaluationResult', 'ContextGuideFilterRulesResult', 'ContextGuideRuleDescriptionResult', 'ContextGuideViewResult', 'ContextAccessDecisionResult', 'ContextAccessRequirementsResult', 'ContextAccessRuleDescriptionResult', 'CtxAccessRulesResponseBody', '_HealthResponse', '_CtxListResponseBody', '_CtxVersionsResponseBody', 'ContextComponent', 'ContextSchemeDescriptor', 'ContextDescription', 'ContextCrosswalkTranslationResult', 'CtxCrosswalkDescribeResponseBody', 'ContextDocumentAuditResult']:
     globals()[_model_name].model_rebuild()
 del _model_name
 
@@ -2935,6 +2966,27 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                               'result': 'AccessRuleDescription',
                                               'operationLimitations': {'i': 'AssessmentLimitation'},
                                               'responseProjection': 'DocumentResponseProjection'}},
+ 'ContextCrosswalkCandidate': {'r': [('disposition', False),
+                                     ('id', False),
+                                     ('reason', False)],
+                               'p': {'when': 'CrosswalkSelectionCondition',
+                                     'score': {'i': 'AssertionReference'},
+                                     'sources': {'i': 'AssertionReference'},
+                                     'mappings': {'i': 'CrosswalkMapping'},
+                                     'targets': {'i': 'CrosswalkTarget'}}},
+ 'ContextCrosswalkDescriptor': {'r': [('id', False),
+                                      ('version', False),
+                                      ('name', False),
+                                      ('source', False),
+                                      ('target', False),
+                                      ('mappings', False),
+                                      ('selections', False)],
+                                'p': {'mappings': {'i': 'CrosswalkMapping'},
+                                      'selections': {'i': 'ContextCrosswalkSelection'}}},
+ 'ContextCrosswalkSelection': {'r': [('id', False),
+                                     ('strategy', False),
+                                     ('candidates', False)],
+                               'p': {'candidates': {'i': 'ContextCrosswalkCandidate'}}},
  'ContextCrosswalkTranslationResult': {'r': [('resolution', False),
                                              ('result', False),
                                              ('operationLimitations', False)],
@@ -3144,6 +3196,12 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                                'outcomes': {'i': 'CrosswalkOutcome'},
                                                'selections': {'i': 'CrosswalkSelectionOutcome'},
                                                'forbiddenBy': {'i': 'CrosswalkForbidMatch'}}},
+ 'CrosswalkMapping': {'r': [('id', False),
+                            ('source', False),
+                            ('disposition', False),
+                            ('reason', False)],
+                      'p': {'source': 'AssertionReference',
+                            'targets': {'i': 'CrosswalkTarget'}}},
  'CrosswalkMappingForbidMatch': {'r': [('kind', False),
                                        ('mappingId', False),
                                        ('source', False),
@@ -3155,6 +3213,9 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                             ('reason', False)],
                       'p': {'source': 'AssertionReference',
                             'targets': {'i': 'CrosswalkTarget'}}},
+ 'CrosswalkSelectionCondition': {'p': {'any': {'i': 'AssertionReference'},
+                                       'all': {'i': 'AssertionReference'},
+                                       'none': {'i': 'AssertionReference'}}},
  'CrosswalkSelectionForbidMatch': {'r': [('kind', False),
                                          ('selectionId', False),
                                          ('candidateId', False),
@@ -3198,6 +3259,8 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                   ('version', False),
                                   ('resolvedVersion', False)],
                             'p': {'layers': {'i': 'CtxComponentDescriptor'}}},
+ 'CtxCrosswalkDescribeResponseBody': {'r': [('crosswalks', False)],
+                                      'p': {'crosswalks': {'i': 'ContextCrosswalkDescriptor'}}},
  'CtxDescribeResponseBody': {'r': [('id', False),
                                    ('version', False),
                                    ('scheme', False),
@@ -3395,6 +3458,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                      'outcome': 'GuideRuleOutcome',
                      'when': 'RuleWhen'}},
  'GuideRuleOutcome': {'p': {'concepts': {'i': 'ConceptRef'}}},
+ 'GuideRuleSelection': {'r': [('guideId', False), ('ruleId', False)]},
  'GuideRuleView': {'r': [('id', False),
                          ('name', False),
                          ('outcomeText', False),
@@ -3815,6 +3879,7 @@ _MODEL_SHAPES: Dict[str, str] = {
     'ManualGuideSelectionInput': 'ManualGuideSelectionInput',
     'ManualGuideSelection': 'ManualGuideSelection',
     'GuideDeterminationInput': 'GuideDeterminationInput',
+    'GuideRuleSelection': 'GuideRuleSelection',
     'GuideFactReference': 'GuideFactReference',
     'AssertionSupport': 'AssertionSupport',
     'GuideCompiledDetail': 'GuideCompiledDetail',
@@ -3858,5 +3923,6 @@ _MODEL_SHAPES: Dict[str, str] = {
     'ContextSchemeDescriptor': 'ContextSchemeDescriptor',
     'ContextDescription': 'CtxDescribeResponseBody',
     'ContextCrosswalkTranslationResult': 'ContextCrosswalkTranslationResult',
+    'CtxCrosswalkDescribeResponseBody': 'CtxCrosswalkDescribeResponseBody',
     'ContextDocumentAuditResult': 'ContextDocumentAuditResult',
 }

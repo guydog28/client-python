@@ -153,7 +153,7 @@ access. Protected standalone configuration works without Studio.
 | access check / requirements / rules | `ctx.access.*` |
 | guide scan / evaluate / rules | `ctx.guide.*` |
 | document audit / access assessment | `ctx.document.*` |
-| directional translation | `ctx.crosswalk.translate(...)` |
+| directional translation, and the crosswalks the Context holds | `ctx.crosswalk.translate(...)`, `ctx.crosswalk.describe()` |
 
 ### Reading a marking and writing one
 

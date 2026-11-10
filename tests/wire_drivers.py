@@ -17,7 +17,7 @@ from ezclassify_rest_client import (
 )
 from ezclassify_rest_client._deadline import _DeadlineTransport
 from ezclassify_rest_client.client import _api_error
-from ezclassify_rest_contract import Assertion
+from ezclassify_rest_contract import Assertion, GuideRuleSelection
 
 from .wire_corpus import WireCase
 
@@ -138,6 +138,7 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
             "scheme/scopes": ctx.scheme.scopes,
             "scheme/label-presets": ctx.scheme.label_presets,
             "access/rules": ctx.access.rules,
+            "crosswalk/describe": ctx.crosswalk.describe,
         }
         return resources[op]()
     body = case.body
@@ -238,10 +239,15 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
     if op == "guide/scan":
         return ctx.guide.scan(_text(body, "text"))
     if op == "guide/evaluate":
+        if "selections" in body:
+            return ctx.guide.evaluate_many(
+                *(
+                    GuideRuleSelection.model_validate(item)
+                    for item in body["selections"]
+                )
+            )
         rules = _strings(body, "selectedRuleIds")
         assert rules is not None
-        if body.get("allGuides") is True:
-            return ctx.guide.evaluate_many(*rules)
         return ctx.guide.evaluate(_text(body, "guideId"), *rules)
     if op == "guide/describe-rule":
         return ctx.guide.describe_rule(

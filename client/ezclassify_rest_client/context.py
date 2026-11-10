@@ -69,6 +69,8 @@ from ezclassify_rest_contract import (
     ConceptView,
     ContextDescription,
     CtxAccessRulesResponseBody,
+    CtxCrosswalkDescribeResponseBody,
+    GuideRuleSelection,
     FormatView,
     LabelPresetView,
     SchemeGrammar,
@@ -96,7 +98,9 @@ _CACHED_POSTS = frozenset(
         "scheme/scan",
     }
 )
-_CACHED_GETS = frozenset({"scheme/describe-concept", "access/rules"})
+_CACHED_GETS = frozenset(
+    {"scheme/describe-concept", "access/rules", "crosswalk/describe"}
+)
 
 # A response check the result model cannot express, given the decoded body
 # and its status. It raises MalformedResponseError.
@@ -444,7 +448,7 @@ class EzClassifyContext:
             return float("inf")
         if op == "scheme/scan":
             return 120.0
-        if op in {"scheme/describe-concept", "access/rules"}:
+        if op in {"scheme/describe-concept", "access/rules", "crosswalk/describe"}:
             return 3600.0
         return 300.0
 
@@ -1519,12 +1523,28 @@ class CtxGuide:
             ContextGuideEvaluationResult,
         )
 
-    def evaluate_many(self, *rule_ids: str) -> ContextGuideEvaluationResult:
-        """Evaluate selected rules across every guide in the Context."""
+    def evaluate_many(
+        self, *selections: GuideRuleSelection
+    ) -> ContextGuideEvaluationResult:
+        """Roll up rules selected from several guides.
+
+        Each selection names the guide that holds its rule, so two guides
+        that use the same rule id hold two rules. Each guide evaluates the
+        rules selected from it, with its own dependencies and overrides, and
+        the outcomes are rolled up per target scheme.
+
+        Raises:
+            ValueError: A selection's ``guide_id`` or ``rule_id`` was blank.
+        """
+        wire: List[Dict[str, str]] = []
+        for selection in selections:
+            if not selection.guide_id or not selection.guide_id.strip():
+                raise ValueError("guide_id must not be blank or empty")
+            if not selection.rule_id or not selection.rule_id.strip():
+                raise ValueError("rule_id must not be blank or empty")
+            wire.append({"guideId": selection.guide_id, "ruleId": selection.rule_id})
         return self._ctx._post(
-            "guide/evaluate",
-            {"allGuides": True, "selectedRuleIds": list(rule_ids)},
-            ContextGuideEvaluationResult,
+            "guide/evaluate", {"selections": wire}, ContextGuideEvaluationResult
         )
 
     def filter_rules(
@@ -1642,6 +1662,17 @@ class CtxCrosswalk:
 
     def __init__(self, ctx: EzClassifyContext) -> None:
         self._ctx = ctx
+
+    def describe(self) -> CtxCrosswalkDescribeResponseBody:
+        """Describe every crosswalk the bound Context holds, in declaration order.
+
+        Each crosswalk names its source and target by the scheme selectors
+        :meth:`EzClassifyContext.describe` lists under ``schemes``, and carries
+        the mappings and selections a translation applies. ``crosswalks`` is
+        empty when the Context declares none. The answer goes through the
+        response cache like :meth:`CtxAccess.rules`.
+        """
+        return self._ctx._get("crosswalk/describe", CtxCrosswalkDescribeResponseBody)
 
     # One overload per source spelling, as on CtxScheme.validate.
     @overload

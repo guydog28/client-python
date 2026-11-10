@@ -777,7 +777,11 @@ class TestUnknownResponseFields:
             == "forbid"
         )
 
-        assert closed == ["GuideDeterminationInput", "ManualGuideSelectionInput"]
+        assert closed == [
+            "GuideDeterminationInput",
+            "GuideRuleSelection",
+            "ManualGuideSelectionInput",
+        ]
 
     def test_an_unknown_field_on_a_coverage_report_is_tolerated(self):
         # CoverageReport's JSON Schema is closed, but a response model must not

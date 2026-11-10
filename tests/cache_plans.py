@@ -86,8 +86,7 @@ def _body(case: WireCase) -> dict[str, Any]:
 _BODY_SHAPE: dict[str, Callable[[dict[str, Any]], bool]] = {
     "scheme.aggregate": lambda body: "inputs" in body,
     "scheme.aggregateAssertions": lambda body: "assertionSets" in body,
-    "guide.evaluate": lambda body: body.get("allGuides") is not True,
-    "guide.evaluateAll": lambda body: body.get("allGuides") is True,
+    "guide.evaluate": lambda body: "selections" not in body,
     "access.check": lambda body: "assertions" in body,
     "context.checkAccess": lambda body: "marking" in body,
 }
