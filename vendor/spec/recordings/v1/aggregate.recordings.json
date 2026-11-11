@@ -2,7 +2,21 @@
   "engineVersion": "1.0.0-dev.30",
   "openapiVersion": "1.0.0-dev.30",
   "responses": {
-    "0ad27c80a3d0bbed38bf76159b0fe3b46a549709ea953f1bf1baf1e4361d1f73": {
+    "49cf3a31257d1e0416a0c96f52fe6658b94567ff0fe06ac87659a42c83316303": {
+      "argsSummary": "[[]]",
+      "method": "aggregate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [],
+        "errors": [],
+        "notices": [],
+        "proposedFixes": [],
+        "rendered": "",
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "7cb8fb6cc2357bcf14c3bf8d089b26f58c0000dbdaea9b0687ce061df1c2fdf4": {
       "argsSummary": "[[\"LOW\",\"MED\"]]",
       "method": "aggregate",
       "response": {
@@ -23,15 +37,15 @@
         "warnings": []
       }
     },
-    "2ca2ac122a4dc12fd32652ab31a450d2ddc6e511642a0eb15d26a9eea5bb8be7": {
-      "argsSummary": "[[\"LOW\"]]",
+    "d717b51b4afb87cc796bf9880339a9c3cb3a825713712a39b08f156ac7fc7a97": {
+      "argsSummary": "[[\"HIGH\",\"LOW\",\"MED\"]]",
       "method": "aggregate",
       "response": {
         "appliedFixes": [],
         "assertions": [
           {
             "categoryId": "level",
-            "conceptId": "LOW",
+            "conceptId": "HIGH",
             "confidence": "certain",
             "source": "aggregate"
           }
@@ -39,26 +53,60 @@
         "errors": [],
         "notices": [],
         "proposedFixes": [],
-        "rendered": "LOW",
+        "rendered": "HIGH",
         "valid": true,
         "warnings": []
       }
     },
-    "a1da3627436ac59c4f9dcaaedf7638b3cfd12599cab1ce5e202bf6734298d2c6": {
-      "argsSummary": "[[]]",
+    "dfdd4f4a274b3c0ad9b83c52d2229169200e4750e7a6737b8bbfbd546f455078": {
+      "argsSummary": "[[\"HIGH\",\"HIGH\"]]",
       "method": "aggregate",
       "response": {
         "appliedFixes": [],
-        "assertions": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "aggregate"
+          }
+        ],
         "errors": [],
         "notices": [],
         "proposedFixes": [],
-        "rendered": "",
+        "rendered": "HIGH",
         "valid": true,
         "warnings": []
       }
     },
-    "b6c22a3a72c85ca346a1c5f1fe188a20612c776c29aa5edaaa1963f64ca9956b": {
+    "e60476091e90dfe405f0df4ea22a2aca869492840d43144bb5abcf9568eba918": {
+      "argsSummary": "[[\"MED\",\"HIGH\",\"CTRL-A\"]]",
+      "method": "aggregate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "aggregate"
+          },
+          {
+            "categoryId": "controls",
+            "conceptId": "CTRL-A",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "errors": [],
+        "notices": [],
+        "proposedFixes": [],
+        "rendered": "HIGH/CTRL-A",
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "eaf040287ea89f07d2928e2091659c38abec31a4a867fa3d6e163dbe5099e73a": {
       "argsSummary": "[[\"HIGH\",\"CTRL-A\"]]",
       "method": "aggregate",
       "response": {
@@ -85,15 +133,15 @@
         "warnings": []
       }
     },
-    "c7233ce2fbf2fd7b88f5d1cacb33bf9235e96ba524bb2d53418124c469d3360d": {
-      "argsSummary": "[[\"HIGH\",\"HIGH\"]]",
+    "ee8fda4500a18deeb6afe37bcac3c044a2eb1e781c570671b84a4e3590a30435": {
+      "argsSummary": "[[\"LOW\"]]",
       "method": "aggregate",
       "response": {
         "appliedFixes": [],
         "assertions": [
           {
             "categoryId": "level",
-            "conceptId": "HIGH",
+            "conceptId": "LOW",
             "confidence": "certain",
             "source": "aggregate"
           }
@@ -101,33 +149,12 @@
         "errors": [],
         "notices": [],
         "proposedFixes": [],
-        "rendered": "HIGH",
+        "rendered": "LOW",
         "valid": true,
         "warnings": []
       }
     },
-    "d6bc47a65a48f96c44b46f0ec4083b8db898153c95db96f2fca07f943a61709e": {
-      "argsSummary": "[[\"HIGH\",\"LOW\",\"MED\"]]",
-      "method": "aggregate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "aggregate"
-          }
-        ],
-        "errors": [],
-        "notices": [],
-        "proposedFixes": [],
-        "rendered": "HIGH",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "d976bf574020fba686c05373f397b3f9a8888a1f800e063f7b919a630123ce0d": {
+    "f90fbad0c9be5180f2eaf029b9d058f19d1d2b0d49b2be922ff5c3f23c2767ed": {
       "argsSummary": "[[\"LOW\",\"HIGH\"]]",
       "method": "aggregate",
       "response": {
@@ -144,33 +171,6 @@
         "notices": [],
         "proposedFixes": [],
         "rendered": "HIGH",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "f1f6809a420f01500f509500def4e0c5b2874ef2011e08994f18cecf3e32d6a4": {
-      "argsSummary": "[[\"MED\",\"HIGH\",\"CTRL-A\"]]",
-      "method": "aggregate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "aggregate"
-          },
-          {
-            "categoryId": "controls",
-            "conceptId": "CTRL-A",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "errors": [],
-        "notices": [],
-        "proposedFixes": [],
-        "rendered": "HIGH/CTRL-A",
         "valid": true,
         "warnings": []
       }

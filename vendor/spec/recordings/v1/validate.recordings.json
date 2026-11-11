@@ -2,163 +2,7 @@
   "engineVersion": "1.0.0-dev.30",
   "openapiVersion": "1.0.0-dev.30",
   "responses": {
-    "02796ffcb7e7f8b941707d1cfd7f749a166313d51fa79f5a4e360aafd5b3f62a": {
-      "argsSummary": "[\"UNKNOWN\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [
-          {
-            "constraintId": "_recognition_incomplete",
-            "message": "The input does not read as a marking."
-          },
-          {
-            "constraintId": "_unmatched_token",
-            "message": "\"UNKNOWN\" was not recognized: it matched no known concept and will be dropped from the rendered marking."
-          }
-        ],
-        "inputWasValid": false,
-        "notices": [],
-        "recognition": {
-          "status": "unrecognized",
-          "unmatched": [
-            {
-              "end": 7,
-              "start": 0,
-              "text": "UNKNOWN"
-            }
-          ]
-        },
-        "rendered": "",
-        "valid": false,
-        "warnings": []
-      }
-    },
-    "0829894bf3b47d1a9a28600d282f879d6a7e139a25737ea429360d37574f5fa4": {
-      "argsSummary": "[\"HIGH\",{\"context\":{\"partOf\":{\"rendered\":\"LOW/MED\"},\"role\":\"part\"}}]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "HIGH",
-        "valid": true,
-        "warnings": [
-          {
-            "kind": "notice",
-            "message": "Unable to compare with invalid whole.",
-            "ruleId": "_whole_unverified"
-          }
-        ]
-      }
-    },
-    "4af4caa72e805aa78e8e55aef4bf5a329a74d444810b4643861a9a51bb8c6d54": {
-      "argsSummary": "[\"HIGH\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [
-          {
-            "action": "add",
-            "add": [
-              {
-                "categoryId": "handling",
-                "conceptId": "SEALED"
-              }
-            ],
-            "message": "Rule \"high-is-sealed\": added \"SEALED\" to category \"handling\"",
-            "ruleId": "high-is-sealed",
-            "triggerConceptIds": [
-              "HIGH"
-            ]
-          }
-        ],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "parse"
-          },
-          {
-            "categoryId": "handling",
-            "conceptId": "SEALED",
-            "confidence": "inferred",
-            "source": "infer",
-            "sourceRule": "high-is-sealed"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            },
-            {
-              "categoryId": "handling",
-              "conceptId": "SEALED"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": false,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "line",
-          "status": "complete",
-          "surface": "marking",
-          "unmatched": []
-        },
-        "rendered": "HIGH//SEALED",
-        "valid": true,
-        "warnings": [
-          {
-            "kind": "notice",
-            "message": "Unable to compare with whole: none given.",
-            "ruleId": "_whole_unverified"
-          }
-        ]
-      }
-    },
-    "5ff155bede937752330ff6da61ef11581736f8f281be4eda1e5fc4c517c5c30e": {
+    "157e83b4bfb0232a42e69b045c9f0317cfe219d2bb93085f206f9cb5c454f7e4": {
       "argsSummary": "[\"H\",{\"context\":{\"partOf\":{\"rendered\":\"OLD-LOW\"},\"role\":\"part\"}}]",
       "method": "validate",
       "response": {
@@ -231,7 +75,109 @@
         "warnings": []
       }
     },
-    "6125b8b3757c6c1b31a4a8ff4ac6dc8e15e47f9b0b28a9927832d704df736a22": {
+    "1927c11eb513480b257d3afb525cf77fe9bbfe0b7aaa2212e2955fb728b084d6": {
+      "argsSummary": "[\"HIGH\",{\"context\":{\"partOf\":{\"rendered\":\"CTRL-A\"},\"role\":\"part\"}}]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "inputFormat": "default",
+          "status": "complete",
+          "surface": "banner",
+          "unmatched": []
+        },
+        "rendered": "HIGH",
+        "valid": true,
+        "warnings": [
+          {
+            "kind": "notice",
+            "message": "Unable to compare with invalid whole.",
+            "ruleId": "_whole_unverified"
+          }
+        ]
+      }
+    },
+    "1992d0e509eb00a3af845e22e53c4d139c660e47bab1b9c53c9be0946e2642d7": {
+      "argsSummary": "[\"HIGH/BOGUS\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [
+          {
+            "affectedConcepts": [
+              "HIGH"
+            ],
+            "constraintId": "_recognition_incomplete",
+            "message": "Only part of the input reads as a marking in the \"default\" format; the rest is not recognized."
+          },
+          {
+            "constraintId": "_unmatched_token",
+            "message": "\"BOGUS\" was not recognized: it matched no known concept and will be dropped from the rendered marking."
+          }
+        ],
+        "inputWasValid": false,
+        "notices": [],
+        "recognition": {
+          "inputFormat": "default",
+          "status": "partial",
+          "surface": "banner",
+          "unmatched": [
+            {
+              "end": 10,
+              "start": 5,
+              "text": "BOGUS"
+            }
+          ]
+        },
+        "rendered": "HIGH",
+        "valid": false,
+        "warnings": []
+      }
+    },
+    "27dc99ec78c33af8cd153c3b89da354a184da13f83aa47ae8baef30b7527a8f3": {
       "argsSummary": "[\"HIGH\",{\"context\":{\"partOf\":{\"rendered\":\"MED\"},\"role\":\"part\"}}]",
       "method": "validate",
       "response": {
@@ -279,7 +225,52 @@
         "warnings": []
       }
     },
-    "7415de9927255b4c4d5caa1b8059cfb6739002583f97a7d2f64c4024e2e52311": {
+    "4f9f62ab7056c49571232d4849365d2af86c1ebe7be1af676ad86eccd35deaf3": {
+      "argsSummary": "[\"HIGH\",{\"context\":{\"partOf\":{\"rendered\":\"LOW/MED\"},\"role\":\"part\"}}]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "inputFormat": "default",
+          "status": "complete",
+          "surface": "banner",
+          "unmatched": []
+        },
+        "rendered": "HIGH",
+        "valid": true,
+        "warnings": [
+          {
+            "kind": "notice",
+            "message": "Unable to compare with invalid whole.",
+            "ruleId": "_whole_unverified"
+          }
+        ]
+      }
+    },
+    "636e8ac271a4168ba383f76072e6a1b8a8cec270398050ca79d954d7738c7eb5": {
       "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"u...",
       "method": "validate",
       "response": {
@@ -337,15 +328,15 @@
         ]
       }
     },
-    "7d5f3d1fa04605fa121e76a7a5db0cf0a1a6e77c8c3a136e99ee3a75354287a4": {
-      "argsSummary": "[\"HIGH/BOGUS\"]",
+    "6b6bd600b7f3e06526c3af8612e8a3ac3a65d893a87c98479fe5e9933fde1445": {
+      "argsSummary": "[\"LOW\"]",
       "method": "validate",
       "response": {
         "appliedFixes": [],
         "assertions": [
           {
             "categoryId": "level",
-            "conceptId": "HIGH",
+            "conceptId": "LOW",
             "confidence": "certain",
             "source": "parse"
           }
@@ -356,237 +347,28 @@
           "emitted": [
             {
               "categoryId": "level",
-              "conceptId": "HIGH"
+              "conceptId": "LOW"
             }
           ],
           "omitted": [],
           "unrepresentable": []
         },
-        "errors": [
-          {
-            "affectedConcepts": [
-              "HIGH"
-            ],
-            "constraintId": "_recognition_incomplete",
-            "message": "Only part of the input reads as a marking in the \"default\" format; the rest is not recognized."
-          },
-          {
-            "constraintId": "_unmatched_token",
-            "message": "\"BOGUS\" was not recognized: it matched no known concept and will be dropped from the rendered marking."
-          }
-        ],
-        "inputWasValid": false,
+        "errors": [],
+        "inputWasValid": true,
         "notices": [],
         "recognition": {
           "inputFormat": "default",
-          "status": "partial",
+          "status": "complete",
           "surface": "banner",
-          "unmatched": [
-            {
-              "end": 10,
-              "start": 5,
-              "text": "BOGUS"
-            }
-          ]
+          "unmatched": []
         },
-        "rendered": "HIGH",
-        "valid": false,
+        "rendered": "LOW",
+        "valid": true,
         "warnings": []
       }
     },
-    "7ee86446ac0999dd3fca1a7b4d5b48320dbefb9aa1528ff273baae8fb0b98634": {
+    "78e07ba3e46acb1ad2fa39580b68a2cda91e2650b451f6e1936b6eeb9e530f07": {
       "argsSummary": "[\"HIGH\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "HIGH",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "7f3d65c22aa6929ec1b495b26a12d6198249be5d05e033d82370cdd32719547e": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"u...",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "user"
-          },
-          {
-            "categoryId": "handling",
-            "conceptId": "SEALED",
-            "confidence": "certain",
-            "source": "user"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            },
-            {
-              "categoryId": "handling",
-              "conceptId": "SEALED"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [
-          {
-            "affectedConcepts": [
-              "REVIEW_ON"
-            ],
-            "categoryId": "review",
-            "constraintId": "_invalid_assertion_value",
-            "message": "Review on a date cannot hold the value \"20350231\": 2035-02 has 28 days.."
-          }
-        ],
-        "inputWasValid": false,
-        "notices": [],
-        "rendered": "HIGH//SEALED",
-        "valid": false,
-        "warnings": [
-          {
-            "kind": "notice",
-            "message": "Unable to compare with whole: none given.",
-            "ruleId": "_whole_unverified"
-          }
-        ]
-      }
-    },
-    "a45c406386efaa11a8625d07fe99cdc2c587c13ccbdde47677906953da366f7a": {
-      "argsSummary": "[\"HIGH\",{\"context\":{\"partOf\":{\"rendered\":\"CTRL-A\"},\"role\":\"part\"}}]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "HIGH",
-        "valid": true,
-        "warnings": [
-          {
-            "kind": "notice",
-            "message": "Unable to compare with invalid whole.",
-            "ruleId": "_whole_unverified"
-          }
-        ]
-      }
-    },
-    "b5f702a8f69d78ef441fb1c9b6ac5403a3d2327fe8e9f42b2c5e5439ed6d6012": {
-      "argsSummary": "[\"HIGH/CTRL-A\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "parse"
-          },
-          {
-            "categoryId": "controls",
-            "conceptId": "CTRL-A",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            },
-            {
-              "categoryId": "controls",
-              "conceptId": "CTRL-A"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "HIGH/CTRL-A",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "bb7a4732208250574c018be2c3ba087f81baa079742217a46f0ac68f69a074f6": {
-      "argsSummary": "[\"H\"]",
       "method": "validate",
       "response": {
         "appliedFixes": [
@@ -637,10 +419,10 @@
           "unrepresentable": []
         },
         "errors": [],
-        "inputWasValid": true,
+        "inputWasValid": false,
         "notices": [],
         "recognition": {
-          "inputFormat": "short_line",
+          "inputFormat": "line",
           "status": "complete",
           "surface": "marking",
           "unmatched": []
@@ -656,46 +438,7 @@
         ]
       }
     },
-    "c8a45c086ee8f5f65065bbaa70c21426edd357151853e0efaa8d308c2bd6a86f": {
-      "argsSummary": "[\"LOW\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "LOW",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "LOW"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "LOW",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "c8f1c30e040caeda5ce10a0920eb812b76b17349ba4eaca2365bcec4ec0b65bd": {
+    "7c8e289763b6789c5bef1671d0a4a936241450e8347c11aa399be45cb9fcfea0": {
       "argsSummary": "[\"H\",{\"context\":{\"partOf\":{\"rendered\":\"LOW\"},\"role\":\"part\"}}]",
       "method": "validate",
       "response": {
@@ -768,7 +511,224 @@
         "warnings": []
       }
     },
-    "d04bc96746206553ddc61726cba3a0940c73cd30b07419396d0904044eabc088": {
+    "819d5dabb52afc87e52ad743564851dc23efe678fa72546894200d9f6380a85a": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"u...",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "user"
+          },
+          {
+            "categoryId": "handling",
+            "conceptId": "SEALED",
+            "confidence": "certain",
+            "source": "user"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            },
+            {
+              "categoryId": "handling",
+              "conceptId": "SEALED"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [
+          {
+            "affectedConcepts": [
+              "REVIEW_ON"
+            ],
+            "categoryId": "review",
+            "constraintId": "_invalid_assertion_value",
+            "message": "Review on a date cannot hold the value \"20350231\": 2035-02 has 28 days.."
+          }
+        ],
+        "inputWasValid": false,
+        "notices": [],
+        "rendered": "HIGH//SEALED",
+        "valid": false,
+        "warnings": [
+          {
+            "kind": "notice",
+            "message": "Unable to compare with whole: none given.",
+            "ruleId": "_whole_unverified"
+          }
+        ]
+      }
+    },
+    "a7ce708c770b8e3f525c52eacea81d5a82a382ca2a23596fdf062ad3e5b43bc9": {
+      "argsSummary": "[\"HIGH\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "inputFormat": "default",
+          "status": "complete",
+          "surface": "banner",
+          "unmatched": []
+        },
+        "rendered": "HIGH",
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "bc66ac4a15f3391e3a80df8714ca0f0e0910ba1e2ab9cd8303cf09572f5e06a4": {
+      "argsSummary": "[\"HIGH/CTRL-A\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          },
+          {
+            "categoryId": "controls",
+            "conceptId": "CTRL-A",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            },
+            {
+              "categoryId": "controls",
+              "conceptId": "CTRL-A"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "inputFormat": "default",
+          "status": "complete",
+          "surface": "banner",
+          "unmatched": []
+        },
+        "rendered": "HIGH/CTRL-A",
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "ce349f85cbe59a7f90d68f2a4d0c5a40aceabfe891e0b6ed1fdb8c23c96505bc": {
+      "argsSummary": "[\"H\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [
+          {
+            "action": "add",
+            "add": [
+              {
+                "categoryId": "handling",
+                "conceptId": "SEALED"
+              }
+            ],
+            "message": "Rule \"high-is-sealed\": added \"SEALED\" to category \"handling\"",
+            "ruleId": "high-is-sealed",
+            "triggerConceptIds": [
+              "HIGH"
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          },
+          {
+            "categoryId": "handling",
+            "conceptId": "SEALED",
+            "confidence": "inferred",
+            "source": "infer",
+            "sourceRule": "high-is-sealed"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            },
+            {
+              "categoryId": "handling",
+              "conceptId": "SEALED"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "inputFormat": "short_line",
+          "status": "complete",
+          "surface": "marking",
+          "unmatched": []
+        },
+        "rendered": "HIGH//SEALED",
+        "valid": true,
+        "warnings": [
+          {
+            "kind": "notice",
+            "message": "Unable to compare with whole: none given.",
+            "ruleId": "_whole_unverified"
+          }
+        ]
+      }
+    },
+    "cf0c394d43a40a246eebb6c4ff5bb008cd6dd195c37bf2869ac8fb9c1666f780": {
       "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"u...",
       "method": "validate",
       "response": {
@@ -827,6 +787,46 @@
             "ruleId": "_whole_unverified"
           }
         ]
+      }
+    },
+    "e4b08009358e232f9e055204f72cbf1b32023f8f372d48cbcec6a010aefc53f7": {
+      "argsSummary": "[\"UNKNOWN\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [
+          {
+            "constraintId": "_recognition_incomplete",
+            "message": "The input does not read as a marking."
+          },
+          {
+            "constraintId": "_unmatched_token",
+            "message": "\"UNKNOWN\" was not recognized: it matched no known concept and will be dropped from the rendered marking."
+          }
+        ],
+        "inputWasValid": false,
+        "notices": [],
+        "recognition": {
+          "status": "unrecognized",
+          "unmatched": [
+            {
+              "end": 7,
+              "start": 0,
+              "text": "UNKNOWN"
+            }
+          ]
+        },
+        "rendered": "",
+        "valid": false,
+        "warnings": []
       }
     }
   },

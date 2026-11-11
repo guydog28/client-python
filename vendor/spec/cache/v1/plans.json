@@ -2181,7 +2181,7 @@
             "capabilities": [],
             "client": {
                 "binding": "pinned",
-                "context": "ez-marked-crosswalk"
+                "context": "ez-marked"
             },
             "steps": [
                 {

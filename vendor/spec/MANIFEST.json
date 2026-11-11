@@ -1,15 +1,15 @@
 {
   "openapiVersion": "1.0.0-dev.30",
   "openapiSha256": "a0b675026fef78e3b25cc8361eda450c0e2986226037712d3324fecfe42e04a2",
-  "specBundleSha256": "f8157816b320726b46fc427cd903b5ed55b89c19de44d4721d462e37658c18d0",
-  "specDigest": "c2d64d4f3310cefe9365b9376940e5c76bb60de4a849eedd9705e62a42c80db6",
-  "contractsSha": "8bd8d16e706426194adf2a54062e66c0f5600618",
+  "specBundleSha256": "055b480aea6afecfe529d964c4b53d50a37b8b409b180b0bcc8002e711c49fd6",
+  "specDigest": "04766ccb7faed849a1ccf6fab26aa99ad786bc2f95f42aeac62e2afb3c9babd5",
+  "contractsSha": "73ec6f080c45ff3ec839e62c365c2f7d1914a060",
   "sourcePackages": {
     "@ezclassify/openapi": "1.0.0-dev.30",
     "@ezclassify/schemas": "1.0.0-dev.30",
     "@ezclassify/conformance": "1.0.0-dev.30"
   },
-  "generatedAt": "2026-11-11T06:07:57.000Z",
+  "generatedAt": "2026-11-11T08:22:03.000Z",
   "generators": {
     "python": {
       "binary": "node",

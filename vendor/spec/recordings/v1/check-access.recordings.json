@@ -2,39 +2,8 @@
   "engineVersion": "1.0.0-dev.30",
   "openapiVersion": "1.0.0-dev.30",
   "responses": {
-    "0eb3bf82db61d27c9cc3f348cc4546872da723d23877c8d8d854af347a30b520": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"LOW\",\"confidence\":\"certain\",\"source\":\"da...",
-      "method": "checkAccess",
-      "response": {
-        "granted": true,
-        "rules": [
-          {
-            "activation": {
-              "assertions": [],
-              "contextPaths": [],
-              "matched": false
-            },
-            "comparisons": [],
-            "granted": true,
-            "name": "Controls held",
-            "rule": {
-              "artifact": {
-                "id": "ref-scheme-1-controls-access",
-                "kind": "access",
-                "version": "1.0.0"
-              },
-              "ruleDigest": "sha256:897b6420c6fc0c823930d196cb813b1d8501b715c5514361c429d6c0a0ea39ee",
-              "ruleId": "controls-rule"
-            },
-            "ruleIndex": 0,
-            "skipped": true
-          }
-        ],
-        "warnings": []
-      }
-    },
-    "66e3845238fe0e277b13804abbae3c6ef41f7303872434cddf5e4a80a002cc47": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"LOW\",\"confidence\":\"certain\",\"source\":\"da...",
+    "28f207906200800a2e4978d5f4be76c0c8a04aeed7eb3e1a64c952e0d608d3af": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"MED\",\"confidence\":\"certain\",\"source\":\"da...",
       "method": "checkAccess",
       "response": {
         "granted": true,
@@ -44,7 +13,7 @@
               "assertions": [
                 {
                   "categoryId": "level",
-                  "conceptId": "LOW"
+                  "conceptId": "MED"
                 }
               ],
               "contextPaths": [],
@@ -55,7 +24,7 @@
                 "left": {
                   "path": "level",
                   "source": "subject",
-                  "value": "LOW"
+                  "value": "MED"
                 },
                 "matched": true,
                 "operator": "gte",
@@ -63,7 +32,7 @@
                   "assertions": [
                     {
                       "categoryId": "level",
-                      "conceptId": "LOW"
+                      "conceptId": "MED"
                     }
                   ],
                   "categoryId": "level",
@@ -75,7 +44,7 @@
             "name": "Level",
             "rule": {
               "artifact": {
-                "id": "ref-marked-access-1",
+                "id": "ref-scheme-1-access-rules",
                 "kind": "access",
                 "version": "1.0.0"
               },
@@ -89,119 +58,7 @@
         "warnings": []
       }
     },
-    "9a5c68bc611c3eedd0d188da53f0f2ec925d854cb3c050deb773933e1f61f5d7": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"LOW\",\"confidence\":\"certain\",\"source\":\"da...",
-      "method": "checkAccess",
-      "response": {
-        "granted": true,
-        "rules": [
-          {
-            "activation": {
-              "assertions": [
-                {
-                  "categoryId": "level",
-                  "conceptId": "LOW"
-                }
-              ],
-              "contextPaths": [],
-              "matched": true
-            },
-            "comparisons": [
-              {
-                "left": {
-                  "path": "level",
-                  "source": "subject",
-                  "value": "HIGH"
-                },
-                "matched": true,
-                "operator": "gte",
-                "right": {
-                  "assertions": [
-                    {
-                      "categoryId": "level",
-                      "conceptId": "LOW"
-                    }
-                  ],
-                  "categoryId": "level",
-                  "source": "assertion"
-                }
-              }
-            ],
-            "granted": true,
-            "name": "Level",
-            "rule": {
-              "artifact": {
-                "id": "ref-access-rules-1",
-                "kind": "access",
-                "version": "1.0.0"
-              },
-              "ruleDigest": "sha256:a2e19222c8fb21c7693131829e03c23cc108eb2d8bf8a160a62d3a4cf7f8662a",
-              "ruleId": "level-rule"
-            },
-            "ruleIndex": 0,
-            "skipped": false
-          }
-        ],
-        "warnings": []
-      }
-    },
-    "c32f26410142fa51380abc9f296eb4b08057a9a6f4d7efd7878295c9b57a1b4d": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"d...",
-      "method": "checkAccess",
-      "response": {
-        "granted": true,
-        "rules": [
-          {
-            "activation": {
-              "assertions": [
-                {
-                  "categoryId": "level",
-                  "conceptId": "HIGH"
-                }
-              ],
-              "contextPaths": [],
-              "matched": true
-            },
-            "comparisons": [
-              {
-                "left": {
-                  "path": "level",
-                  "source": "subject",
-                  "value": "HIGH"
-                },
-                "matched": true,
-                "operator": "gte",
-                "right": {
-                  "assertions": [
-                    {
-                      "categoryId": "level",
-                      "conceptId": "HIGH"
-                    }
-                  ],
-                  "categoryId": "level",
-                  "source": "assertion"
-                }
-              }
-            ],
-            "granted": true,
-            "name": "Level",
-            "rule": {
-              "artifact": {
-                "id": "ref-access-rules-1",
-                "kind": "access",
-                "version": "1.0.0"
-              },
-              "ruleDigest": "sha256:a2e19222c8fb21c7693131829e03c23cc108eb2d8bf8a160a62d3a4cf7f8662a",
-              "ruleId": "level-rule"
-            },
-            "ruleIndex": 0,
-            "skipped": false
-          }
-        ],
-        "warnings": []
-      }
-    },
-    "c8d3b7b88cb895659b9b630068653b6d32bf58d175814f1490533549d65be7a9": {
+    "6f07733f094db6836904fd3e9b205fc7d5aff42315af3883833cbe591a26b32e": {
       "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"d...",
       "method": "checkAccess",
       "response": {
@@ -261,8 +118,8 @@
         "warnings": []
       }
     },
-    "d6d6dcd31984eb98c60083e4eb06fd300331e9cba51d9b43fc54dbf3e390ba1e": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"MED\",\"confidence\":\"certain\",\"source\":\"da...",
+    "99ad4b951f75f521cd5cdb6274b87976c9f3be11e2db55511e311534ffb172b5": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"LOW\",\"confidence\":\"certain\",\"source\":\"da...",
       "method": "checkAccess",
       "response": {
         "granted": true,
@@ -272,7 +129,7 @@
               "assertions": [
                 {
                   "categoryId": "level",
-                  "conceptId": "MED"
+                  "conceptId": "LOW"
                 }
               ],
               "contextPaths": [],
@@ -283,7 +140,7 @@
                 "left": {
                   "path": "level",
                   "source": "subject",
-                  "value": "MED"
+                  "value": "HIGH"
                 },
                 "matched": true,
                 "operator": "gte",
@@ -291,7 +148,7 @@
                   "assertions": [
                     {
                       "categoryId": "level",
-                      "conceptId": "MED"
+                      "conceptId": "LOW"
                     }
                   ],
                   "categoryId": "level",
@@ -303,7 +160,7 @@
             "name": "Level",
             "rule": {
               "artifact": {
-                "id": "ref-scheme-1-access-rules",
+                "id": "ref-access-rules-1",
                 "kind": "access",
                 "version": "1.0.0"
               },
@@ -317,7 +174,63 @@
         "warnings": []
       }
     },
-    "eaf3530975890ae907ccdeb66758e19bed36b8eb4c5c3a5ff1797a3f245f3cce": {
+    "c12452e8fd666736c6af29b20650ef12791cc5027991772ac3c9e6174c9b5e96": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"d...",
+      "method": "checkAccess",
+      "response": {
+        "granted": true,
+        "rules": [
+          {
+            "activation": {
+              "assertions": [
+                {
+                  "categoryId": "level",
+                  "conceptId": "HIGH"
+                }
+              ],
+              "contextPaths": [],
+              "matched": true
+            },
+            "comparisons": [
+              {
+                "left": {
+                  "path": "level",
+                  "source": "subject",
+                  "value": "HIGH"
+                },
+                "matched": true,
+                "operator": "gte",
+                "right": {
+                  "assertions": [
+                    {
+                      "categoryId": "level",
+                      "conceptId": "HIGH"
+                    }
+                  ],
+                  "categoryId": "level",
+                  "source": "assertion"
+                }
+              }
+            ],
+            "granted": true,
+            "name": "Level",
+            "rule": {
+              "artifact": {
+                "id": "ref-marked-access-1",
+                "kind": "access",
+                "version": "1.0.0"
+              },
+              "ruleDigest": "sha256:a2e19222c8fb21c7693131829e03c23cc108eb2d8bf8a160a62d3a4cf7f8662a",
+              "ruleId": "level-rule"
+            },
+            "ruleIndex": 0,
+            "skipped": false
+          }
+        ],
+        "warnings": []
+      }
+    },
+    "c673610fcdd112ea5499483214282d99d55dc4b6ba9f93321edcb1e9801ca21b": {
       "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"d...",
       "method": "checkAccess",
       "response": {
@@ -361,6 +274,93 @@
             "granted": false,
             "name": "Level",
             "reason": "User level (LOW) is below required level (HIGH)",
+            "rule": {
+              "artifact": {
+                "id": "ref-access-rules-1",
+                "kind": "access",
+                "version": "1.0.0"
+              },
+              "ruleDigest": "sha256:a2e19222c8fb21c7693131829e03c23cc108eb2d8bf8a160a62d3a4cf7f8662a",
+              "ruleId": "level-rule"
+            },
+            "ruleIndex": 0,
+            "skipped": false
+          }
+        ],
+        "warnings": []
+      }
+    },
+    "eb4c822d6ac794bf4fcac11e23767cd027dcdd79e4604fd9b59ec57b71936c09": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"LOW\",\"confidence\":\"certain\",\"source\":\"da...",
+      "method": "checkAccess",
+      "response": {
+        "granted": true,
+        "rules": [
+          {
+            "activation": {
+              "assertions": [],
+              "contextPaths": [],
+              "matched": false
+            },
+            "comparisons": [],
+            "granted": true,
+            "name": "Controls held",
+            "rule": {
+              "artifact": {
+                "id": "ref-scheme-1-controls-access",
+                "kind": "access",
+                "version": "1.0.0"
+              },
+              "ruleDigest": "sha256:897b6420c6fc0c823930d196cb813b1d8501b715c5514361c429d6c0a0ea39ee",
+              "ruleId": "controls-rule"
+            },
+            "ruleIndex": 0,
+            "skipped": true
+          }
+        ],
+        "warnings": []
+      }
+    },
+    "fe0c2c654ccbcd2f6d71938055a7e428371be296ded1b4f08fa85f457d54b57e": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"d...",
+      "method": "checkAccess",
+      "response": {
+        "granted": true,
+        "rules": [
+          {
+            "activation": {
+              "assertions": [
+                {
+                  "categoryId": "level",
+                  "conceptId": "HIGH"
+                }
+              ],
+              "contextPaths": [],
+              "matched": true
+            },
+            "comparisons": [
+              {
+                "left": {
+                  "path": "level",
+                  "source": "subject",
+                  "value": "HIGH"
+                },
+                "matched": true,
+                "operator": "gte",
+                "right": {
+                  "assertions": [
+                    {
+                      "categoryId": "level",
+                      "conceptId": "HIGH"
+                    }
+                  ],
+                  "categoryId": "level",
+                  "source": "assertion"
+                }
+              }
+            ],
+            "granted": true,
+            "name": "Level",
             "rule": {
               "artifact": {
                 "id": "ref-access-rules-1",

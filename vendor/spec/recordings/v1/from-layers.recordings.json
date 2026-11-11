@@ -2,7 +2,34 @@
   "engineVersion": "1.0.0-dev.30",
   "openapiVersion": "1.0.0-dev.30",
   "responses": {
-    "056b4c790ff46406647b6840845c55eb82d39344a5489c6878e7c5c738ee13e3": {
+    "102a56b5cffb927071f3b1cea6efed7cd1e6fb70ac094616a36203091614253b": {
+      "argsSummary": "[[\"MED\"]]",
+      "method": "aggregate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [],
+        "errors": [
+          {
+            "constraintId": "_invalid_contributor",
+            "message": "Contributor 1 did not produce a complete valid input outcome."
+          },
+          {
+            "constraintId": "_unmatched_token",
+            "message": "Contributor 1: \"MED\" was not recognized: this contributor did not account for that part of its input."
+          },
+          {
+            "constraintId": "_recognition_incomplete",
+            "message": "Contributor 1: The input does not read as a marking."
+          }
+        ],
+        "notices": [],
+        "proposedFixes": [],
+        "rendered": "",
+        "valid": false,
+        "warnings": []
+      }
+    },
+    "2571f1b5bf655d5ea65c53b84dfb2bd1cfd1b4d606a1e9c1717f14ef2c5b4f8f": {
       "argsSummary": "[[\"HIGH\"]]",
       "method": "aggregate",
       "response": {
@@ -23,93 +50,49 @@
         "warnings": []
       }
     },
-    "0dd5677fe4986b47cbb4f7ee09303facf7e96130b4e32b13490024e78acedd56": {
-      "argsSummary": "[\"MED\"]",
+    "2729d7be69fe318912e8049cdd96deade2617876dfcc41b811acd6ab67524b41": {
+      "argsSummary": "[\"LOW\"]",
       "method": "process",
       "response": {
         "appliedFixes": [],
-        "assertions": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "LOW",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
         "assessment": {
           "collapsed": [],
           "conflicts": [],
-          "emitted": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "LOW"
+            }
+          ],
           "omitted": [],
           "unrepresentable": []
         },
-        "errors": [
-          {
-            "constraintId": "_recognition_incomplete",
-            "message": "The input does not read as a marking."
-          },
-          {
-            "constraintId": "_unmatched_token",
-            "message": "\"MED\" was not recognized: it matched no known concept and will be kept visible in the rendered marking."
-          }
-        ],
-        "inputWasValid": false,
+        "errors": [],
+        "inputWasValid": true,
         "notices": [],
         "proposedFixes": [],
         "recognition": {
           "corrections": [],
-          "status": "unrecognized",
-          "unmatched": [
-            {
-              "end": 3,
-              "start": 0,
-              "text": "MED"
-            }
-          ]
+          "inputFormat": "default",
+          "status": "complete",
+          "surface": "banner",
+          "unmatched": []
         },
-        "rendered": "MED",
+        "rendered": "LOW",
         "renders": {},
-        "valid": false,
+        "valid": true,
         "warnings": []
       }
     },
-    "55d5210bbb66e0185ae514b661a19e3eb082e8156767c31f885e71b112f83f56": {
-      "argsSummary": "[\"CTRL-A\"]",
-      "method": "process",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [
-          {
-            "constraintId": "_recognition_incomplete",
-            "message": "The input does not read as a marking."
-          },
-          {
-            "constraintId": "_unmatched_token",
-            "message": "\"CTRL-A\" was not recognized: it matched no known concept and will be kept visible in the rendered marking."
-          }
-        ],
-        "inputWasValid": false,
-        "notices": [],
-        "proposedFixes": [],
-        "recognition": {
-          "corrections": [],
-          "status": "unrecognized",
-          "unmatched": [
-            {
-              "end": 6,
-              "start": 0,
-              "text": "CTRL-A"
-            }
-          ]
-        },
-        "rendered": "CTRL-A",
-        "renders": {},
-        "valid": false,
-        "warnings": []
-      }
-    },
-    "5ba0bbfad8b980ddcc23dc83689f51f0e8328522b26d317d4a4dc6e949e0aacf": {
+    "287a0c32126b7d339f07e5fe2ba85257ba1eccdfa822888cf86459a3472e7806": {
       "argsSummary": "[\"\"]",
       "method": "suggest",
       "response": {
@@ -173,7 +156,144 @@
         "warnings": []
       }
     },
-    "6fe8c9803cfe0fdd2ed826b5c3b7a06c181c9a340ade2cfdf7cf2c02e96a9443": {
+    "2aebd6d8c3c66ec2160148f4c4c58bfd1022af567447bd1b383e06b2a4274d32": {
+      "argsSummary": "[\"HIGH/CTRL-A\"]",
+      "method": "process",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          },
+          {
+            "categoryId": "controls",
+            "conceptId": "CTRL-A",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            },
+            {
+              "categoryId": "controls",
+              "conceptId": "CTRL-A"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "proposedFixes": [],
+        "recognition": {
+          "corrections": [],
+          "inputFormat": "default",
+          "status": "complete",
+          "surface": "banner",
+          "unmatched": []
+        },
+        "rendered": "HIGH/CTRL-A",
+        "renders": {},
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "2fe54156d8e9e5a6bef8e8f946dd1550ab6888a53f1ccd1f9695e9d84da32fe8": {
+      "argsSummary": "[\"HIGH\"]",
+      "method": "process",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "proposedFixes": [],
+        "recognition": {
+          "corrections": [],
+          "inputFormat": "default",
+          "status": "complete",
+          "surface": "banner",
+          "unmatched": []
+        },
+        "rendered": "HIGH",
+        "renders": {},
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "39eee5d85e9689edc97de08268d43db7f2677d2c63e86fa268ddaf7d7d2c452b": {
+      "argsSummary": "[\"CRITCAL\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [
+          {
+            "constraintId": "_recognition_incomplete",
+            "message": "The input does not read as a marking."
+          },
+          {
+            "constraintId": "_unmatched_token",
+            "didYouMean": [
+              "HIGH"
+            ],
+            "message": "\"CRITCAL\" was not recognized: it matched no known concept and will be kept visible in the rendered marking. Did you mean \"CRITICAL\"?"
+          }
+        ],
+        "inputWasValid": false,
+        "notices": [],
+        "recognition": {
+          "status": "unrecognized",
+          "unmatched": [
+            {
+              "end": 7,
+              "start": 0,
+              "text": "CRITCAL"
+            }
+          ]
+        },
+        "rendered": "CRITCAL",
+        "valid": false,
+        "warnings": []
+      }
+    },
+    "40e9e7ec77808fc3693b22e45413175dca3916edcf7753cd932b0a24d2847848": {
       "argsSummary": "[\"\"]",
       "method": "suggest",
       "response": {
@@ -194,20 +314,6 @@
           },
           {
             "categoryId": "level",
-            "conceptId": "MED",
-            "description": "Med",
-            "group": "Level",
-            "label": "MED",
-            "name": "Med",
-            "order": 1,
-            "selected": false,
-            "views": {
-              "default": "MED",
-              "portion": "M"
-            }
-          },
-          {
-            "categoryId": "level",
             "conceptId": "HIGH",
             "description": "High",
             "group": "Level",
@@ -224,7 +330,50 @@
         "warnings": []
       }
     },
-    "7dba1db447efb2d38cd5825738cbca1db5286af361a3c4e4fbece27a22e3277b": {
+    "47eb52373a93bd4cba3cb457635f086da88f7bd4865bd08a786855d53429693f": {
+      "argsSummary": "[\"CTRL-A\"]",
+      "method": "process",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [
+          {
+            "constraintId": "_recognition_incomplete",
+            "message": "The input does not read as a marking."
+          },
+          {
+            "constraintId": "_unmatched_token",
+            "message": "\"CTRL-A\" was not recognized: it matched no known concept and will be kept visible in the rendered marking."
+          }
+        ],
+        "inputWasValid": false,
+        "notices": [],
+        "proposedFixes": [],
+        "recognition": {
+          "corrections": [],
+          "status": "unrecognized",
+          "unmatched": [
+            {
+              "end": 6,
+              "start": 0,
+              "text": "CTRL-A"
+            }
+          ]
+        },
+        "rendered": "CTRL-A",
+        "renders": {},
+        "valid": false,
+        "warnings": []
+      }
+    },
+    "48b03b19210f51485d54bca000e8582c1ad5458fb2ce81c4513194e5863e1e1e": {
       "argsSummary": "[[\"LOW\",\"HIGH\"]]",
       "method": "aggregate",
       "response": {
@@ -232,7 +381,7 @@
         "assertions": [
           {
             "categoryId": "level",
-            "conceptId": "LOW",
+            "conceptId": "HIGH",
             "confidence": "certain",
             "source": "aggregate"
           }
@@ -240,12 +389,19 @@
         "errors": [],
         "notices": [],
         "proposedFixes": [],
-        "rendered": "LOW",
+        "rendered": "HIGH",
         "valid": true,
         "warnings": []
       }
     },
-    "7f7036e5481dd50d8e1bca47827d0f1cc24e05ed43b8446143cca6e00891e072": {
+    "5a5870fe34f913dd135e988e0110581e9a1357a9df3dd1fcf158e453493f616d": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"u...",
+      "method": "render",
+      "response": {
+        "result": "HIGH"
+      }
+    },
+    "6ba05923425b81247065f953039f0c5a6a94e8b4d1ed028b1b6300db0e6d0b8d": {
       "argsSummary": "[\"HIGH/TAG-A\"]",
       "method": "process",
       "response": {
@@ -297,187 +453,7 @@
         "warnings": []
       }
     },
-    "8d60056546162402762a245e735b00e87a1602910a6871bce8d8c3cc6a4d307b": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"HIGH\",\"confidence\":\"certain\",\"source\":\"u...",
-      "method": "render",
-      "response": {
-        "result": "HIGH"
-      }
-    },
-    "948122f64f64862b401822452cffa2c02d2704a2d2687307ead109faaec25415": {
-      "argsSummary": "[\"CRITICAL\"]",
-      "method": "process",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "proposedFixes": [],
-        "recognition": {
-          "corrections": [],
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "CRITICAL",
-        "renders": {},
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "9bce08f82d0430b994695f7501ac7018ab14b520e37a26e23253ded449a83437": {
-      "argsSummary": "[\"HIGH/CTRL-A\"]",
-      "method": "process",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "parse"
-          },
-          {
-            "categoryId": "controls",
-            "conceptId": "CTRL-A",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            },
-            {
-              "categoryId": "controls",
-              "conceptId": "CTRL-A"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "proposedFixes": [],
-        "recognition": {
-          "corrections": [],
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "HIGH/CTRL-A",
-        "renders": {},
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "9d7636570065a9449ecb1c01aa9cbd06848377440db698852858248286d58620": {
-      "argsSummary": "[\"HIGH\"]",
-      "method": "process",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "proposedFixes": [],
-        "recognition": {
-          "corrections": [],
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "HIGH",
-        "renders": {},
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "a66fbc237ce1e3feb55d1f10fd682225b942c3b3a876d55fd4f3282b29a8d0dc": {
-      "argsSummary": "[\"\"]",
-      "method": "suggest",
-      "response": {
-        "suggestions": [
-          {
-            "categoryId": "level",
-            "conceptId": "LOW",
-            "description": "Low",
-            "group": "Level",
-            "label": "LOW",
-            "name": "Low",
-            "order": 0,
-            "selected": false,
-            "views": {
-              "default": "LOW",
-              "portion": "L"
-            }
-          },
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "description": "High",
-            "group": "Level",
-            "label": "HIGH",
-            "name": "High",
-            "order": 2,
-            "selected": false,
-            "views": {
-              "default": "HIGH",
-              "portion": "H"
-            }
-          }
-        ],
-        "warnings": []
-      }
-    },
-    "c695f914f2b1d789e514ec2f40af9724aa60805f6850f1ca02c812f02c1c31ad": {
+    "7eab1f5ad2f0d4d1cf04020b9b50567efc45918806f8fa29ea0abfa67b5d36f4": {
       "argsSummary": "[\"\"]",
       "method": "suggest",
       "response": {
@@ -528,118 +504,7 @@
         "warnings": []
       }
     },
-    "cbb43de0053d6e1d555a94cd1a4800265945e36d4ffdbc6d63c132d0d0f49643": {
-      "argsSummary": "[[\"MED\"]]",
-      "method": "aggregate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [],
-        "errors": [
-          {
-            "constraintId": "_invalid_contributor",
-            "message": "Contributor 1 did not produce a complete valid input outcome."
-          },
-          {
-            "constraintId": "_unmatched_token",
-            "message": "Contributor 1: \"MED\" was not recognized: this contributor did not account for that part of its input."
-          },
-          {
-            "constraintId": "_recognition_incomplete",
-            "message": "Contributor 1: The input does not read as a marking."
-          }
-        ],
-        "notices": [],
-        "proposedFixes": [],
-        "rendered": "",
-        "valid": false,
-        "warnings": []
-      }
-    },
-    "d231099fda42bc8c18753d8209529cd68c7e92d68b4a38e6a4535a4c103a18d1": {
-      "argsSummary": "[\"LOW\"]",
-      "method": "process",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "LOW",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "LOW"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "proposedFixes": [],
-        "recognition": {
-          "corrections": [],
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "LOW",
-        "renders": {},
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "da72d9b71b6b35a6a0f5da4d6ca3b123e23d21d3bf139c6f13850629114cd320": {
-      "argsSummary": "[\"HIGH\"]",
-      "method": "process",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "HIGH",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "HIGH"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "proposedFixes": [],
-        "recognition": {
-          "corrections": [],
-          "inputFormat": "default",
-          "status": "complete",
-          "surface": "banner",
-          "unmatched": []
-        },
-        "rendered": "HIGH",
-        "renders": {},
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "e722d9644b36d946015c3059d53eb9ec72e045c5aedbc6da81bbdb233b4a3c18": {
+    "831ebc078bbc53c3e6bb802d671aa3dd9e356d021f10171fd7edd5a295ce7409": {
       "argsSummary": "[\"HIGH/CTRL-A\"]",
       "method": "process",
       "response": {
@@ -691,9 +556,9 @@
         "warnings": []
       }
     },
-    "e753d670c4813570b5b90648600f240386a0385a871fc1851f39900e0fb0a773": {
-      "argsSummary": "[[\"LOW\",\"HIGH\"]]",
-      "method": "aggregate",
+    "88582c0ab62fd9adc4ac8a3bf3361e913f1dd1118ec60c35adadd7839d9a4e41": {
+      "argsSummary": "[\"CRITICAL\"]",
+      "method": "process",
       "response": {
         "appliedFixes": [],
         "assertions": [
@@ -701,61 +566,39 @@
             "categoryId": "level",
             "conceptId": "HIGH",
             "confidence": "certain",
-            "source": "aggregate"
+            "source": "parse"
           }
         ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
         "errors": [],
+        "inputWasValid": true,
         "notices": [],
         "proposedFixes": [],
-        "rendered": "HIGH",
+        "recognition": {
+          "corrections": [],
+          "inputFormat": "default",
+          "status": "complete",
+          "surface": "banner",
+          "unmatched": []
+        },
+        "rendered": "CRITICAL",
+        "renders": {},
         "valid": true,
         "warnings": []
       }
     },
-    "e7bc633e491da9d06e18e5ad2da3f8f9ad8c6e79225418bcf57c93a9518ffd26": {
-      "argsSummary": "[\"CRITCAL\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [
-          {
-            "constraintId": "_recognition_incomplete",
-            "message": "The input does not read as a marking."
-          },
-          {
-            "constraintId": "_unmatched_token",
-            "didYouMean": [
-              "HIGH"
-            ],
-            "message": "\"CRITCAL\" was not recognized: it matched no known concept and will be kept visible in the rendered marking. Did you mean \"CRITICAL\"?"
-          }
-        ],
-        "inputWasValid": false,
-        "notices": [],
-        "recognition": {
-          "status": "unrecognized",
-          "unmatched": [
-            {
-              "end": 7,
-              "start": 0,
-              "text": "CRITCAL"
-            }
-          ]
-        },
-        "rendered": "CRITCAL",
-        "valid": false,
-        "warnings": []
-      }
-    },
-    "f5cee5dc8af11bf7c460f6e66e5de6b6346aa6272465a1f94a043bc48873e209": {
+    "a2b6f33b3f27fc4f464e45f217700861883d41517fe1435a3d15ccd1bcbf212b": {
       "argsSummary": "[\"HIGH\"]",
       "method": "process",
       "response": {
@@ -793,6 +636,163 @@
         },
         "rendered": "[[HIGH]]",
         "renders": {},
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "cb3f15c20fb798d07e41550d909189ae719caf3b3a847141a8a0a8ee1f0012e5": {
+      "argsSummary": "[\"MED\"]",
+      "method": "process",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [
+          {
+            "constraintId": "_recognition_incomplete",
+            "message": "The input does not read as a marking."
+          },
+          {
+            "constraintId": "_unmatched_token",
+            "message": "\"MED\" was not recognized: it matched no known concept and will be kept visible in the rendered marking."
+          }
+        ],
+        "inputWasValid": false,
+        "notices": [],
+        "proposedFixes": [],
+        "recognition": {
+          "corrections": [],
+          "status": "unrecognized",
+          "unmatched": [
+            {
+              "end": 3,
+              "start": 0,
+              "text": "MED"
+            }
+          ]
+        },
+        "rendered": "MED",
+        "renders": {},
+        "valid": false,
+        "warnings": []
+      }
+    },
+    "e3d27da13729cbc05956d8d69a62ef2d2d72f0146fdaa9cb4c5038620c5ae5b5": {
+      "argsSummary": "[\"HIGH\"]",
+      "method": "process",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "HIGH"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "proposedFixes": [],
+        "recognition": {
+          "corrections": [],
+          "inputFormat": "default",
+          "status": "complete",
+          "surface": "banner",
+          "unmatched": []
+        },
+        "rendered": "HIGH",
+        "renders": {},
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "e5ab0db747528793d4d256be343323ee082d6f0d401bbddf3f77538e3dc9061a": {
+      "argsSummary": "[\"\"]",
+      "method": "suggest",
+      "response": {
+        "suggestions": [
+          {
+            "categoryId": "level",
+            "conceptId": "LOW",
+            "description": "Low",
+            "group": "Level",
+            "label": "LOW",
+            "name": "Low",
+            "order": 0,
+            "selected": false,
+            "views": {
+              "default": "LOW",
+              "portion": "L"
+            }
+          },
+          {
+            "categoryId": "level",
+            "conceptId": "MED",
+            "description": "Med",
+            "group": "Level",
+            "label": "MED",
+            "name": "Med",
+            "order": 1,
+            "selected": false,
+            "views": {
+              "default": "MED",
+              "portion": "M"
+            }
+          },
+          {
+            "categoryId": "level",
+            "conceptId": "HIGH",
+            "description": "High",
+            "group": "Level",
+            "label": "HIGH",
+            "name": "High",
+            "order": 2,
+            "selected": false,
+            "views": {
+              "default": "HIGH",
+              "portion": "H"
+            }
+          }
+        ],
+        "warnings": []
+      }
+    },
+    "ff3af5e1965007c91e087909992afb4977475b8dc68cd1ab934517023a7ae0c0": {
+      "argsSummary": "[[\"LOW\",\"HIGH\"]]",
+      "method": "aggregate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "LOW",
+            "confidence": "certain",
+            "source": "aggregate"
+          }
+        ],
+        "errors": [],
+        "notices": [],
+        "proposedFixes": [],
+        "rendered": "LOW",
         "valid": true,
         "warnings": []
       }

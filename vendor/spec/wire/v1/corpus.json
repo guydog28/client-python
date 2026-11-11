@@ -229,6 +229,77 @@
                 "credential": "context-token",
                 "deployment": "open"
             },
+            "id": "ctx-describe.marked",
+            "operationId": "ctxDescribe",
+            "request": {
+                "headers": {},
+                "method": "GET",
+                "path": "/v1/ctx/ez-marked/1.0.0",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}"
+            },
+            "response": {
+                "body": {
+                    "access": {
+                        "id": "ez-marked",
+                        "resolvedVersion": "1.0.0",
+                        "version": "latest"
+                    },
+                    "crosswalks": [
+                        {
+                            "id": "ez-gated-to-ez-test",
+                            "resolvedVersion": "1.0.0",
+                            "version": "latest"
+                        }
+                    ],
+                    "description": "The self-marked gated scheme with a marked guide, a marked access policy and a marked crosswalk with a selection, so the corpus records each document's own marking and a candidate that lost.",
+                    "guides": [
+                        {
+                            "id": "ez-marked",
+                            "resolvedVersion": "1.0.0",
+                            "version": "latest"
+                        }
+                    ],
+                    "id": "ez-marked",
+                    "scheme": {
+                        "id": "ez-gated",
+                        "resolvedVersion": "1.0.0",
+                        "version": "latest"
+                    },
+                    "schemes": [
+                        {
+                            "id": "ez-gated",
+                            "roles": [
+                                "primary",
+                                "crosswalk-source"
+                            ],
+                            "selector": "ez-gated",
+                            "version": "1.0.0"
+                        },
+                        {
+                            "id": "ez-test",
+                            "roles": [
+                                "crosswalk-target"
+                            ],
+                            "selector": "ez-test",
+                            "version": "1.0.0"
+                        }
+                    ],
+                    "version": "1.0.0"
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "What the marked context is composed of. Recorded because a client describes a Context before it reads the marked scheme, guide, access policy and crosswalk below."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
             "id": "ctx-document-audit.ok",
             "neverCache": "A document operation carries an access decision, and every access decision is an audit event on the runtime. No SDK serves it from cache, and the access-decision opt-in does not reach it.",
             "operationId": "ctxDocumentAudit",
@@ -2412,6 +2483,141 @@
                 "credential": "context-token",
                 "deployment": "open"
             },
+            "id": "ctx-scheme-view.marked",
+            "operationId": "ctxSchemeView",
+            "request": {
+                "body": {},
+                "headers": {
+                    "content-type": "application/json"
+                },
+                "method": "POST",
+                "path": "/v1/ctx/ez-marked/1.0.0/scheme/view",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/scheme/view"
+            },
+            "response": {
+                "body": {
+                    "operationLimitations": [],
+                    "resolution": {
+                        "artifacts": [
+                            {
+                                "id": "ez-gated",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-test",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-marked",
+                                "kind": "guide",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-marked",
+                                "kind": "access",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-gated-to-ez-test",
+                                "kind": "crosswalk",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-marked",
+                                "kind": "context",
+                                "version": "1.0.0"
+                            }
+                        ],
+                        "contextId": "ez-marked",
+                        "requestedVersion": "1.0.0",
+                        "resolvedVersion": "1.0.0",
+                        "sources": []
+                    },
+                    "result": {
+                        "categories": [
+                            {
+                                "id": "level",
+                                "items": [
+                                    {
+                                        "aliases": [],
+                                        "categories": [
+                                            "level"
+                                        ],
+                                        "id": "OPEN",
+                                        "name": "Open",
+                                        "parents": [],
+                                        "position": 0,
+                                        "rank": -100,
+                                        "views": {
+                                            "default": "OPEN"
+                                        }
+                                    },
+                                    {
+                                        "aliases": [],
+                                        "categories": [
+                                            "level"
+                                        ],
+                                        "id": "SENSITIVE",
+                                        "name": "Sensitive",
+                                        "parents": [],
+                                        "position": 1,
+                                        "rank": 100,
+                                        "rulesReferencing": [
+                                            "export-requires-sensitive: Requires Sensitive"
+                                        ],
+                                        "views": {
+                                            "default": "SENSITIVE"
+                                        }
+                                    }
+                                ],
+                                "label": "Level"
+                            },
+                            {
+                                "id": "handling",
+                                "items": [
+                                    {
+                                        "aliases": [],
+                                        "categories": [
+                                            "handling"
+                                        ],
+                                        "id": "EXPORT",
+                                        "name": "Export Controlled",
+                                        "parents": [],
+                                        "position": 0,
+                                        "rulesReferencing": [
+                                            "export-requires-sensitive: Requires Sensitive"
+                                        ],
+                                        "views": {
+                                            "default": "EXPORT"
+                                        }
+                                    }
+                                ],
+                                "label": "Handling"
+                            }
+                        ],
+                        "description": "Taxonomy with a suggest-scoped prerequisite, so one concept is only offered once its unlock is present. Exists for the includeGated option. It marks itself, so the corpus records a scheme view that carries the document's whole marking.",
+                        "id": "ez-gated",
+                        "marking": "OPEN",
+                        "name": "EzGated",
+                        "uncategorized": []
+                    }
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "A scheme that marks itself: the structural view reports the document's whole marking."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
             "id": "ctx-scheme-notices.ok",
             "operationId": "ctxSchemeNotices",
             "request": {
@@ -4555,6 +4761,69 @@
                 "credential": "context-token",
                 "deployment": "open"
             },
+            "id": "ctx-access-rules.marked",
+            "operationId": "ctxAccessRules",
+            "request": {
+                "headers": {},
+                "method": "GET",
+                "path": "/v1/ctx/ez-marked/1.0.0/access/rules",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/access/rules"
+            },
+            "response": {
+                "body": {
+                    "marking": "SENSITIVE",
+                    "rules": [
+                        {
+                            "access": {
+                                "id": "ez-marked",
+                                "kind": "access",
+                                "version": "1.0.0"
+                            },
+                            "attributesNeeded": [
+                                "clearance"
+                            ],
+                            "dependsOn": [],
+                            "lines": [
+                                "Level Access",
+                                "",
+                                "Requirement: clearance >= data.level",
+                                "",
+                                "Attributes needed: clearance"
+                            ],
+                            "name": "Level Access",
+                            "overrides": [],
+                            "requirementText": "clearance >= data.level",
+                            "rule": {
+                                "artifact": {
+                                    "id": "ez-marked",
+                                    "kind": "access",
+                                    "version": "1.0.0"
+                                },
+                                "ruleDigest": "sha256:927e90a423517c78d4690c0b5f35c1dcd095ea32f76c3c90b1cbfa1bee493f62",
+                                "ruleId": "level-rule"
+                            },
+                            "scheme": {
+                                "id": "ez-gated",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            }
+                        }
+                    ]
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "A marked access policy: the rules body reports the policy's whole marking and no rule's part."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
             "id": "ctx-access-rules.no-policy",
             "operationId": "ctxAccessRules",
             "request": {
@@ -5258,6 +5527,96 @@
                 "credential": "context-token",
                 "deployment": "open"
             },
+            "id": "ctx-guide-view.marked",
+            "operationId": "ctxGuideView",
+            "request": {
+                "body": {},
+                "headers": {
+                    "content-type": "application/json"
+                },
+                "method": "POST",
+                "path": "/v1/ctx/ez-marked/1.0.0/guide/view",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/guide/view"
+            },
+            "response": {
+                "body": {
+                    "operationLimitations": [],
+                    "resolution": {
+                        "artifacts": [
+                            {
+                                "id": "ez-gated",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-test",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-marked",
+                                "kind": "guide",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-marked",
+                                "kind": "access",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-gated-to-ez-test",
+                                "kind": "crosswalk",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-marked",
+                                "kind": "context",
+                                "version": "1.0.0"
+                            }
+                        ],
+                        "contextId": "ez-marked",
+                        "requestedVersion": "1.0.0",
+                        "resolvedVersion": "1.0.0",
+                        "sources": []
+                    },
+                    "result": {
+                        "categories": [],
+                        "description": "A guide marked in the gated scheme: a whole marking on the guide and a part on its rule. The view reports the whole as the guide's marking and leaves the part in the document.",
+                        "id": "ez-marked",
+                        "marking": "SENSITIVE",
+                        "name": "EzMarked Guide",
+                        "uncategorized": [
+                            {
+                                "dependsOn": [],
+                                "dependsOnNames": [],
+                                "id": "rule-sensitive",
+                                "isComputed": false,
+                                "keywords": [
+                                    "sensitive"
+                                ],
+                                "matcherLabels": [],
+                                "name": "Sensitive Content",
+                                "outcomeText": "SENSITIVE",
+                                "overrideNames": [],
+                                "overrides": []
+                            }
+                        ]
+                    }
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "A marked guide: the view reports the guide's whole marking and no rule's part."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
             "id": "ctx-crosswalk-describe.ok",
             "operationId": "ctxCrosswalkDescribe",
             "request": {
@@ -5324,7 +5683,7 @@
             "request": {
                 "headers": {},
                 "method": "GET",
-                "path": "/v1/ctx/ez-marked-crosswalk/1.0.0/crosswalk/describe",
+                "path": "/v1/ctx/ez-marked/1.0.0/crosswalk/describe",
                 "pathTemplate": "/v1/ctx/{ctxId}/{version}/crosswalk/describe"
             },
             "response": {
@@ -5438,7 +5797,7 @@
                     "content-type": "application/json"
                 },
                 "method": "POST",
-                "path": "/v1/ctx/ez-marked-crosswalk/1.0.0/crosswalk/translate",
+                "path": "/v1/ctx/ez-marked/1.0.0/crosswalk/translate",
                 "pathTemplate": "/v1/ctx/{ctxId}/{version}/crosswalk/translate"
             },
             "response": {
@@ -5457,17 +5816,27 @@
                                 "version": "1.0.0"
                             },
                             {
+                                "id": "ez-marked",
+                                "kind": "guide",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-marked",
+                                "kind": "access",
+                                "version": "1.0.0"
+                            },
+                            {
                                 "id": "ez-gated-to-ez-test",
                                 "kind": "crosswalk",
                                 "version": "1.0.0"
                             },
                             {
-                                "id": "ez-marked-crosswalk",
+                                "id": "ez-marked",
                                 "kind": "context",
                                 "version": "1.0.0"
                             }
                         ],
-                        "contextId": "ez-marked-crosswalk",
+                        "contextId": "ez-marked",
                         "requestedVersion": "1.0.0",
                         "resolvedVersion": "1.0.0",
                         "sources": []

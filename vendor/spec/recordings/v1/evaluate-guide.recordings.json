@@ -2,25 +2,24 @@
   "engineVersion": "1.0.0-dev.30",
   "openapiVersion": "1.0.0-dev.30",
   "responses": {
-    "0b22ab38dc0a82d4a23ee45bb2474bf96805c810aa4a707a9da9cd9618356b34": {
-      "argsSummary": "[[]]",
+    "19619f30cf298a935b67a1121f4db436d0d509544662e0c75cc395bef5d10b59": {
+      "argsSummary": "[[\"rule-high\",\"rule-ctrl-a\"]]",
       "method": "evaluateGuide",
       "response": {
-        "aggregatedMarking": "",
-        "selectedRules": []
+        "aggregatedMarking": "HIGH/CTRL-A",
+        "selectedRules": [
+          {
+            "id": "rule-high",
+            "name": "High Sensitivity"
+          },
+          {
+            "id": "rule-ctrl-a",
+            "name": "Control A"
+          }
+        ]
       }
     },
-    "10cccfa42799ca789918e440771e3082785886337e1e53d7aaf15ed7aa85d9c3": {
-      "argsSummary": "[\"sensitive and controlled data\"]",
-      "method": "guideScan",
-      "response": {
-        "count": 2,
-        "firstEnd": 9,
-        "firstRuleId": "rule-high",
-        "firstStart": 0
-      }
-    },
-    "239066ea4cf600c00ee395c7ff1a35f5e1d7f521a618a8346f84fefddd074769": {
+    "2789857b85000800aeb6008faa7299ef7afcee4f3227ee41301d7ab928ee7504": {
       "argsSummary": "[\"This is a sensitive document\"]",
       "method": "guideScan",
       "response": {
@@ -30,7 +29,20 @@
         "firstStart": 10
       }
     },
-    "24ca0f2821e27bd2158cc436926cbc4bab4c0557017f0dcadde4fed2bd4b74d1": {
+    "33027d780f46db57b94c0b019bb03dc85a6509b4baa238a50a3fe0956f84d9a1": {
+      "argsSummary": "[[\"rule-high\"]]",
+      "method": "evaluateGuide",
+      "response": {
+        "aggregatedMarking": "HIGH",
+        "selectedRules": [
+          {
+            "id": "rule-high",
+            "name": "High Sensitivity"
+          }
+        ]
+      }
+    },
+    "377cdb11f915df304dc9490cdb7775bb1e74252afa0ed5314f1a154b7807de92": {
       "argsSummary": "[[\"rule-high\",\"rule-low\",\"rule-ctrl-a\"]]",
       "method": "evaluateGuide",
       "response": {
@@ -51,70 +63,7 @@
         ]
       }
     },
-    "49905d1bfa825895a62caf625f948e4766233588f1ab8718db41cc52c571ea4a": {
-      "argsSummary": "[[\"rule-high\"]]",
-      "method": "evaluateGuide",
-      "response": {
-        "aggregatedMarking": "HIGH",
-        "selectedRules": [
-          {
-            "id": "rule-high",
-            "name": "High Sensitivity"
-          }
-        ]
-      }
-    },
-    "7a0cf21242f3d365bd7725c8dc05d4f25f0b8923363c2a98f66fd071cdf0e077": {
-      "argsSummary": "[[\"rule-high\",\"rule-ctrl-a\"]]",
-      "method": "evaluateGuide",
-      "response": {
-        "aggregatedMarking": "HIGH/CTRL-A",
-        "selectedRules": [
-          {
-            "id": "rule-high",
-            "name": "High Sensitivity"
-          },
-          {
-            "id": "rule-ctrl-a",
-            "name": "Control A"
-          }
-        ]
-      }
-    },
-    "8afa23093e39df846a96a8df464d12a09f4ba582997e39c46ef76f29b239c0dc": {
-      "argsSummary": "[\"This document is for the public\"]",
-      "method": "guideScan",
-      "response": {
-        "count": 1,
-        "firstEnd": 31,
-        "firstRuleId": "rule-low",
-        "firstStart": 25
-      }
-    },
-    "a3a41192f5a99722dcac91795a0078fe84fc9e5b989882f46d35ee95cb523795": {
-      "argsSummary": "[\"no relevant keywords here\"]",
-      "method": "guideScan",
-      "response": {
-        "count": 0,
-        "firstEnd": null,
-        "firstRuleId": null,
-        "firstStart": null
-      }
-    },
-    "e48545ef5981c649f9aa46f1fc8a4ca2bc21b452a2e25f415f69cbe2002fccae": {
-      "argsSummary": "[[{\"guideId\":\"ref-guide-1\",\"ruleId\":\"rule-high\"}]]",
-      "method": "evaluateMany",
-      "response": {
-        "aggregatedMarking": "HIGH",
-        "selectedRules": [
-          {
-            "id": "rule-high",
-            "name": "High Sensitivity"
-          }
-        ]
-      }
-    },
-    "f3edd7da9e632808b2818fd4e9ed90ad35b9bc3a0371d876bb3bae5c549664b6": {
+    "3916bdd071ae9b8dfe7955079c767854a3fbdf4710ebb57f9e1539c036571c90": {
       "argsSummary": "[[{\"guideId\":\"ref-guide-1\",\"ruleId\":\"rule-high\"},{\"guideId\":\"ref-guide-1\",\"ru...",
       "method": "evaluateMany",
       "response": {
@@ -131,7 +80,71 @@
         ]
       }
     },
-    "f5677f4a90be62854d18a9c5bc2b3576f222da3e0d984319a2c893b4d2d78efd": {
+    "486642353dafa9a34df8d8939f4dfcf9280ec65f69b2970024303d088e7c7e3e": {
+      "argsSummary": "[[]]",
+      "method": "evaluateGuide",
+      "response": {
+        "aggregatedMarking": "",
+        "selectedRules": []
+      }
+    },
+    "4d8ed3a01777ef7911cffa521818e98ecf8d2db7af45683d8a2142991e34978f": {
+      "argsSummary": "[[\"rule-high\"]]",
+      "method": "evaluateGuide",
+      "response": {
+        "aggregatedMarking": "HIGH",
+        "selectedRules": [
+          {
+            "id": "rule-high",
+            "name": "High Sensitivity"
+          }
+        ]
+      }
+    },
+    "b900f149f64cefdb0a9edb16e3747ed9ad38b5ab23773df66051ac8e69eaa813": {
+      "argsSummary": "[\"This document is for the public\"]",
+      "method": "guideScan",
+      "response": {
+        "count": 1,
+        "firstEnd": 31,
+        "firstRuleId": "rule-low",
+        "firstStart": 25
+      }
+    },
+    "c04957b7415e9386caeaba2c3f02a91c5bcf9e4b11ecd06469c9d91114bd4d72": {
+      "argsSummary": "[\"sensitive and controlled data\"]",
+      "method": "guideScan",
+      "response": {
+        "count": 2,
+        "firstEnd": 9,
+        "firstRuleId": "rule-high",
+        "firstStart": 0
+      }
+    },
+    "c7548f53d49dbdf6870527e5a297edfbe86caa3159be2cc29e0f657d66da1cab": {
+      "argsSummary": "[\"no relevant keywords here\"]",
+      "method": "guideScan",
+      "response": {
+        "count": 0,
+        "firstEnd": null,
+        "firstRuleId": null,
+        "firstStart": null
+      }
+    },
+    "f2eb1d574746f50a3c286d663b85138351e2fc5c120e1db803ef6da4b1c8ac93": {
+      "argsSummary": "[[{\"guideId\":\"ref-guide-1\",\"ruleId\":\"rule-high\"}]]",
+      "method": "evaluateMany",
+      "response": {
+        "aggregatedMarking": "HIGH",
+        "selectedRules": [
+          {
+            "id": "rule-high",
+            "name": "High Sensitivity"
+          }
+        ]
+      }
+    },
+    "f5b06c0eb78abeefdbe480c83205021cd98c5533a6edcd5e5d6e3c06c09624fc": {
       "argsSummary": "[[\"rule-low\"]]",
       "method": "evaluateGuide",
       "response": {

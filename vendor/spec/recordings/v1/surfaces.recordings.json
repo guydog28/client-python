@@ -2,22 +2,58 @@
   "engineVersion": "1.0.0-dev.30",
   "openapiVersion": "1.0.0-dev.30",
   "responses": {
-    "059bc808e7ca0bd56f139f3752004e4a00d272386d748bf57ad57a6761896eab": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"CONFIDENTIAL\",\"confidence\":\"certain\",\"so...",
-      "method": "render",
+    "2d19c2b984dc1384aa70c87cb68645f6775f16c83e6e3a7f745f506757479189": {
+      "argsSummary": "[\"CONF\"]",
+      "method": "validate",
       "response": {
-        "result": "CONF"
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "CONFIDENTIAL",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "CONFIDENTIAL"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "status": "complete",
+          "surface": "sensitivity",
+          "unmatched": []
+        },
+        "rendered": "CONFIDENTIAL",
+        "valid": true,
+        "warnings": []
       }
     },
-    "2951979aa5c802784227ae46a41afaf71e603ef03c820ba46ffa9166a4c23195": {
-      "argsSummary": "[\"CONFIDENTIAL // PARTNERS\",{\"context\":{\"role\":\"part\"}}]",
-      "method": "process",
+    "383bf3758a030a377e7f4cc5a0b6777d27ee442e303fa3e954a80c41893d2433": {
+      "argsSummary": "[\"CONF/PARTNERS\",{\"inputFormat\":\"sensitivity/full\"}]",
+      "method": "validate",
       "response": {
         "appliedFixes": [
           {
             "action": "reorder",
-            "message": "Read as `sensitivity/full`, a view of the whole role, where the request names the part role.",
-            "ruleId": "_recognition_role"
+            "message": "Read `CONF` as `CONFIDENTIAL` (alias).",
+            "ruleId": "_recognition_alias"
+          },
+          {
+            "action": "reorder",
+            "message": "Read `/` as ` // ` (separator).",
+            "ruleId": "_recognition_separator"
           }
         ],
         "assertions": [
@@ -53,6 +89,63 @@
         "errors": [],
         "inputWasValid": false,
         "notices": [],
+        "recognition": {
+          "inputFormat": "sensitivity/full",
+          "role": "whole",
+          "status": "complete",
+          "surface": "sensitivity",
+          "unmatched": []
+        },
+        "rendered": "CONFIDENTIAL // PARTNERS",
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "44b6efb7c81ea0dd80a77da9ed1300100d78ccfdbfc93fe3f9a3f594d2a2249e": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"CONFIDENTIAL\",\"confidence\":\"certain\",\"so...",
+      "method": "render",
+      "response": {
+        "result": "CONF // PARTNERS"
+      }
+    },
+    "4cb7e79a7fbf57a2f0fd7a62b88a6633682c0b81750674d1119b4e6daa1f5a35": {
+      "argsSummary": "[\"CONF/PARTNERS\",{\"inputFormat\":\"full_line_2019\"}]",
+      "method": "process",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "CONFIDENTIAL",
+            "confidence": "certain",
+            "source": "parse"
+          },
+          {
+            "categoryId": "sharing",
+            "conceptId": "PARTNERS",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "CONFIDENTIAL"
+            },
+            {
+              "categoryId": "sharing",
+              "conceptId": "PARTNERS"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
         "proposedFixes": [],
         "recognition": {
           "corrections": [],
@@ -62,13 +155,104 @@
           "surface": "sensitivity",
           "unmatched": []
         },
-        "rendered": "CONF // PARTNERS",
+        "rendered": "CONFIDENTIAL // PARTNERS",
         "renders": {},
         "valid": true,
         "warnings": []
       }
     },
-    "39b9aa8c0338da1793d047763d55f17586adb55442a76747b06e326b952f2df8": {
+    "4e337d4f0fc5baaf3a0df823b3a6b8de0cf10f3d8f6cfb1b87f5eee317f7c52c": {
+      "argsSummary": "[\"CONF\",{\"inputFormat\":\"short\"}]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "CONFIDENTIAL",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "CONFIDENTIAL"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "inputFormat": "sensitivity/short",
+          "role": "part",
+          "status": "complete",
+          "surface": "sensitivity",
+          "unmatched": []
+        },
+        "rendered": "CONF",
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "580626dd2163a38f668a8d5691852c79a854de96df4bc599e0765fc617e74c40": {
+      "argsSummary": "[\"KEEP 7 YEARS\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "keep",
+            "conceptId": "KEEP_7Y",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "keep",
+              "conceptId": "KEEP_7Y"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [
+          {
+            "constraintId": "required-category:level",
+            "message": "Level is required: the marking asserts no concept in this category"
+          }
+        ],
+        "inputWasValid": false,
+        "notices": [],
+        "recognition": {
+          "inputFormat": "retention/block",
+          "status": "complete",
+          "surface": "retention",
+          "unmatched": []
+        },
+        "rendered": "KEEP 7 YEARS",
+        "valid": false,
+        "warnings": []
+      }
+    },
+    "58d78f7ec7d98bd9239f81afff92ef1d6523b6b941abd2ca3174ec6378b2378f": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"CONFIDENTIAL\",\"confidence\":\"certain\",\"so...",
+      "method": "render",
+      "response": {
+        "result": "CONFIDENTIAL // PARTNERS"
+      }
+    },
+    "770aa87e208f1f92af2f4bc387160a765b45ee57598ee8b8a1bcf8a8cffd50e2": {
       "argsSummary": "[\"CONF // PARTNERS\",{\"inputFormat\":\"short\"}]",
       "method": "validate",
       "response": {
@@ -118,95 +302,75 @@
         "warnings": []
       }
     },
-    "468678189ff7c153a9b2204d650bbf47c1259b6bb79d3f161b15c05bef47959f": {
-      "argsSummary": "[\"CONF\"]",
-      "method": "validate",
+    "7e36512ade08888cdbc29541b6e6716a1765e835723e4fbd708d1bbc2de95ba2": {
+      "argsSummary": "[\"(CONF // PARTNERS)\"]",
+      "method": "scan",
       "response": {
-        "appliedFixes": [],
-        "assertions": [
+        "count": 1,
+        "firstMarking": "(CONF // PARTNERS)",
+        "firstRendered": "CONF // PARTNERS",
+        "firstStart": 0,
+        "results": [
           {
-            "categoryId": "level",
-            "conceptId": "CONFIDENTIAL",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "CONFIDENTIAL"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "status": "complete",
-          "surface": "sensitivity",
-          "unmatched": []
-        },
-        "rendered": "CONFIDENTIAL",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "51532618c89354440906fa56da44e96bace0073775924c8df72f17a04ead8590": {
-      "argsSummary": "[\"CONF // PARTNERS\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "CONFIDENTIAL",
-            "confidence": "certain",
-            "source": "parse"
-          },
-          {
-            "categoryId": "sharing",
-            "conceptId": "PARTNERS",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "CONFIDENTIAL"
+            "end": 18,
+            "inner": "CONF // PARTNERS",
+            "marking": "(CONF // PARTNERS)",
+            "result": {
+              "appliedFixes": [],
+              "assertions": [
+                {
+                  "categoryId": "level",
+                  "conceptId": "CONFIDENTIAL",
+                  "confidence": "certain",
+                  "source": "parse"
+                },
+                {
+                  "categoryId": "sharing",
+                  "conceptId": "PARTNERS",
+                  "confidence": "certain",
+                  "source": "parse"
+                }
+              ],
+              "assessment": {
+                "collapsed": [],
+                "conflicts": [],
+                "emitted": [
+                  {
+                    "categoryId": "level",
+                    "conceptId": "CONFIDENTIAL"
+                  },
+                  {
+                    "categoryId": "sharing",
+                    "conceptId": "PARTNERS"
+                  }
+                ],
+                "omitted": [],
+                "unrepresentable": []
+              },
+              "errors": [],
+              "inputWasValid": true,
+              "notices": [],
+              "recognition": {
+                "inputFormat": "sensitivity/short",
+                "role": "part",
+                "status": "complete",
+                "surface": "sensitivity",
+                "unmatched": []
+              },
+              "rendered": "CONF // PARTNERS",
+              "valid": true,
+              "warnings": []
             },
-            {
-              "categoryId": "sharing",
-              "conceptId": "PARTNERS"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "sensitivity/short",
-          "role": "part",
-          "status": "complete",
-          "surface": "sensitivity",
-          "unmatched": []
-        },
-        "rendered": "CONF // PARTNERS",
-        "valid": true,
-        "warnings": []
+            "role": "part",
+            "start": 0,
+            "type": "sensitivity/short",
+            "wrapped": true
+          }
+        ],
+        "unread": []
       }
     },
-    "6d0055fedb1d4d752bd4a24d0235cf268c24524a64cda7cbd2db889cb2de32f1": {
+    "804cbd5424d184788ad0508bb9ffad6d30c49f0dcb7e706e758526734c41c36d": {
       "argsSummary": "[\"CONF/PARTNERS\",{\"inputFormat\":\"full\"}]",
       "method": "process",
       "response": {
@@ -285,93 +449,7 @@
         "warnings": []
       }
     },
-    "71c21cd72c1cbcd4a8e8f594a15fd153aebbaabc83d9742d2a9ba69b7af2a522": {
-      "argsSummary": "[\"CONFIDENTIAL\\nKEEP 7 YEARS\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "CONFIDENTIAL",
-            "confidence": "certain",
-            "source": "parse"
-          },
-          {
-            "categoryId": "keep",
-            "conceptId": "KEEP_7Y",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "CONFIDENTIAL"
-            },
-            {
-              "categoryId": "keep",
-              "conceptId": "KEEP_7Y"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "role": "whole",
-          "status": "complete",
-          "unmatched": []
-        },
-        "rendered": "CONFIDENTIAL\nKEEP 7 YEARS",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "795d5a981afa4b769d02a2f197f9f0577a5369cb02464bcecba16e5998e37900": {
-      "argsSummary": "[\"CONF\",{\"context\":{\"role\":\"part\"}}]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "CONFIDENTIAL",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "CONFIDENTIAL"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "status": "complete",
-          "surface": "sensitivity",
-          "unmatched": []
-        },
-        "rendered": "CONF",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "8262cb4d6c8a4704f8a61ab2e985c17dd3402fa99fc78cf0a6eb919fc17ace28": {
+    "928b1c6f740f5b614ae7f85b2151126edba03f445a005069e46863c38c43e727": {
       "argsSummary": "[\"CONF // PARTNERS\",{\"context\":{\"role\":\"whole\"},\"inputFormat\":\"short\"}]",
       "method": "validate",
       "response": {
@@ -421,7 +499,112 @@
         "warnings": []
       }
     },
-    "840f44563d10c754a4bdad9da7bb7f56040ca7d022448d566d0989d608d13510": {
+    "95198da11eb285d54e9e006bfc82e76a2e6efe720f6040f11b5935fd78910937": {
+      "argsSummary": "[\"CONFIDENTIAL\\nKEEP 7 YEARS\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "CONFIDENTIAL",
+            "confidence": "certain",
+            "source": "parse"
+          },
+          {
+            "categoryId": "keep",
+            "conceptId": "KEEP_7Y",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "CONFIDENTIAL"
+            },
+            {
+              "categoryId": "keep",
+              "conceptId": "KEEP_7Y"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "role": "whole",
+          "status": "complete",
+          "unmatched": []
+        },
+        "rendered": "CONFIDENTIAL\nKEEP 7 YEARS",
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "9997b9e0c49f927d943a85066784a10c863bf0a6cb9350be9977794c3879b8e9": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"CONFIDENTIAL\",\"confidence\":\"certain\",\"so...",
+      "method": "render",
+      "response": {
+        "result": "CONF"
+      }
+    },
+    "9e2a549c6f1d35986cf37ffd95aa6f487fe51a384ee10c58f15ed416c4f6dcf5": {
+      "argsSummary": "[\"CONF // PARTNERS\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "CONFIDENTIAL",
+            "confidence": "certain",
+            "source": "parse"
+          },
+          {
+            "categoryId": "sharing",
+            "conceptId": "PARTNERS",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "CONFIDENTIAL"
+            },
+            {
+              "categoryId": "sharing",
+              "conceptId": "PARTNERS"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "inputFormat": "sensitivity/short",
+          "role": "part",
+          "status": "complete",
+          "surface": "sensitivity",
+          "unmatched": []
+        },
+        "rendered": "CONF // PARTNERS",
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "b59dcd0aa2a589c643173133744a433c1ad8b4d7858b4981e2004089db6ab882": {
       "argsSummary": "[\"CONF\\nKEEP 7 YEARS\"]",
       "method": "process",
       "response": {
@@ -471,27 +654,15 @@
         "warnings": []
       }
     },
-    "8bcd5cb335ee03387683481ebee78d6ec144c96244c768f6c8e7465bd373f93c": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"CONFIDENTIAL\",\"confidence\":\"certain\",\"so...",
-      "method": "render",
-      "response": {
-        "result": "CONFIDENTIAL // PARTNERS"
-      }
-    },
-    "9dfdce2c15c2f4e2430265e718106967fddfc075107279e246021e8d42371aca": {
-      "argsSummary": "[\"CONF/PARTNERS\",{\"inputFormat\":\"sensitivity/full\"}]",
-      "method": "validate",
+    "d0c882be425a709c43b0a05588ab1c16908c3c1f470389ca543b990f6605f4c0": {
+      "argsSummary": "[\"CONFIDENTIAL // PARTNERS\",{\"context\":{\"role\":\"part\"}}]",
+      "method": "process",
       "response": {
         "appliedFixes": [
           {
             "action": "reorder",
-            "message": "Read `CONF` as `CONFIDENTIAL` (alias).",
-            "ruleId": "_recognition_alias"
-          },
-          {
-            "action": "reorder",
-            "message": "Read `/` as ` // ` (separator).",
-            "ruleId": "_recognition_separator"
+            "message": "Read as `sensitivity/full`, a view of the whole role, where the request names the part role.",
+            "ruleId": "_recognition_role"
           }
         ],
         "assertions": [
@@ -527,6 +698,59 @@
         "errors": [],
         "inputWasValid": false,
         "notices": [],
+        "proposedFixes": [],
+        "recognition": {
+          "corrections": [],
+          "inputFormat": "sensitivity/full",
+          "role": "whole",
+          "status": "complete",
+          "surface": "sensitivity",
+          "unmatched": []
+        },
+        "rendered": "CONF // PARTNERS",
+        "renders": {},
+        "valid": true,
+        "warnings": []
+      }
+    },
+    "e09facf0172a89d7a189f8db9ddd9f796d6c5955d9b7fcd5d7961f7fc3a7393b": {
+      "argsSummary": "[\"CONF/PARTNERS\"]",
+      "method": "validate",
+      "response": {
+        "appliedFixes": [],
+        "assertions": [
+          {
+            "categoryId": "level",
+            "conceptId": "CONFIDENTIAL",
+            "confidence": "certain",
+            "source": "parse"
+          },
+          {
+            "categoryId": "sharing",
+            "conceptId": "PARTNERS",
+            "confidence": "certain",
+            "source": "parse"
+          }
+        ],
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "CONFIDENTIAL"
+            },
+            {
+              "categoryId": "sharing",
+              "conceptId": "PARTNERS"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
         "recognition": {
           "inputFormat": "sensitivity/full",
           "role": "whole",
@@ -539,75 +763,45 @@
         "warnings": []
       }
     },
-    "a2d3fafab72198a1b944dd6f280d4dcc0c02660400a29a10e80421e66c952d7c": {
-      "argsSummary": "[\"(CONF // PARTNERS)\"]",
-      "method": "scan",
+    "e5c3d9d0bb49a14960a3c1e6be1ff315a31414dbc77719cbb2b6438b2133f011": {
+      "argsSummary": "[\"CONF\",{\"context\":{\"role\":\"part\"}}]",
+      "method": "validate",
       "response": {
-        "count": 1,
-        "firstMarking": "(CONF // PARTNERS)",
-        "firstRendered": "CONF // PARTNERS",
-        "firstStart": 0,
-        "results": [
+        "appliedFixes": [],
+        "assertions": [
           {
-            "end": 18,
-            "inner": "CONF // PARTNERS",
-            "marking": "(CONF // PARTNERS)",
-            "result": {
-              "appliedFixes": [],
-              "assertions": [
-                {
-                  "categoryId": "level",
-                  "conceptId": "CONFIDENTIAL",
-                  "confidence": "certain",
-                  "source": "parse"
-                },
-                {
-                  "categoryId": "sharing",
-                  "conceptId": "PARTNERS",
-                  "confidence": "certain",
-                  "source": "parse"
-                }
-              ],
-              "assessment": {
-                "collapsed": [],
-                "conflicts": [],
-                "emitted": [
-                  {
-                    "categoryId": "level",
-                    "conceptId": "CONFIDENTIAL"
-                  },
-                  {
-                    "categoryId": "sharing",
-                    "conceptId": "PARTNERS"
-                  }
-                ],
-                "omitted": [],
-                "unrepresentable": []
-              },
-              "errors": [],
-              "inputWasValid": true,
-              "notices": [],
-              "recognition": {
-                "inputFormat": "sensitivity/short",
-                "role": "part",
-                "status": "complete",
-                "surface": "sensitivity",
-                "unmatched": []
-              },
-              "rendered": "CONF // PARTNERS",
-              "valid": true,
-              "warnings": []
-            },
-            "role": "part",
-            "start": 0,
-            "type": "sensitivity/short",
-            "wrapped": true
+            "categoryId": "level",
+            "conceptId": "CONFIDENTIAL",
+            "confidence": "certain",
+            "source": "parse"
           }
         ],
-        "unread": []
+        "assessment": {
+          "collapsed": [],
+          "conflicts": [],
+          "emitted": [
+            {
+              "categoryId": "level",
+              "conceptId": "CONFIDENTIAL"
+            }
+          ],
+          "omitted": [],
+          "unrepresentable": []
+        },
+        "errors": [],
+        "inputWasValid": true,
+        "notices": [],
+        "recognition": {
+          "status": "complete",
+          "surface": "sensitivity",
+          "unmatched": []
+        },
+        "rendered": "CONF",
+        "valid": true,
+        "warnings": []
       }
     },
-    "c31c71d51e6aace36318c95b248e07d5b707ee290579fc2edcd55583af5e4e5c": {
+    "f542e92a4f452c24d9fd8feb1b0deee6d3e9f1f5cd0b17cc8f839c1330717e24": {
       "argsSummary": "[\"CONF // PARTNERS\",{\"context\":{\"role\":\"whole\"}}]",
       "method": "validate",
       "response": {
@@ -661,200 +855,6 @@
         "rendered": "CONFIDENTIAL // PARTNERS",
         "valid": true,
         "warnings": []
-      }
-    },
-    "c35a382e9b47b3be2d3ccbe8803877297d6c500351317542e6fe5286a303338c": {
-      "argsSummary": "[\"CONF/PARTNERS\",{\"inputFormat\":\"full_line_2019\"}]",
-      "method": "process",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "CONFIDENTIAL",
-            "confidence": "certain",
-            "source": "parse"
-          },
-          {
-            "categoryId": "sharing",
-            "conceptId": "PARTNERS",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "CONFIDENTIAL"
-            },
-            {
-              "categoryId": "sharing",
-              "conceptId": "PARTNERS"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "proposedFixes": [],
-        "recognition": {
-          "corrections": [],
-          "inputFormat": "sensitivity/full",
-          "role": "whole",
-          "status": "complete",
-          "surface": "sensitivity",
-          "unmatched": []
-        },
-        "rendered": "CONFIDENTIAL // PARTNERS",
-        "renders": {},
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "c4fc9dfe0723e53cf4b80fa7b988b8a43dba22b1c99a95f36491f6543c3b54e4": {
-      "argsSummary": "[\"CONF/PARTNERS\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "CONFIDENTIAL",
-            "confidence": "certain",
-            "source": "parse"
-          },
-          {
-            "categoryId": "sharing",
-            "conceptId": "PARTNERS",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "CONFIDENTIAL"
-            },
-            {
-              "categoryId": "sharing",
-              "conceptId": "PARTNERS"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "sensitivity/full",
-          "role": "whole",
-          "status": "complete",
-          "surface": "sensitivity",
-          "unmatched": []
-        },
-        "rendered": "CONFIDENTIAL // PARTNERS",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "cc5e12dd16f2084b9570a4f961622439b725e32caa5c2fbc3e6997f673d72ac4": {
-      "argsSummary": "[\"KEEP 7 YEARS\"]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "keep",
-            "conceptId": "KEEP_7Y",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "keep",
-              "conceptId": "KEEP_7Y"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [
-          {
-            "constraintId": "required-category:level",
-            "message": "Level is required: the marking asserts no concept in this category"
-          }
-        ],
-        "inputWasValid": false,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "retention/block",
-          "status": "complete",
-          "surface": "retention",
-          "unmatched": []
-        },
-        "rendered": "KEEP 7 YEARS",
-        "valid": false,
-        "warnings": []
-      }
-    },
-    "d1b8649af68d155926ced4ed705d71a3a4aec359d19a1f59643820ef2533d7ff": {
-      "argsSummary": "[\"CONF\",{\"inputFormat\":\"short\"}]",
-      "method": "validate",
-      "response": {
-        "appliedFixes": [],
-        "assertions": [
-          {
-            "categoryId": "level",
-            "conceptId": "CONFIDENTIAL",
-            "confidence": "certain",
-            "source": "parse"
-          }
-        ],
-        "assessment": {
-          "collapsed": [],
-          "conflicts": [],
-          "emitted": [
-            {
-              "categoryId": "level",
-              "conceptId": "CONFIDENTIAL"
-            }
-          ],
-          "omitted": [],
-          "unrepresentable": []
-        },
-        "errors": [],
-        "inputWasValid": true,
-        "notices": [],
-        "recognition": {
-          "inputFormat": "sensitivity/short",
-          "role": "part",
-          "status": "complete",
-          "surface": "sensitivity",
-          "unmatched": []
-        },
-        "rendered": "CONF",
-        "valid": true,
-        "warnings": []
-      }
-    },
-    "e92b8b76a258e3a45f03f097659dc672afece8f5eb6f71d7325ea8d5116ba158": {
-      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"CONFIDENTIAL\",\"confidence\":\"certain\",\"so...",
-      "method": "render",
-      "response": {
-        "result": "CONF // PARTNERS"
       }
     }
   },
