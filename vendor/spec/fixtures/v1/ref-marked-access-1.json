@@ -1,0 +1,28 @@
+{
+    "access": {
+        "description": "ref-access-rules-1 marked in ref-access-1 at a pinned version: a whole marking on the access block and a part on its rule, which an engine loads and answers exactly as it does the same policy unmarked.",
+        "id": "ref-marked-access-1",
+        "marking": "HIGH",
+        "marking_scheme": {
+            "id": "ref-access-1",
+            "version": "1.0.0"
+        },
+        "name": "Reference Marked Access 1",
+        "rules": {
+            "inline": [
+                {
+                    "attribute": "level",
+                    "categoryId": "level",
+                    "id": "level-rule",
+                    "marking": "LOW",
+                    "name": "Level",
+                    "strategy": "gte"
+                }
+            ]
+        },
+        "targetScheme": {
+            "id": "ref-access-1"
+        },
+        "version": "1.0.0"
+    }
+}

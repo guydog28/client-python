@@ -482,16 +482,20 @@
                         {
                             "const": "unmapped",
                             "type": "string"
+                        },
+                        {
+                            "const": "not-selected",
+                            "type": "string"
                         }
                     ],
-                    "description": "Mapping decision, or `unmapped` when the artifact has no rule."
+                    "description": "Mapping decision, `unmapped` when the artifact has no rule, or `not-selected` when the assertion is covered only by a selection candidate that lost.\n\n`not-selected` is not an `omit`. An `omit` is a reviewed decision to drop the assertion. `not-selected` says a selection chose a different candidate, so nothing decided this assertion on its own. Like an `omit` it emits no targets and leaves the translation settled."
                 },
                 "guidance": {
                     "description": "Operator guidance copied from the mapping, when declared.",
                     "type": "string"
                 },
                 "mappingId": {
-                    "description": "Matched mapping id, absent when no mapping covers the assertion.",
+                    "description": "Matched mapping id, absent when no mapping covers the assertion. On a `not-selected` outcome, `<selection>:<candidate>` names the candidate that lost.",
                     "type": "string"
                 },
                 "reason": {

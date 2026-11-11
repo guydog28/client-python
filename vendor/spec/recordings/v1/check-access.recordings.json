@@ -33,6 +33,62 @@
         "warnings": []
       }
     },
+    "66e3845238fe0e277b13804abbae3c6ef41f7303872434cddf5e4a80a002cc47": {
+      "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"LOW\",\"confidence\":\"certain\",\"source\":\"da...",
+      "method": "checkAccess",
+      "response": {
+        "granted": true,
+        "rules": [
+          {
+            "activation": {
+              "assertions": [
+                {
+                  "categoryId": "level",
+                  "conceptId": "LOW"
+                }
+              ],
+              "contextPaths": [],
+              "matched": true
+            },
+            "comparisons": [
+              {
+                "left": {
+                  "path": "level",
+                  "source": "subject",
+                  "value": "LOW"
+                },
+                "matched": true,
+                "operator": "gte",
+                "right": {
+                  "assertions": [
+                    {
+                      "categoryId": "level",
+                      "conceptId": "LOW"
+                    }
+                  ],
+                  "categoryId": "level",
+                  "source": "assertion"
+                }
+              }
+            ],
+            "granted": true,
+            "name": "Level",
+            "rule": {
+              "artifact": {
+                "id": "ref-marked-access-1",
+                "kind": "access",
+                "version": "1.0.0"
+              },
+              "ruleDigest": "sha256:a2e19222c8fb21c7693131829e03c23cc108eb2d8bf8a160a62d3a4cf7f8662a",
+              "ruleId": "level-rule"
+            },
+            "ruleIndex": 0,
+            "skipped": false
+          }
+        ],
+        "warnings": []
+      }
+    },
     "9a5c68bc611c3eedd0d188da53f0f2ec925d854cb3c050deb773933e1f61f5d7": {
       "argsSummary": "[[{\"categoryId\":\"level\",\"conceptId\":\"LOW\",\"confidence\":\"certain\",\"source\":\"da...",
       "method": "checkAccess",

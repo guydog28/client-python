@@ -184,6 +184,28 @@
             "fixture": "ref-scheme-1",
             "method": "checkAccess",
             "name": "check-access-med-user-med-data-granted"
+        },
+        {
+            "accessFixture": "ref-marked-access-1",
+            "args": [
+                [
+                    {
+                        "categoryId": "level",
+                        "conceptId": "LOW",
+                        "confidence": "certain",
+                        "source": "data"
+                    }
+                ],
+                {
+                    "level": "LOW"
+                }
+            ],
+            "expect": {
+                "granted": true
+            },
+            "fixture": "ref-access-1",
+            "method": "checkAccess",
+            "name": "check-access-marked-policy-answers-as-unmarked"
         }
     ],
     "slice": "engine"

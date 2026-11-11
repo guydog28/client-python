@@ -1,0 +1,93 @@
+{
+  "crosswalk": {
+    "description": "Directional crosswalk from ref-scheme-1 onto ref-scheme-2, marked in ref-scheme-1: a whole marking on the crosswalk block and a part on each mapping, including a mapping a selection candidate holds. Translating HIGH/CTRL-A, the selection falls through to its fallback, so CTRL-A is covered only by the candidate that lost and is reported not-selected rather than omit.",
+    "id": "ref-marked-crosswalk-1",
+    "mappings": [
+      {
+        "disposition": "carry",
+        "id": "low",
+        "marking": "LOW",
+        "reason": "Low is low in both schemes.",
+        "source": {
+          "categoryId": "level",
+          "conceptId": "LOW"
+        },
+        "targets": [
+          {
+            "categoryId": "level",
+            "conceptId": "LOW"
+          }
+        ]
+      }
+    ],
+    "marking": "HIGH",
+    "marking_scheme": {
+      "id": "ref-scheme-1"
+    },
+    "name": "Reference Marked Crosswalk 1",
+    "selections": [
+      {
+        "candidates": [
+          {
+            "disposition": "carry",
+            "id": "low-control",
+            "reason": "A control on low data shares with ALPHA.",
+            "sources": [
+              {
+                "categoryId": "controls",
+                "conceptId": "CTRL-A"
+              }
+            ],
+            "targets": [
+              {
+                "categoryId": "share",
+                "conceptId": "ALPHA"
+              }
+            ],
+            "when": {
+              "all": [
+                {
+                  "categoryId": "level",
+                  "conceptId": "LOW"
+                }
+              ]
+            }
+          },
+          {
+            "id": "otherwise",
+            "mappings": [
+              {
+                "disposition": "carry",
+                "id": "high",
+                "marking": "HIGH",
+                "reason": "High is high in both schemes.",
+                "source": {
+                  "categoryId": "level",
+                  "conceptId": "HIGH"
+                },
+                "targets": [
+                  {
+                    "categoryId": "level",
+                    "conceptId": "HIGH"
+                  }
+                ]
+              }
+            ],
+            "reason": "Anything else carries its level alone."
+          }
+        ],
+        "id": "control",
+        "strategy": "first-match"
+      }
+    ],
+    "sourceScheme": {
+      "id": "ref-scheme-1",
+      "version": "1.0.0"
+    },
+    "targetScheme": {
+      "id": "ref-scheme-2",
+      "version": "1.0.0"
+    },
+    "version": "1.0.0"
+  }
+}

@@ -1,15 +1,15 @@
 {
   "openapiVersion": "1.0.0-dev.30",
-  "openapiSha256": "e7dbb51306442da0a8aa1ee3a0b9cbec511443e81a13ddf2011cfa2a6ac5dde8",
-  "specBundleSha256": "de14b82e33ec855321d3726b08c5dd011710671af91f8523bbfc7ab57476b552",
-  "specDigest": "b8c4744fb664bb3d4c793c0630e34340f8a5f552a994ea693578fe1125d47fe5",
-  "contractsSha": "28dbe8226f6f50d7d86e492a74d5d4372f2069a5",
+  "openapiSha256": "a0b675026fef78e3b25cc8361eda450c0e2986226037712d3324fecfe42e04a2",
+  "specBundleSha256": "f8157816b320726b46fc427cd903b5ed55b89c19de44d4721d462e37658c18d0",
+  "specDigest": "c2d64d4f3310cefe9365b9376940e5c76bb60de4a849eedd9705e62a42c80db6",
+  "contractsSha": "8bd8d16e706426194adf2a54062e66c0f5600618",
   "sourcePackages": {
     "@ezclassify/openapi": "1.0.0-dev.30",
     "@ezclassify/schemas": "1.0.0-dev.30",
     "@ezclassify/conformance": "1.0.0-dev.30"
   },
-  "generatedAt": "2026-11-11T03:29:07.000Z",
+  "generatedAt": "2026-11-11T06:07:57.000Z",
   "generators": {
     "python": {
       "binary": "node",
@@ -27,7 +27,7 @@
         }
       ],
       "note": "sha256 is of scripts/gen.mjs; additionalInputs pins its Python implementation and native regeneration dependency requirements",
-      "jsonSchemasSha256": "0c6cc55fbe2625a9343e6b2b3d521190e97706c3a73b1fefdb0a79ff56d51e75"
+      "jsonSchemasSha256": "2ee5d08cdd43b97e6ac2fa9747cbaa3906ae3677d1f87f9a4575a5c9c39486f6"
     }
   },
   "generatedPaths": [

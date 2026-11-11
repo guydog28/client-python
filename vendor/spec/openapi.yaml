@@ -3947,6 +3947,11 @@ components:
         citation:
           type: string
           description: Primary citation for the crosswalk, when it declares one.
+        marking:
+          type: string
+          description: >-
+            The crosswalk document's own overall marking, exactly as its `crosswalk.marking` writes it. Display only:
+            never interpreted. Absent when the document declares none.
         mappings:
           type: array
           items:
@@ -4760,13 +4765,24 @@ components:
           description: Source assertion considered by the crosswalk.
         mappingId:
           type: string
-          description: Matched mapping id, absent when no mapping covers the assertion.
+          description: >-
+            Matched mapping id, absent when no mapping covers the assertion. On a `not-selected` outcome,
+            `<selection>:<candidate>` names the candidate that lost.
         disposition:
           anyOf:
             - $ref: "#/components/schemas/CrosswalkDisposition"
             - type: string
               const: unmapped
-          description: Mapping decision, or `unmapped` when the artifact has no rule.
+            - type: string
+              const: not-selected
+          description: >-
+            Mapping decision, `unmapped` when the artifact has no rule, or `not-selected` when the assertion is covered
+            only by a selection candidate that lost.
+
+
+            `not-selected` is not an `omit`. An `omit` is a reviewed decision to drop the assertion. `not-selected` says
+            a selection chose a different candidate, so nothing decided this assertion on its own. Like an `omit` it
+            emits no targets and leaves the translation settled.
         targets:
           type: array
           items:
@@ -4975,6 +4991,11 @@ components:
     CtxAccessRulesResponseBody:
       type: object
       properties:
+        marking:
+          type: string
+          description: >-
+            The access policy document's own overall marking, exactly as its `access.marking` writes it. Display only:
+            never interpreted. Omitted when the document declares none.
         rules:
           type: array
           items:
@@ -7126,6 +7147,11 @@ components:
         description:
           type: string
           description: The guide's description. Empty when the guide declares none.
+        marking:
+          type: string
+          description: >-
+            The guide document's own overall marking, exactly as its `guide.marking` writes it. Display only: never
+            interpreted. Absent when the document declares none.
         categories:
           type: array
           items:
@@ -8958,6 +8984,11 @@ components:
         description:
           type: string
           description: The scheme's description. Empty when the scheme declares none.
+        marking:
+          type: string
+          description: >-
+            The scheme document's own overall marking, exactly as its `scheme.marking` writes it. Display only: never
+            interpreted. Absent when the document declares none.
         categories:
           type: array
           items:

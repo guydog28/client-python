@@ -5319,6 +5319,302 @@
                 "credential": "context-token",
                 "deployment": "open"
             },
+            "id": "ctx-crosswalk-describe.marked",
+            "operationId": "ctxCrosswalkDescribe",
+            "request": {
+                "headers": {},
+                "method": "GET",
+                "path": "/v1/ctx/ez-marked-crosswalk/1.0.0/crosswalk/describe",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/crosswalk/describe"
+            },
+            "response": {
+                "body": {
+                    "crosswalks": [
+                        {
+                            "id": "ez-gated-to-ez-test",
+                            "mappings": [
+                                {
+                                    "disposition": "carry",
+                                    "id": "open",
+                                    "reason": "Open material is open in both schemes.",
+                                    "source": {
+                                        "categoryId": "level",
+                                        "conceptId": "OPEN"
+                                    },
+                                    "targets": [
+                                        {
+                                            "categoryId": "level",
+                                            "conceptId": "OPEN"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "marking": "OPEN",
+                            "name": "EzGated to EzTest",
+                            "selections": [
+                                {
+                                    "candidates": [
+                                        {
+                                            "disposition": "carry",
+                                            "id": "open-export",
+                                            "reason": "Export handling on open material stays open.",
+                                            "sources": [
+                                                {
+                                                    "categoryId": "handling",
+                                                    "conceptId": "EXPORT"
+                                                }
+                                            ],
+                                            "targets": [
+                                                {
+                                                    "categoryId": "level",
+                                                    "conceptId": "OPEN"
+                                                }
+                                            ],
+                                            "when": {
+                                                "all": [
+                                                    {
+                                                        "categoryId": "level",
+                                                        "conceptId": "OPEN"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "disposition": "carry",
+                                            "id": "otherwise",
+                                            "mappings": [
+                                                {
+                                                    "disposition": "carry",
+                                                    "id": "sensitive",
+                                                    "reason": "Sensitive is sensitive in both schemes.",
+                                                    "source": {
+                                                        "categoryId": "level",
+                                                        "conceptId": "SENSITIVE"
+                                                    },
+                                                    "targets": [
+                                                        {
+                                                            "categoryId": "level",
+                                                            "conceptId": "SENSITIVE"
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "reason": "Anything else carries its level alone."
+                                        }
+                                    ],
+                                    "id": "handling",
+                                    "strategy": "first-match"
+                                }
+                            ],
+                            "source": "ez-gated",
+                            "target": "ez-test",
+                            "version": "1.0.0"
+                        }
+                    ]
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "A crosswalk that marks itself: the descriptor reports the document's whole marking and no mapping's part."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
+            "id": "ctx-crosswalk-translate.not-selected",
+            "neverCache": "A composed Context operation. It answers under the resolved Context envelope and reaches the runtime on every call; no SDK serves it from cache.",
+            "operationId": "ctxCrosswalkTranslate",
+            "request": {
+                "body": {
+                    "crosswalkId": "ez-gated-to-ez-test",
+                    "marking": "SENSITIVE / EXPORT"
+                },
+                "headers": {
+                    "content-type": "application/json"
+                },
+                "method": "POST",
+                "path": "/v1/ctx/ez-marked-crosswalk/1.0.0/crosswalk/translate",
+                "pathTemplate": "/v1/ctx/{ctxId}/{version}/crosswalk/translate"
+            },
+            "response": {
+                "body": {
+                    "operationLimitations": [],
+                    "resolution": {
+                        "artifacts": [
+                            {
+                                "id": "ez-gated",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-test",
+                                "kind": "scheme",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-gated-to-ez-test",
+                                "kind": "crosswalk",
+                                "version": "1.0.0"
+                            },
+                            {
+                                "id": "ez-marked-crosswalk",
+                                "kind": "context",
+                                "version": "1.0.0"
+                            }
+                        ],
+                        "contextId": "ez-marked-crosswalk",
+                        "requestedVersion": "1.0.0",
+                        "resolvedVersion": "1.0.0",
+                        "sources": []
+                    },
+                    "result": {
+                        "crosswalk": {
+                            "id": "ez-gated-to-ez-test",
+                            "kind": "crosswalk",
+                            "version": "1.0.0"
+                        },
+                        "outcomes": [
+                            {
+                                "disposition": "carry",
+                                "mappingId": "sensitive",
+                                "reason": "Sensitive is sensitive in both schemes.",
+                                "source": {
+                                    "categoryId": "level",
+                                    "conceptId": "SENSITIVE"
+                                },
+                                "targets": [
+                                    {
+                                        "categoryId": "level",
+                                        "conceptId": "SENSITIVE"
+                                    }
+                                ]
+                            },
+                            {
+                                "disposition": "not-selected",
+                                "mappingId": "handling:open-export",
+                                "reason": "Not emitted because handling selected a different candidate.",
+                                "source": {
+                                    "categoryId": "handling",
+                                    "conceptId": "EXPORT"
+                                },
+                                "targets": []
+                            }
+                        ],
+                        "selections": [
+                            {
+                                "candidateId": "otherwise",
+                                "disposition": "carry",
+                                "reason": "Anything else carries its level alone.",
+                                "selectionId": "handling",
+                                "targets": []
+                            }
+                        ],
+                        "source": {
+                            "appliedFixes": [],
+                            "assertions": [
+                                {
+                                    "categoryId": "level",
+                                    "conceptId": "SENSITIVE",
+                                    "confidence": "certain",
+                                    "source": "parse"
+                                },
+                                {
+                                    "categoryId": "handling",
+                                    "conceptId": "EXPORT",
+                                    "confidence": "certain",
+                                    "source": "parse"
+                                }
+                            ],
+                            "assessment": {
+                                "collapsed": [],
+                                "conflicts": [],
+                                "emitted": [
+                                    {
+                                        "categoryId": "level",
+                                        "conceptId": "SENSITIVE"
+                                    },
+                                    {
+                                        "categoryId": "handling",
+                                        "conceptId": "EXPORT"
+                                    }
+                                ],
+                                "omitted": [],
+                                "unrepresentable": []
+                            },
+                            "errors": [],
+                            "inputWasValid": true,
+                            "notices": [],
+                            "recognition": {
+                                "inputFormat": "default",
+                                "status": "complete",
+                                "surface": "default",
+                                "unmatched": []
+                            },
+                            "rendered": "SENSITIVE / EXPORT",
+                            "valid": true,
+                            "warnings": []
+                        },
+                        "sourceScheme": {
+                            "id": "ez-gated",
+                            "kind": "scheme",
+                            "version": "1.0.0"
+                        },
+                        "status": "complete",
+                        "target": {
+                            "appliedFixes": [],
+                            "assertions": [
+                                {
+                                    "categoryId": "level",
+                                    "conceptId": "SENSITIVE",
+                                    "confidence": "inferred",
+                                    "source": "crosswalk:ez-gated-to-ez-test"
+                                }
+                            ],
+                            "assessment": {
+                                "collapsed": [],
+                                "conflicts": [],
+                                "emitted": [
+                                    {
+                                        "categoryId": "level",
+                                        "conceptId": "SENSITIVE"
+                                    }
+                                ],
+                                "omitted": [],
+                                "unrepresentable": []
+                            },
+                            "errors": [],
+                            "inputWasValid": true,
+                            "notices": [],
+                            "rendered": "SENSITIVE",
+                            "valid": true,
+                            "warnings": []
+                        },
+                        "targetScheme": {
+                            "id": "ez-test",
+                            "kind": "scheme",
+                            "version": "1.0.0"
+                        }
+                    }
+                },
+                "headers": {
+                    "content-type": "application/json",
+                    "x-ezclassify-resolved-version": "1.0.0"
+                },
+                "status": 200,
+                "statusDeclaredInContract": true
+            },
+            "summary": "A selection falls through to its fallback: the assertion only the losing candidate covers is reported not-selected, and the translation stays complete."
+        },
+        {
+            "auth": {
+                "credential": "context-token",
+                "deployment": "open"
+            },
             "id": "ctx-crosswalk-translate.translated",
             "neverCache": "A composed Context operation. It answers under the resolved Context envelope and reaches the runtime on every call; no SDK serves it from cache.",
             "operationId": "ctxCrosswalkTranslate",

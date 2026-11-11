@@ -2173,6 +2173,31 @@
             ]
         },
         {
+            "id": "never-cached.translate.not-selected",
+            "title": "A translation that reports a candidate that lost a selection reaches the wire on every call.",
+            "covers": [
+                "C15"
+            ],
+            "capabilities": [],
+            "client": {
+                "binding": "pinned",
+                "context": "ez-marked-crosswalk"
+            },
+            "steps": [
+                {
+                    "step": "call",
+                    "operation": "context.translate",
+                    "case": "ctx-crosswalk-translate.not-selected",
+                    "times": 2
+                },
+                {
+                    "step": "expectWireCount",
+                    "case": "ctx-crosswalk-translate.not-selected",
+                    "count": 2
+                }
+            ]
+        },
+        {
             "id": "composition-change-clears",
             "title": "A response naming a new resolved version on an unpinned binding clears what was filed under the old one.",
             "covers": [

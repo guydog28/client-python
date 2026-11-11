@@ -1,0 +1,60 @@
+{
+    "guide": {
+        "description": "ref-guide-1 marked in ref-scheme-1: a whole marking on the guide block and a part on each rule, which an engine loads and answers exactly as it does the same guide unmarked.",
+        "id": "ref-marked-guide-1",
+        "marking": "HIGH/CTRL-A",
+        "marking_scheme": {
+            "id": "ref-scheme-1"
+        },
+        "name": "Reference Marked Guide 1",
+        "rules": {
+            "inline": [
+                {
+                    "description": "Applies when document contains sensitive or critical content. Contributes HIGH level marking.",
+                    "id": "rule-high",
+                    "keywords": [
+                        "critical",
+                        "sensitive"
+                    ],
+                    "marking": "HIGH",
+                    "name": "High Sensitivity",
+                    "outcome": {
+                        "rendered": "HIGH"
+                    }
+                },
+                {
+                    "description": "Applies when document is public or open. Contributes LOW level marking.",
+                    "id": "rule-low",
+                    "keywords": [
+                        "public",
+                        "open"
+                    ],
+                    "marking": "LOW",
+                    "name": "Low Sensitivity",
+                    "outcome": {
+                        "rendered": "LOW"
+                    }
+                },
+                {
+                    "description": "Applies when document contains controlled or restricted data. Contributes HIGH/CTRL-A marking.",
+                    "id": "rule-ctrl-a",
+                    "keywords": [
+                        "controlled",
+                        "restricted"
+                    ],
+                    "marking": "HIGH/CTRL-A",
+                    "name": "Control A",
+                    "outcome": {
+                        "rendered": "HIGH/CTRL-A"
+                    }
+                }
+            ]
+        },
+        "targetSchemes": [
+            {
+                "id": "ref-scheme-1"
+            }
+        ],
+        "version": "1.0.0"
+    }
+}

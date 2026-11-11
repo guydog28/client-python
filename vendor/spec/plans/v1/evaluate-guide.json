@@ -168,6 +168,21 @@
             "guideFixture": "ref-guide-1",
             "method": "evaluateMany",
             "name": "evaluateMany-single-guide-two-rules-aggregate"
+        },
+        {
+            "args": [["rule-high"]],
+            "expect": {
+                "aggregatedMarking": "HIGH",
+                "selectedRules": [
+                    {
+                        "id": "rule-high"
+                    }
+                ]
+            },
+            "fixture": "ref-scheme-1",
+            "guideFixture": "ref-marked-guide-1",
+            "method": "evaluateGuide",
+            "name": "evaluate-guide-marked-guide-answers-as-unmarked"
         }
     ],
     "slice": "engine"
