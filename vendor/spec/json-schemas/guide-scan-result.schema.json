@@ -611,7 +611,7 @@
     "description": "A guide rule matched by text scanning, with every span where the rule's keywords or matchers fired. Returned by the engine's `scanGuides` and the standalone `scanTextForRules` / `scanMultipleGuides` helpers.\n\nParallels the scheme-side scan result: one entry per rule hit, with offsets into the scanned text.",
     "properties": {
         "guideId": {
-            "description": "The id of the guide the rule belongs to, when the scan covered more than one.",
+            "description": "The id of the guide the rule belongs to. Rule ids are unique only within a guide, so a selection built from this hit names this guide.",
             "type": "string"
         },
         "matchedKeywords": {
@@ -637,6 +637,6 @@
             "type": "array"
         }
     },
-    "required": ["rule", "matchedKeywords", "spans"],
+    "required": ["rule", "guideId", "matchedKeywords", "spans"],
     "type": "object"
 }

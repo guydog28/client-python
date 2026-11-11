@@ -4283,7 +4283,7 @@ components:
 
 
         `selector` is the whole point. A Context keys its schemes locally, and a caller reaches a scheme by its key: an
-        adapter's `schemeView` takes it, and so does `?scheme=` on the REST surface. A caller that cannot enumerate the
+        adapter's `schemes.get` takes it, and so does `?scheme=` on the REST surface. A caller that cannot enumerate the
         keys cannot reach anything but the primary.
     ContextSchemeDiffResult:
       type: object
@@ -6994,7 +6994,9 @@ components:
           description: The guide rule that matched.
         guideId:
           type: string
-          description: The id of the guide the rule belongs to, when the scan covered more than one.
+          description: >-
+            The id of the guide the rule belongs to. Rule ids are unique only within a guide, so a selection built from
+            this hit names this guide.
         matchedKeywords:
           type: array
           items:
@@ -7020,6 +7022,7 @@ components:
             Identity fields mirror the source's `sourceIdentity()` observation at engine-construction time.
       required:
         - rule
+        - guideId
         - matchedKeywords
         - spans
       description: >-
