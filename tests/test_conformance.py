@@ -41,7 +41,7 @@ _RECORDINGS_DIR = _ENGINE_SPEC / "recordings" / "v1"
 # the vendored bundle deliberately adds or removes plan cases, update it in the
 # same commit. Without the pin, a missing recording or unreadable fixture would
 # silently shrink the suite.
-_EXPECTED_CASE_COUNT = 146
+_EXPECTED_CASE_COUNT = 148
 
 
 def _context_base(fixture: Any, guide_fixture: str) -> str:

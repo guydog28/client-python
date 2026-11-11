@@ -38,7 +38,6 @@ from ezclassify_rest_client import (
     MalformedResponseError,
     EzClassifyContext,
     RestClientCredentials,
-    connect_context,
 )
 
 from .wire_corpus import WireCase, WireCorpus, request_key
@@ -310,12 +309,25 @@ class PlanRun:
         # A token-defaulted client has no version of its own, so it asks for the
         # Context description at ``latest``; operations carry no segment.
         self.replay.bind({v for v in (version, "1.0.0", "latest") if v})
-        return connect_context(
+        context_id = spec.get("context", "ez-full")
+        ctx = EzClassifyContext(
             BASE_URL,
-            context_id=spec.get("context", "ez-full"),
+            context_id=context_id,
             context_version=version,
             credentials=RestClientCredentials(context_token=_CARRIER),
             cache_access_decisions=spec.get("cacheAccessDecisions", False),
+        )
+        # Connect traffic is outside every plan, and a request names its Context
+        # without it, so a Context with no recorded description is not connected.
+        if self._description_recorded(context_id):
+            ctx.resolve()
+        return ctx
+
+    def _description_recorded(self, context_id: str) -> bool:
+        return any(
+            case.method == "GET"
+            and urlsplit(case.path).path.split("/")[3:-1] == [context_id]
+            for case in self.corpus.cases
         )
 
     # -- calls ---------------------------------------------------------------
