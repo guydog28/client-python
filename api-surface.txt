@@ -506,6 +506,7 @@ module ezclassify_rest_contract.models
   class CtxAccessRulesResponseBody(_WireModel)
     def __init__(self, /, **data: Any) -> None
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
+    marking: Optional[str] = None
     model_config = ConfigDict(populate_by_name=True)
     rules: List[AccessRuleDescription]
   class CtxCrosswalkDescribeResponseBody(_WireModel)
@@ -971,6 +972,7 @@ module ezclassify_rest_contract.models
     description: str
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
     id: str
+    marking: Optional[str] = None
     model_config = ConfigDict(populate_by_name=True)
     name: str
     uncategorized: List[Dict[str, Any]]

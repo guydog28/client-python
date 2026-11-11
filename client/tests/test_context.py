@@ -2698,6 +2698,25 @@ class TestGuide:
         assert result.result.vocabulary["rule"].singular == "entry"
         assert result.result.vocabulary["rule"].plural == "entries"
 
+    @respx.mock
+    def test_view_reads_the_guide_documents_own_whole_marking(self):
+        view = {"id": "g1", "name": "Guide", "description": "", "categories": []}
+        route = respx.post(_ctx_url("guide/view")).mock(
+            return_value=httpx.Response(
+                200,
+                json=_envelope({**view, "uncategorized": [], "marking": "HIGH"}),
+                headers=_HDR,
+            )
+        )
+        assert _connect().guide.view("g1").result.marking == "HIGH"
+        # Absent when the guide document declares none.
+        route.mock(
+            return_value=httpx.Response(
+                200, json=_envelope({**view, "uncategorized": []}), headers=_HDR
+            )
+        )
+        assert _connect().guide.view("g1").result.marking is None
+
 
 class TestAccess:
     @respx.mock
@@ -2858,6 +2877,18 @@ class TestAccess:
         assert isinstance(result, CtxAccessRulesResponseBody)
         assert result.rules[0].name == "Internal"
         assert route.called
+
+    @respx.mock
+    def test_rules_reads_the_policy_documents_own_whole_marking(self):
+        route = respx.get(_ctx_url("access/rules")).mock(
+            return_value=httpx.Response(
+                200, json={"rules": [], "marking": "HIGH"}, headers=_HDR
+            )
+        )
+        assert _connect().access.rules().marking == "HIGH"
+        # Absent when the policy document declares none.
+        route.mock(return_value=httpx.Response(200, json={"rules": []}, headers=_HDR))
+        assert _connect().access.rules().marking is None
 
 
 class TestCrosswalk:

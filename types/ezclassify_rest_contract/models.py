@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@ad42e22f061d68d6bb1bc8ba9e1a649257169172181ed6095091d831145fa93b. DO NOT EDIT.
+# Code generated from vendored contracts@13d215c6b6e54dfa6b81f2793addccce736c0db99baf565dd18c26426f1cddff. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -1604,6 +1604,10 @@ class StructuralView(_WireModel):
     """The scheme's display name."""
     description: str
     """The scheme's description. Empty when the scheme declares none."""
+    marking: Optional[str] = None
+    """The scheme document's own overall marking, exactly as its `scheme.marking` writes
+    it. Display only: never interpreted. Absent when the document declares none.
+    """
     categories: List[StructuralViewCategory]
     """The scheme's categories in declared order, each with the concepts that belong to it.
     A category with no concepts is left out.
@@ -2656,6 +2660,10 @@ class CtxAccessRulesResponseBody(_WireModel):
     holds.
     """
 
+    marking: Optional[str] = None
+    """The access policy document's own overall marking, exactly as its `access.marking`
+    writes it. Display only: never interpreted. Omitted when the document declares none.
+    """
     rules: List[AccessRuleDescription]
     """Descriptions for every rule in the access policy, in declared order."""
 
