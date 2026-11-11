@@ -44,34 +44,46 @@ _RECORDINGS_DIR = _ENGINE_SPEC / "recordings" / "v1"
 _EXPECTED_CASE_COUNT = 148
 
 
-def _context_base(fixture: Any, guide_fixture: str) -> str:
+def _context_base(fixture: Any, guide_fixture: str, access_fixture: str) -> str:
     """Return a unique test-only Context path for one fixture composition.
 
     The request body carries no loose scheme/layer selectors. Encoding
     the fixture identity in this synthetic Context id prevents recordings for
     two different compositions with the same operation body from colliding.
     """
-    identity = _stable_json({"fixture": fixture, "guideFixture": guide_fixture})
+    identity = _stable_json(
+        {
+            "fixture": fixture,
+            "guideFixture": guide_fixture,
+            "accessFixture": access_fixture,
+        }
+    )
     digest = hashlib.sha256(identity.encode()).hexdigest()[:16]
     return f"/v1/ctx/conformance-{digest}/1.0.0"
 
 
 def _recording_key(
-    method: str, args: Any, fixture: Any, mode: str, ctx_id: str, ctx_version: str
+    method: str,
+    args: Any,
+    fixture: Any,
+    mode: str,
+    ctx_id: str,
+    ctx_version: str,
+    guide_fixture: str,
+    access_fixture: str,
 ) -> str:
     """Compute the recording lookup key using the canonical hash algorithm."""
-    raw = (
-        method
-        + "|"
-        + _stable_json(args)
-        + "|"
-        + _stable_json(fixture)
-        + "|"
-        + mode
-        + "|"
-        + ctx_id
-        + "|"
-        + ctx_version
+    raw = "|".join(
+        [
+            method,
+            _stable_json(args),
+            _stable_json(fixture),
+            mode,
+            ctx_id,
+            ctx_version,
+            guide_fixture,
+            access_fixture,
+        ]
     )
     return hashlib.sha256(raw.encode()).hexdigest()
 
@@ -110,6 +122,7 @@ def _build_plan_body(
     args: list,
     fixture: Any,
     guide_fixture: str,
+    access_fixture: str = "",
 ) -> tuple[str, dict, tuple[str, str] | None]:
     """Construct the HTTP API path and request body for a plan case.
 
@@ -119,7 +132,7 @@ def _build_plan_body(
     missing or unreadable fixture) that must fail the suite by name instead of
     vanishing.
     """
-    ctx_base = _context_base(fixture, guide_fixture)
+    ctx_base = _context_base(fixture, guide_fixture, access_fixture)
 
     if method in ("ctxProcess", "ctxScan", "ctxDocumentAudit"):
         return (
@@ -345,13 +358,25 @@ def _build_replayer_map() -> dict[str, dict]:
         ctx_id = tc.get("ctxId", "")
         ctx_version = tc.get("ctxVersion", "")
         guide_fixture = tc.get("guideFixture", "")
+        access_fixture = tc.get("accessFixture", "")
 
-        rec_key = _recording_key(method, args, fixture, mode, ctx_id, ctx_version)
+        rec_key = _recording_key(
+            method,
+            args,
+            fixture,
+            mode,
+            ctx_id,
+            ctx_version,
+            guide_fixture,
+            access_fixture,
+        )
         response = all_recordings.get(rec_key)
         if response is None:
             continue
 
-        api_path, body, verdict = _build_plan_body(method, args, fixture, guide_fixture)
+        api_path, body, verdict = _build_plan_body(
+            method, args, fixture, guide_fixture, access_fixture
+        )
         if verdict is not None:
             continue
 
@@ -415,9 +440,12 @@ def test_conformance_case(
     args = test_case.get("args", [])
     fixture = test_case.get("fixture")
     guide_fixture = test_case.get("guideFixture", "")
+    access_fixture = test_case.get("accessFixture", "")
     expect = test_case.get("expect")
 
-    api_path, body, verdict = _build_plan_body(method, args, fixture, guide_fixture)
+    api_path, body, verdict = _build_plan_body(
+        method, args, fixture, guide_fixture, access_fixture
+    )
 
     if verdict is not None:
         kind, reason = verdict
@@ -474,6 +502,7 @@ def test_executed_case_count() -> None:
             tc.get("args", []),
             tc.get("fixture"),
             tc.get("guideFixture", ""),
+            tc.get("accessFixture", ""),
         )
         assert verdict is None, (
             f"unexecutable HTTP case: {plan_name}/{tc['name']}: {verdict}"
@@ -572,7 +601,7 @@ def _synthetic_plan_recordings(same_response: bool) -> tuple[list, dict]:
     recordings = {}
     for index, (_, case) in enumerate(cases):
         key = _recording_key(
-            "validate", case["args"], case["fixture"], "fromJSON", "", ""
+            "validate", case["args"], case["fixture"], "fromJSON", "", "", "", ""
         )
         recordings[key] = {"valid": True if same_response else index == 0}
     return cases, recordings
