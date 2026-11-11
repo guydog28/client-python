@@ -11,7 +11,7 @@ Requests are closed in the query too: the server answers 400 to a query
 parameter the operation does not declare. Every call is therefore also checked
 for the query it sends, which must be exactly what the operation declares once
 every optional argument is supplied. Scheme calls go through a scheme view, so
-the selector is part of what they supply.
+the scheme's key is part of what they supply.
 
 This exists because the failure it catches is invisible to the rest of the
 suite: when a request field is renamed in the contract, a method that keeps
@@ -369,7 +369,7 @@ _PART_OF = {"role": "part", "partOf": {"rendered": "H//A"}}
 CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     "scheme.process": (
         "scheme/process",
-        lambda c: c.scheme_view("acme").process(
+        lambda c: c.schemes.get("acme").process(
             "H//A",
             output_format="banner",
             surface="portion",
@@ -385,7 +385,7 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     # spelling is its own case.
     "scheme.validate-text": (
         "scheme/validate",
-        lambda c: c.scheme_view("acme").validate(
+        lambda c: c.schemes.get("acme").validate(
             "H//A",
             output_format="banner",
             surface="portion",
@@ -396,7 +396,7 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     ),
     "scheme.validate-facts": (
         "scheme/validate",
-        lambda c: c.scheme_view("acme").validate(
+        lambda c: c.schemes.get("acme").validate(
             assertions=[_LEVEL],
             output_format="banner",
             surface="portion",
@@ -406,7 +406,7 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     ),
     "scheme.explain": (
         "scheme/explain",
-        lambda c: c.scheme_view("acme").explain(
+        lambda c: c.schemes.get("acme").explain(
             "H//A",
             output_format="banner",
             surface="portion",
@@ -418,7 +418,7 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     ),
     "scheme.suggest": (
         "scheme/suggest",
-        lambda c: c.scheme_view("acme").suggest(
+        lambda c: c.schemes.get("acme").suggest(
             "H//",
             output_format="banner",
             surface="portion",
@@ -429,7 +429,7 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     ),
     "scheme.suggest-facts": (
         "scheme/suggest",
-        lambda c: c.scheme_view("acme").suggest(
+        lambda c: c.schemes.get("acme").suggest(
             assertions=[_LEVEL],
             output_format="banner",
             surface="portion",
@@ -439,13 +439,13 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     ),
     "scheme.suggest-for-categories": (
         "scheme/suggest-for-categories",
-        lambda c: c.scheme_view("acme").suggest_for_categories(
+        lambda c: c.schemes.get("acme").suggest_for_categories(
             [_LEVEL], ["level", "audience"], output_format="banner", surface="portion"
         ),
     ),
     "scheme.aggregate": (
         "scheme/aggregate",
-        lambda c: c.scheme_view("acme").aggregate(
+        lambda c: c.schemes.get("acme").aggregate(
             ["H", "L"],
             output_format="banner",
             surface="portion",
@@ -455,13 +455,13 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     ),
     "scheme.aggregate-assertions": (
         "scheme/aggregate",
-        lambda c: c.scheme_view("acme").aggregate_assertions(
+        lambda c: c.schemes.get("acme").aggregate_assertions(
             [[_LEVEL]], output_format="banner", surface="portion", context=_PART_OF
         ),
     ),
     "scheme.scan": (
         "scheme/scan",
-        lambda c: c.scheme_view("acme").scan(
+        lambda c: c.schemes.get("acme").scan(
             "text H text",
             output_format="banner",
             input_format="portion",
@@ -469,38 +469,38 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     ),
     "scheme.render": (
         "scheme/render",
-        lambda c: c.scheme_view("acme").render(
+        lambda c: c.schemes.get("acme").render(
             [_LEVEL], output_format="banner", preservation="full"
         ),
     ),
     "scheme.normalize": (
         "scheme/normalize",
-        lambda c: c.scheme_view("acme").normalize(
+        lambda c: c.schemes.get("acme").normalize(
             "h", output_format="banner", input_format="portion"
         ),
     ),
     "scheme.check-coverage": (
         "scheme/check-coverage",
-        lambda c: c.scheme_view("acme").check_coverage(
+        lambda c: c.schemes.get("acme").check_coverage(
             ["L"], "H", output_format="banner", input_format="portion"
         ),
     ),
     "scheme.diff": (
         "scheme/diff",
-        lambda c: c.scheme_view("acme").diff("H", "L", input_format="portion"),
+        lambda c: c.schemes.get("acme").diff("H", "L", input_format="portion"),
     ),
     "scheme.filter-concepts": (
         "scheme/filter-concepts",
-        lambda c: c.scheme_view("acme").filter_concepts("hi"),
+        lambda c: c.schemes.get("acme").filter_concepts("hi"),
     ),
     "scheme.notices": (
         "scheme/notices",
-        lambda c: c.scheme_view("acme").notices([_LEVEL]),
+        lambda c: c.schemes.get("acme").notices([_LEVEL]),
     ),
-    "scheme.view": ("scheme/view", lambda c: c.scheme_view("acme").view()),
+    "scheme.view": ("scheme/view", lambda c: c.schemes.get("acme").view()),
     "scheme.apply-preset": (
         "scheme/apply-preset",
-        lambda c: c.scheme_view("acme").apply_preset(
+        lambda c: c.schemes.get("acme").apply_preset(
             "default-label", output_format="banner"
         ),
     ),
@@ -648,11 +648,11 @@ def test_every_contract_request_property_reaches_the_wire(
 def test_a_post_sends_exactly_the_query_the_contract_declares(
     spec: OpenApiRequestSchemas, case_name: str
 ) -> None:
-    """A POST's input is its body; the only query is a scheme view's selector.
+    """A POST's input is its body; the only query is a scheme view's key.
 
-    The scheme cases go through a view, so the selector the contract declares
-    on every scheme operation reaches the wire, and the other operations
-    declare and send none.
+    The scheme cases go through a view, so the ``scheme`` query the contract
+    declares on every scheme operation reaches the wire, and the other
+    operations declare and send none.
     """
     route, _ = CASES[case_name]
     request = _send(case_name)
@@ -685,35 +685,35 @@ QUERY_CASES: Dict[str, Tuple[str, Callable[[_Harness], Any]]] = {
     "context.describe": ("/v1/ctx/{ctxId}/{version}", lambda h: h.ctx.resolve()),
     "scheme.summary": (
         _ROUTE_PREFIX + "scheme",
-        lambda h: h.ctx.scheme_view("acme").summary(),
+        lambda h: h.ctx.schemes.get("acme").summary(),
     ),
     "scheme.concepts": (
         _ROUTE_PREFIX + "scheme/concepts",
-        lambda h: h.ctx.scheme_view("acme").concepts(),
+        lambda h: h.ctx.schemes.get("acme").concepts(),
     ),
     "scheme.categories": (
         _ROUTE_PREFIX + "scheme/categories",
-        lambda h: h.ctx.scheme_view("acme").categories(),
+        lambda h: h.ctx.schemes.get("acme").categories(),
     ),
     "scheme.formats": (
         _ROUTE_PREFIX + "scheme/formats",
-        lambda h: h.ctx.scheme_view("acme").formats(),
+        lambda h: h.ctx.schemes.get("acme").formats(),
     ),
     "scheme.grammar": (
         _ROUTE_PREFIX + "scheme/grammar",
-        lambda h: h.ctx.scheme_view("acme").grammar(),
+        lambda h: h.ctx.schemes.get("acme").grammar(),
     ),
     "scheme.scopes": (
         _ROUTE_PREFIX + "scheme/scopes",
-        lambda h: h.ctx.scheme_view("acme").scopes(),
+        lambda h: h.ctx.schemes.get("acme").scopes(),
     ),
     "scheme.label-presets": (
         _ROUTE_PREFIX + "scheme/label-presets",
-        lambda h: h.ctx.scheme_view("acme").label_presets(),
+        lambda h: h.ctx.schemes.get("acme").label_presets(),
     ),
     "scheme.describe-concept": (
         _ROUTE_PREFIX + "scheme/describe-concept",
-        lambda h: h.ctx.scheme_view("acme").describe_concept(
+        lambda h: h.ctx.schemes.get("acme").describe_concept(
             "HIGH", "level", view="default"
         ),
     ),

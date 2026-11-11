@@ -121,7 +121,7 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
         return ctx._send("GET", op, params=query)[0]
     # A case that names a scheme is a call on that scheme's view; every other
     # scheme case is a call on the primary view, which sends no selector.
-    s = ctx.scheme_view(query["scheme"]) if query and "scheme" in query else ctx.scheme
+    s = ctx.schemes.get(query["scheme"]) if query and "scheme" in query else ctx.scheme
     if case.method == "GET":
         if op == "":
             description = ctx.describe()

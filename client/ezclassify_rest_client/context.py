@@ -249,8 +249,8 @@ class EzClassifyContext:
 
     Reach the operations through :attr:`scheme`, :attr:`guide`, :attr:`access`,
     :attr:`document`, and :attr:`crosswalk`. :attr:`scheme` addresses the
-    Context's primary scheme; :meth:`scheme_view` addresses any other scheme
-    it holds. The context is synchronous and safe to use as a context
+    Context's primary scheme; :attr:`schemes` reaches any other scheme it
+    holds, by key. The context is synchronous and safe to use as a context
     manager.
 
     A concrete ``context_version`` pins the binding: a published Context
@@ -335,7 +335,7 @@ class EzClassifyContext:
         self._disable_cache = disable_cache
         self._resolved_version: Optional[str] = None
         self.scheme = CtxScheme(self)
-        self._scheme_views: Dict[str, CtxScheme] = {}
+        self.schemes = CtxSchemes(self)
         self.guide = CtxGuide(self)
         self.access = CtxAccess(self)
         self.document = CtxDocument(self)
@@ -408,43 +408,6 @@ class EzClassifyContext:
                 be reached. A 429 carries ``retry_after``.
         """
         return self._get("", ContextDescription)
-
-    def scheme_view(self, selector: str) -> CtxScheme:
-        """Bind the scheme operations to one scheme this Context holds.
-
-        A Context can hold more than its primary scheme: a crosswalk's source
-        and target, or an additional scheme. The view answers every operation
-        and read :attr:`scheme` does, against the selected scheme, and sends
-        ``selector`` as ``?scheme=`` on each request. :attr:`scheme` stays the
-        primary view.
-
-        Views are kept per selector, so asking twice for the same selector
-        returns the same view. Their answers share this handle's response
-        cache, keyed by selector, so one scheme's answer is never served for
-        another's.
-
-        The selector is checked by the server, not here: a selector the
-        Context does not hold answers 404 on the first request the view
-        makes, and the call raises. Nothing falls back to the primary.
-
-        Args:
-            selector: Context-local key of the scheme, as
-                ``describe().schemes[i].selector`` reports it.
-
-        Returns:
-            The scheme view bound to ``selector``.
-
-        Raises:
-            ValueError: ``selector`` is blank. An empty selector would reach
-                the server as ``?scheme=`` and could never name a scheme.
-        """
-        if not isinstance(selector, str) or not selector.strip():
-            raise ValueError("selector must be a non-blank string")
-        view = self._scheme_views.get(selector)
-        if view is None:
-            view = CtxScheme(self, selector)
-            self._scheme_views[selector] = view
-        return view
 
     @property
     def _pinned(self) -> bool:
@@ -527,10 +490,10 @@ class EzClassifyContext:
         """Send one operation and decode its answer, through the cache when cached.
 
         A POST operation takes its input in the body. The only query one
-        carries is the scheme selector a scheme view adds; every other
-        caller passes no ``params``, and the server refuses a query parameter
-        an operation does not declare. The selector is part of the cache key,
-        so two schemes never share an answer.
+        carries is the scheme key a scheme view adds; every other caller
+        passes no ``params``, and the server refuses a query parameter an
+        operation does not declare. The scheme's key is part of the cache
+        key, so two schemes never share an answer.
 
         ``check`` is a response check the result model cannot express, such as
         a map that must answer every key the request named. It runs on every
@@ -637,26 +600,26 @@ class CtxScheme:
     """Scheme-domain operations bound to one scheme of a :class:`EzClassifyContext`.
 
     ``ctx.scheme`` is bound to the Context's primary scheme and addresses it
-    by leaving the selector off the wire. A view from
-    :meth:`EzClassifyContext.scheme_view` is bound to the scheme its selector
-    names and sends that selector as ``?scheme=`` on every operation and read
-    it makes. The operations take no selector of their own: the view picks
-    the scheme, so one call cannot address a scheme other than its view's.
+    by leaving the ``scheme`` query off the wire. A view from
+    :meth:`CtxSchemes.get` is bound to the scheme its key names and sends that
+    key as ``?scheme=`` on every operation and read it makes. The operations
+    take no key of their own: the view picks the scheme, so one call cannot
+    address a scheme other than its view's.
     """
 
-    def __init__(self, ctx: EzClassifyContext, selector: Optional[str] = None) -> None:
+    def __init__(self, ctx: EzClassifyContext, key: Optional[str] = None) -> None:
         self._ctx = ctx
-        self._selector = selector
+        self._key = key
 
     def _query(self, params: Dict[str, Any] | None = None) -> Optional[Dict[str, Any]]:
-        """Add this view's selector to an operation's query.
+        """Add this view's scheme key to an operation's query.
 
         The primary view adds nothing, so its requests carry no ``scheme``
         parameter at all rather than an empty one.
         """
-        if self._selector is None:
+        if self._key is None:
             return params
-        return {**(params or {}), "scheme": self._selector}
+        return {**(params or {}), "scheme": self._key}
 
     def _post(
         self,
@@ -1355,7 +1318,7 @@ class CtxScheme:
     #
     # Like every operation above, these read the scheme this view is bound
     # to: the primary for ``ctx.scheme``, the selected one for a view from
-    # ``ctx.scheme_view``. A crosswalk's source and target schemes are held by
+    # ``ctx.schemes.get``. A crosswalk's source and target schemes are held by
     # the same Context and read that way.
     #
     # The bodies are typed by the generated models, not by shapes declared
@@ -1511,6 +1474,53 @@ class CtxScheme:
         body: Dict[str, Any] = {"presetId": preset_id}
         _put_if_set(body, "outputFormat", output_format)
         return self._post("scheme/apply-preset", body, ContextSchemeValidateResult)
+
+
+class CtxSchemes:
+    """The schemes a :class:`EzClassifyContext` holds, reached by key.
+
+    A Context can hold more than its primary scheme: a crosswalk's source and
+    target, or an additional scheme. ``ctx.schemes.get(key)`` returns the view
+    of one of them; ``ctx.scheme`` stays the primary view.
+    """
+
+    def __init__(self, ctx: EzClassifyContext) -> None:
+        self._ctx = ctx
+        self._views: Dict[str, CtxScheme] = {}
+
+    def get(self, key: str) -> CtxScheme:
+        """Return the view of one scheme this Context holds.
+
+        The view answers every operation and read ``ctx.scheme`` does, against
+        the scheme ``key`` names, and sends ``key`` as ``?scheme=`` on each
+        request.
+
+        Views are kept per key, so asking twice for the same key returns the
+        same view. Their answers share the handle's response cache, keyed by
+        scheme, so one scheme's answer is never served for another's.
+
+        The server decides what a key names, not this client: a key the
+        Context does not hold answers 404 ``scheme_not_found`` on the first
+        request the view makes, and the call raises. Nothing falls back to the
+        primary.
+
+        Args:
+            key: Context-local key of the scheme, as
+                ``describe().schemes[i].selector`` reports it.
+
+        Returns:
+            The scheme view bound to ``key``.
+
+        Raises:
+            ValueError: ``key`` is blank. An empty key would reach the server
+                as ``?scheme=`` and could never name a scheme.
+        """
+        if not isinstance(key, str) or not key.strip():
+            raise ValueError("key must be a non-blank string")
+        view = self._views.get(key)
+        if view is None:
+            view = self._views.setdefault(key, CtxScheme(self._ctx, key))
+        return view
 
 
 class CtxGuide:

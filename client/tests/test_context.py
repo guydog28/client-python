@@ -16,6 +16,7 @@ import respx
 
 from ezclassify_rest_client import (
     CtxScheme,
+    CtxSchemes,
     EzClassifyClient,
     EzClassifyClientError,
     EzClassifyContext,
@@ -2279,7 +2280,7 @@ class TestSchemeResources:
 _FACT = Assertion(categoryId="level", conceptId="H")
 
 # Every public call a scheme view makes, with the route it reaches. The view
-# picks the scheme, so each one must carry the view's selector; the coverage
+# picks the scheme, so each one must carry the view's key; the coverage
 # test below keeps a new operation from joining CtxScheme without a row here.
 _SCHEME_VIEW_CALLS = {
     "process": ("POST", "scheme/process", lambda s: s.process("H")),
@@ -2351,8 +2352,8 @@ def _request_made_by(invoke) -> httpx.Request:
     return catch_all.calls.last.request
 
 
-class TestSchemeView:
-    """A Context's non-primary schemes are reached through a per-selector view."""
+class TestSchemes:
+    """A Context's non-primary schemes are reached by key, through ``ctx.schemes``."""
 
     def test_every_scheme_operation_has_a_view_case(self):
         public = {
@@ -2362,23 +2363,27 @@ class TestSchemeView:
         }
         assert public == set(_SCHEME_VIEW_CALLS)
 
+    def test_the_collection_only_gets(self):
+        public = {name for name in vars(CtxSchemes) if not name.startswith("_")}
+        assert public == {"get"}
+
     @pytest.mark.parametrize("name", sorted(_SCHEME_VIEW_CALLS))
-    def test_a_view_sends_its_selector_on_every_call(self, name):
+    def test_a_view_sends_its_key_on_every_call(self, name):
         method, route, invoke = _SCHEME_VIEW_CALLS[name]
-        request = _request_made_by(lambda ctx: invoke(ctx.scheme_view("source-side")))
+        request = _request_made_by(lambda ctx: invoke(ctx.schemes.get("source-side")))
         assert request.method == method
         assert request.url.path == f"/v1/ctx/{_CTX}/{_VER}/{route}"
         assert request.url.params.get_list("scheme") == ["source-side"]
 
     @pytest.mark.parametrize("name", sorted(_SCHEME_VIEW_CALLS))
-    def test_the_primary_view_sends_no_selector(self, name):
+    def test_the_primary_view_sends_no_key(self, name):
         _, _, invoke = _SCHEME_VIEW_CALLS[name]
         request = _request_made_by(lambda ctx: invoke(ctx.scheme))
         assert "scheme" not in request.url.params
 
-    def test_the_selector_rides_beside_an_operations_own_query(self):
+    def test_the_key_rides_beside_an_operations_own_query(self):
         request = _request_made_by(
-            lambda ctx: ctx.scheme_view("source-side").describe_concept(
+            lambda ctx: ctx.schemes.get("source-side").describe_concept(
                 "H", "level", view="short"
             )
         )
@@ -2389,39 +2394,43 @@ class TestSchemeView:
             "scheme": "source-side",
         }
 
-    def test_the_selector_is_sent_as_given_and_encoded(self):
+    def test_the_key_is_sent_as_given_and_encoded(self):
         request = _request_made_by(
-            lambda ctx: ctx.scheme_view("levels@2.0.0 & more").summary()
+            lambda ctx: ctx.schemes.get("source & side").summary()
         )
-        assert request.url.params["scheme"] == "levels@2.0.0 & more"
-        assert b"scheme=levels%402.0.0+%26+more" in request.url.query
+        assert request.url.params["scheme"] == "source & side"
+        assert b"scheme=source+%26+side" in request.url.query
 
-    def test_views_are_kept_per_selector(self):
+    def test_views_are_kept_per_key(self):
         ctx = EzClassifyContext(_BASE, context_id=_CTX, context_version=_VER)
-        source = ctx.scheme_view("source-side")
-        assert ctx.scheme_view("source-side") is source
-        assert ctx.scheme_view("target-side") is not source
+        source = ctx.schemes.get("source-side")
+        assert ctx.schemes.get("source-side") is source
+        assert ctx.schemes.get("target-side") is not source
         assert source is not ctx.scheme
         ctx.close()
 
-    @pytest.mark.parametrize("selector", ["", "   ", None, 3])
+    @pytest.mark.parametrize("key", ["", "   ", None, 3])
     @respx.mock
-    def test_a_blank_selector_is_refused_before_any_request(self, selector):
+    def test_a_blank_key_is_refused_before_any_request(self, key):
         route = respx.route().mock(return_value=httpx.Response(200, json={}))
         ctx = EzClassifyContext(_BASE, context_id=_CTX, context_version=_VER)
         with pytest.raises(ValueError):
-            ctx.scheme_view(selector)
+            ctx.schemes.get(key)
         assert not route.called
 
     @respx.mock
-    def test_a_selector_the_context_does_not_hold_raises_and_never_reaches_the_primary(
+    def test_a_key_the_context_does_not_hold_raises_and_never_reaches_the_primary(
         self,
     ):
         unknown = respx.post(
             _ctx_url("scheme/validate"), params={"scheme": "not-here"}
         ).mock(
             return_value=httpx.Response(
-                404, json={"error": "scheme not-here is not held by this context"}
+                404,
+                json={
+                    "error": "scheme not-here is not held by this context",
+                    "code": "scheme_not_found",
+                },
             )
         )
         primary = respx.post(_ctx_url("scheme/validate")).mock(
@@ -2430,10 +2439,13 @@ class TestSchemeView:
             )
         )
         ctx = EzClassifyContext(_BASE, context_id=_CTX, context_version=_VER)
-        view = ctx.scheme_view("not-here")
+        view = ctx.schemes.get("not-here")
+        # Getting the view asks nothing: the server is the authority on keys.
+        assert unknown.call_count == 0
         with pytest.raises(EzClassifyClientError) as failure:
             view.validate("H")
         assert failure.value.status_code == 404
+        assert failure.value.code == "scheme_not_found"
         assert unknown.call_count == 1
         assert not primary.called
         # The refusal is not cached either: the next call asks again.
@@ -2444,7 +2456,7 @@ class TestSchemeView:
         ctx.close()
 
     @respx.mock
-    def test_answers_are_cached_per_selector(self):
+    def test_answers_are_cached_per_key(self):
         route = respx.post(_ctx_url("scheme/validate")).mock(
             return_value=httpx.Response(
                 200, json=_envelope(_validate_result()), headers=_HDR
@@ -2452,16 +2464,16 @@ class TestSchemeView:
         )
         ctx = EzClassifyContext(_BASE, context_id=_CTX, context_version=_VER)
         ctx.scheme.validate("H")
-        ctx.scheme_view("source-side").validate("H")
-        ctx.scheme_view("target-side").validate("H")
+        ctx.schemes.get("source-side").validate("H")
+        ctx.schemes.get("target-side").validate("H")
         assert route.call_count == 3
-        selectors = [call.request.url.params.get("scheme") for call in route.calls]
-        assert selectors == [None, "source-side", "target-side"]
+        keys = [call.request.url.params.get("scheme") for call in route.calls]
+        assert keys == [None, "source-side", "target-side"]
 
-        # Each scheme's answer is then held under its own selector.
+        # Each scheme's answer is then held under its own key.
         ctx.scheme.validate("H")
-        ctx.scheme_view("source-side").validate("H")
-        ctx.scheme_view("target-side").validate("H")
+        ctx.schemes.get("source-side").validate("H")
+        ctx.schemes.get("target-side").validate("H")
         assert route.call_count == 3
         ctx.close()
 
