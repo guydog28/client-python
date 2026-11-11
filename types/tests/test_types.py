@@ -610,15 +610,21 @@ class TestGuideModels:
         assert r.rule.id == "pii-rule"
         assert len(r.spans) == 1
 
-    def test_guide_scan_result_allows_omitted_optional_guide_id(self):
-        r = GuideScanResult.from_dict(
-            {
-                "matchedKeywords": [],
-                "rule": {"id": "r1", "name": "Rule", "outcome": {}},
-                "spans": [],
-            }
-        )
-        assert r.guide_id is None
+    def test_guide_scan_result_must_name_its_guide(self):
+        with pytest.raises(PydanticValidationError) as failure:
+            GuideScanResult.from_dict(
+                {
+                    "matchedKeywords": [],
+                    "rule": {
+                        "id": "r1",
+                        "name": "Rule",
+                        "keywords": [],
+                        "outcome": {"rendered": "HIGH"},
+                    },
+                    "spans": [],
+                }
+            )
+        assert failure.value.errors()[0]["loc"] == ("guideId",)
 
     def test_evaluation_result(self):
         e = EvaluationResult.from_dict(

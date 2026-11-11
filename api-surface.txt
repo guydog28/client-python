@@ -756,7 +756,7 @@ module ezclassify_rest_contract.models
   class GuideScanResult(_WireModel)
     def __init__(self, /, **data: Any) -> None
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
-    guide_id: Optional[str] = Field(default=None, alias='guideId')
+    guide_id: str = Field(alias='guideId')
     matched_keywords: List[str] = Field(alias='matchedKeywords')
     model_config = ConfigDict(populate_by_name=True)
     provenance: Optional[SourceReference] = None
@@ -1094,7 +1094,7 @@ module ezclassify_rest_contract.models
 package ezclassify-rest-client (client/ezclassify_rest_client)
 
 module ezclassify_rest_client
-  __all__ = [CtxAccess, CtxCrosswalk, CtxDocument, CtxGuide, CtxScheme, EzClassifyClient, EzClassifyClientError, EzClassifyContext, MalformedResponseError, PingResult, RequestTimeoutError, RestClientCredentials, connect_context, utf8_byte_offset, utf8_index]
+  __all__ = [CtxAccess, CtxCrosswalk, CtxDocument, CtxGuide, CtxScheme, CtxSchemes, EzClassifyClient, EzClassifyClientError, EzClassifyContext, MalformedResponseError, PingResult, RequestTimeoutError, RestClientCredentials, connect_context, utf8_byte_offset, utf8_index]
 
 module ezclassify_rest_client.client
   class EzClassifyClient
@@ -1148,7 +1148,7 @@ module ezclassify_rest_client.context
     def scan(self, text: str, guide_id: Optional[str] = None) -> ContextGuideScanResult
     def view(self, guide_id: Optional[str] = None) -> ContextGuideViewResult
   class CtxScheme
-    def __init__(self, ctx: EzClassifyContext, selector: Optional[str] = None) -> None
+    def __init__(self, ctx: EzClassifyContext, key: Optional[str] = None) -> None
     def aggregate(self, markings: List[str], *, output_format: str | None = None, surface: str | None = None, input_format: str | None = None, context: Dict[str, Any] | None = None) -> ContextSchemeAggregateResult
     def aggregate_assertions(self, assertion_sets: List[List[Assertion]], *, output_format: str | None = None, surface: str | None = None, context: Dict[str, Any] | None = None) -> ContextSchemeAggregateResult
     def apply_preset(self, preset_id: str, *, output_format: str | None = None) -> ContextSchemeValidateResult
@@ -1177,6 +1177,9 @@ module ezclassify_rest_client.context
     @overload def validate(self, *, assertions: List[Assertion], output_format: str | None = None, surface: str | None = None, context: Dict[str, Any] | None = None, parts: List[str] | None = None) -> ContextSchemeValidateResult
     def validate(self, marking: str | None = None, *, assertions: List[Assertion] | None = None, output_format: str | None = None, surface: str | None = None, input_format: str | None = None, context: Dict[str, Any] | None = None, parts: List[str] | None = None) -> ContextSchemeValidateResult
     def view(self) -> ContextSchemeViewResult
+  class CtxSchemes
+    def __init__(self, ctx: EzClassifyContext) -> None
+    def get(self, key: str) -> CtxScheme
   class EzClassifyContext
     def __enter__(self) -> "EzClassifyContext"
     def __exit__(self, *_: Any) -> None
@@ -1187,7 +1190,6 @@ module ezclassify_rest_client.context
     def describe(self) -> ContextDescription
     def resolve(self) -> None
     @property def resolved_version(self) -> Optional[str]
-    def scheme_view(self, selector: str) -> CtxScheme
     @property def version(self) -> Optional[str]
   def connect_context(base_url: str, *, context_id: str, context_version: str | None = None, timeout: float = 30.0, headers: Dict[str, str] | None = None, credentials: RestClientCredentials | None = None, cache_access_decisions: bool = False, disable_cache: bool = False) -> "EzClassifyContext"
 

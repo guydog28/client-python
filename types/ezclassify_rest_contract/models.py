@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@8f0795cde47a5e01bc67c420c8e577319ca823b67567941cb72f61376524817c. DO NOT EDIT.
+# Code generated from vendored contracts@ad42e22f061d68d6bb1bc8ba9e1a649257169172181ed6095091d831145fa93b. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -1135,8 +1135,10 @@ class GuideScanResult(_WireModel):
     scanned text.
     """
 
-    guide_id: Optional[str] = Field(default=None, alias='guideId')
-    """The id of the guide the rule belongs to, when the scan covered more than one."""
+    guide_id: str = Field(alias='guideId')
+    """The id of the guide the rule belongs to. Rule ids are unique only within a guide, so
+    a selection built from this hit names this guide.
+    """
     matched_keywords: List[str] = Field(alias='matchedKeywords')
     """Each keyword or matcher label that fired, once each."""
     provenance: Optional[SourceReference] = None
@@ -2710,7 +2712,7 @@ class ContextSchemeDescriptor(_WireModel):
     `id` at `version`, and it plays these `roles`.
 
     `selector` is the whole point. A Context keys its schemes locally, and a caller
-    reaches a scheme by its key: an adapter's `schemeView` takes it, and so does
+    reaches a scheme by its key: an adapter's `schemes.get` takes it, and so does
     `?scheme=` on the REST surface. A caller that cannot enumerate the keys cannot reach
     anything but the primary.
     """
@@ -3470,6 +3472,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                          ('overrides', False),
                          ('overrideNames', False)]},
  'GuideScanResult': {'r': [('rule', False),
+                           ('guideId', False),
                            ('matchedKeywords', False),
                            ('spans', False)],
                      'p': {'rule': 'GuideRule',

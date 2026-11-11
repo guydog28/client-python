@@ -10,7 +10,7 @@ dependency direction, and required boundary gates.
 
 ## Wire rules
 
-- Requests are closed. The server answers 400 (`INVALID_INPUT`, with a `detail` such as `query: scheme`) to a query parameter or body field the operation does not declare. A POST operation's only query parameter is the `scheme` selector the scheme operations declare, which a view from `scheme_view` adds and `ctx.scheme` leaves off; `_post` sends nothing else. A GET sends only the parameters its operation declares, and `test_request_schema_conformance` checks every call against the vendored contract.
+- Requests are closed. The server answers 400 (`INVALID_INPUT`, with a `detail` such as `query: scheme`) to a query parameter or body field the operation does not declare. A POST operation's only query parameter is the `scheme` selector the scheme operations declare, which a view from `ctx.schemes.get` adds and `ctx.scheme` leaves off; `_post` sends nothing else. A GET sends only the parameters its operation declares, and `test_request_schema_conformance` checks every call against the vendored contract.
 - Every operation can answer 400 and 429. `EzClassifyClientError.retry_after` carries a 429's wait, from the `Retry-After` header and otherwise the body's `retryAfter`. The client never sleeps or retries; waiting is the caller's decision.
 - Output formats are named `output_format` in Python and `outputFormat` on the wire, on every operation that writes one, `render` and `apply_preset` included.
 - No compatibility shims. When the contract drops a parameter or field, the Python argument goes with it.
