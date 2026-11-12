@@ -1,7 +1,7 @@
 """MCP JSON-RPC client that spawns @ezclassify/mcp as a stdio subprocess.
 
 Speaks JSON-RPC over stdio with the stdlib alone; the wire types come from
-ezclassify-rest-contract. Provides the same audit / aggregate
+ezclassify-rest-client. Provides the same audit / aggregate
 interface as EzClassifyClient so it can be dropped in as a backend for the
 classify() workflow.
 
@@ -23,7 +23,7 @@ from queue import Empty, Queue
 from time import monotonic
 from typing import Any
 
-from ezclassify_rest_contract import AggregateResult, DocumentAuditReport
+from ezclassify_rest_client import AggregateResult, DocumentAuditReport
 
 
 _NOT_STARTED = (

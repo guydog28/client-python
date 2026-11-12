@@ -1,6 +1,6 @@
 """Handwritten behavior shared by generated wire-model declarations.
 
-The wire fields live exclusively in :mod:`ezclassify_rest_contract.models`,
+The wire fields live exclusively in :mod:`ezclassify_rest_client.models`,
 which is generated from the vendored schemas and OpenAPI document.  This
 module is intentionally limited to Python ergonomics and cross-field checks
 that JSON Schema cannot express as a single class declaration.
@@ -23,7 +23,7 @@ from typing import (
     get_origin,
 )
 
-from pydantic import BaseModel, ConfigDict, GetCoreSchemaHandler, model_validator
+from pydantic import BaseModel, ConfigDict, GetCoreSchemaHandler
 from pydantic_core import (
     CoreSchema,
     InitErrorDetails,
@@ -118,23 +118,6 @@ class _ClosedOnConstruction(_WireModel):
     __init__.__pydantic_base_init__ = True  # type: ignore[attr-defined]
 
 
-class _SourceIdentityMixin(_WireModel):
-    """Enforce the reproducible/best-effort source identity invariant."""
-
-    reproducibility: str
-    snapshot_id: Optional[str]
-
-    @model_validator(mode="after")
-    def _validate_identity(self: Self) -> Self:
-        reproducibility = self.reproducibility
-        snapshot_id = self.snapshot_id
-        if reproducibility == "reproducible" and not snapshot_id:
-            raise ValueError("reproducible source requires snapshotId")
-        if reproducibility == "best-effort" and snapshot_id is not None:
-            raise ValueError("best-effort source cannot carry snapshotId")
-        return self
-
-
 class _ContextDescriptionMixin(_WireModel):
     """Read the composed scheme's layers off a Context description.
 
@@ -211,7 +194,7 @@ _Loc = Tuple[Union[str, int], ...]
 def _check_wire_shape(model: str, value: Any) -> None:
     """Refuse a wire value that breaks the contract's required members.
 
-    The shapes are generated into :mod:`ezclassify_rest_contract.models` from
+    The shapes are generated into :mod:`ezclassify_rest_client.models` from
     the OpenAPI document's ``required`` lists (see ``WireShapes`` in
     ``scripts/gen_models.py`` for how one reads). A model generated from no
     component has no shape here and is checked by the component around it.

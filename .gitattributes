@@ -15,4 +15,4 @@
 *.svg text
 
 # Generated files
-types/ezclassify_rest_contract/models.py linguist-generated=true
+client/ezclassify_rest_client/models.py linguist-generated=true

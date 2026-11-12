@@ -13,7 +13,7 @@ from ezclassify_rest_client import (
     RestClientCredentials,
     connect_context,
 )
-from ezclassify_rest_contract import Assertion, SourceReference
+from ezclassify_rest_client import Assertion
 
 from .test_context import (
     _BASE,
@@ -139,20 +139,11 @@ def test_facts_reject_text_only_format_before_transport(
 )
 @respx.mock
 def test_source_is_open_and_forwarded_without_sdk_derivation(source: str) -> None:
-    provenance = SourceReference(
-        provider_id="fixture-provider",
-        reproducibility="reproducible",
-        snapshot_id="sha256:fixture-snapshot",
-        attribution={"name": "Fixture catalog", "license": "Apache-2.0"},
-    )
     fact = Assertion(
         category_id="level",
         concept_id="H",
         source=source,
-        source_rule="fixture-rule",
-        value="20351231",
-        metadata={"nested": {"empty": "", "count": 7}},
-        provenance=provenance,
+        replaced_concept_id="OLD",
     )
     route = respx.post(_ctx_url("scheme/suggest")).respond(200, json=_suggest_result())
     with _ctx() as ctx:
@@ -160,7 +151,7 @@ def test_source_is_open_and_forwarded_without_sdk_derivation(source: str) -> Non
     assert json.loads(route.calls.last.request.content) == {
         "assertions": [fact.model_dump(mode="json", by_alias=True, exclude_none=True)]
     }
-    assert fact.source == source and fact.value == "20351231"
+    assert fact.source == source and fact.replaced_concept_id == "OLD"
 
 
 @respx.mock

@@ -32,7 +32,7 @@ import respx
 import yaml
 
 from ezclassify_rest_client import EzClassifyClient, EzClassifyContext
-from ezclassify_rest_contract import (
+from ezclassify_rest_client import (
     Assertion,
     GuideDeterminationInput,
     GuideRuleSelection,
@@ -473,12 +473,6 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
             [_LEVEL], output_format="banner", preservation="full"
         ),
     ),
-    "scheme.normalize": (
-        "scheme/normalize",
-        lambda c: c.schemes.get("acme").normalize(
-            "h", output_format="banner", input_format="portion"
-        ),
-    ),
     "scheme.check-coverage": (
         "scheme/check-coverage",
         lambda c: c.schemes.get("acme").check_coverage(
@@ -488,10 +482,6 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     "scheme.diff": (
         "scheme/diff",
         lambda c: c.schemes.get("acme").diff("H", "L", input_format="portion"),
-    ),
-    "scheme.filter-concepts": (
-        "scheme/filter-concepts",
-        lambda c: c.schemes.get("acme").filter_concepts("hi"),
     ),
     "scheme.notices": (
         "scheme/notices",
@@ -512,14 +502,6 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
             GuideRuleSelection(guide_id="g1", rule_id="r1")
         ),
     ),
-    "guide.filter-rules": (
-        "guide/filter-rules",
-        lambda c: c.guide.filter_rules("sec", guide_id="g1"),
-    ),
-    "guide.describe-rule": (
-        "guide/describe-rule",
-        lambda c: c.guide.describe_rule("r1", guide_id="g1"),
-    ),
     "guide.view": ("guide/view", lambda c: c.guide.view(guide_id="g1")),
     "access.check": (
         "access/check",
@@ -536,10 +518,6 @@ CASES: Dict[str, Tuple[str, Callable[[EzClassifyContext], Any]]] = {
     "access.describe-requirements": (
         "access/describe-requirements",
         lambda c: c.access.describe_requirements("H", assertions=[_LEVEL]),
-    ),
-    "access.describe-rule": (
-        "access/describe-rule",
-        lambda c: c.access.describe_rule("rule-1"),
     ),
     "crosswalk.translate-marking": (
         "crosswalk/translate",
@@ -698,10 +676,6 @@ QUERY_CASES: Dict[str, Tuple[str, Callable[[_Harness], Any]]] = {
     "scheme.formats": (
         _ROUTE_PREFIX + "scheme/formats",
         lambda h: h.ctx.schemes.get("acme").formats(),
-    ),
-    "scheme.grammar": (
-        _ROUTE_PREFIX + "scheme/grammar",
-        lambda h: h.ctx.schemes.get("acme").grammar(),
     ),
     "scheme.scopes": (
         _ROUTE_PREFIX + "scheme/scopes",

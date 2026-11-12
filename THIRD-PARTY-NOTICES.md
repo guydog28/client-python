@@ -4,14 +4,12 @@ This file lists the direct third-party runtime dependencies of the EzClassify
 Python packages published to PyPI, together with their license identifiers and
 upstream copyright holders.
 
-Two packages are published from this repository:
-
-- `ezclassify-rest-contract` (directory `types/`)
-- `ezclassify-rest-client` (directory `client/`)
+One package is published from this repository: `ezclassify-rest-client`
+(directory `client/`).
 
 The top-level `ezclassify` package (repository root) is a dev-only integration
 harness marked `Private :: Do Not Upload`; it is not published and its only
-direct dependencies are the first-party packages above, so it is not covered
+direct dependency is the first-party package above, so it is not covered
 here.
 
 Each dependency keeps its own license; this file does not relicense any of it.
@@ -23,24 +21,16 @@ workflow artifact.
 
 ---
 
-## ezclassify-rest-contract
-
-Directory `types/`. Direct runtime dependencies: `pydantic`, `typing_extensions`.
-
-| Package (declared requirement) | License | Copyright |
-| --- | --- | --- |
-| pydantic (<3,>=2.14.1) | MIT | Copyright (c) 2017 to present Pydantic Services Inc. and individual contributors |
-| typing_extensions (>=4.15) | PSF-2.0 | Copyright (c) Python Software Foundation |
-
 ## ezclassify-rest-client
 
-Directory `client/`. Direct runtime dependencies: `httpcore`, `httpx`.
-Also depends on the sibling packages `ezclassify-rest-contract` (covered above).
+Directory `client/`. Direct runtime dependencies: `httpcore`, `httpx`, `pydantic`, `typing_extensions`.
 
 | Package (declared requirement) | License | Copyright |
 | --- | --- | --- |
 | httpcore (<2,>=1.0.9) | BSD-3-Clause | Copyright (c) 2020, Encode OSS Ltd |
 | httpx (<1,>=0.28.1) | BSD-3-Clause | Copyright (c) 2019, Encode OSS Ltd |
+| pydantic (<3,>=2.14.1) | MIT | Copyright (c) 2017 to present Pydantic Services Inc. and individual contributors |
+| typing_extensions (>=4.15) | PSF-2.0 | Copyright (c) Python Software Foundation |
 
 ---
 

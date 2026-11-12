@@ -2,7 +2,7 @@ from pathlib import Path
 import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGES = ("types", "client")
+PACKAGES = ("client",)
 
 
 def test_distribution_licenses_match_the_canonical_license() -> None:

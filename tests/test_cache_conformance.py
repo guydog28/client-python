@@ -27,7 +27,6 @@ from .cache_plans import (
     NOT_APPLICABLE_CAPABILITIES,
     CountingReplay,
     PlanRun,
-    _BODY_SHAPE,
     _assert_error,
     load_plans,
 )
@@ -114,26 +113,6 @@ def test_plans_needing_an_absent_capability_are_justified(plan_id: str) -> None:
         # An unset optional argument is omitted from the body, never sent null.
         # The unsetMember variant of key-canonical-members measures that.
         assert "key-canonical-members" in PLAN_BY_ID
-    if "sharedRouteOperations" in needed:
-        # The plan calls two operations with one body on one route. Python
-        # has a method per body there, so only one of them can send it.
-        _assert_one_method_per_route_and_body(PLAN_BY_ID[plan_id])
-
-
-def _assert_one_method_per_route_and_body(plan: dict[str, Any]) -> None:
-    calls = [step for step in plan["steps"] if step["step"] == "call"]
-    by_case: dict[str, set[str]] = {}
-    for step in calls:
-        by_case.setdefault(step["case"], set()).add(step["operation"])
-    shared = {case: ops for case, ops in by_case.items() if len(ops) > 1}
-    assert shared, "the plan shares no route and body between operations"
-    corpus = WireCorpus.vendored()
-    for case_id, operations in shared.items():
-        body = corpus.by_id[case_id].body
-        senders = sorted(op for op in operations if _BODY_SHAPE[op](body))
-        assert len(senders) == 1, (
-            f"{case_id}: Python methods {senders} send the same body to one route"
-        )
 
 
 def _public_operation_owners() -> list[type]:
@@ -160,11 +139,6 @@ def test_plan(
     run = PlanRun(plan, PLANS, corpus, replay, clock)
 
     with answered_in_process(replay.handle):
-        if plan["client"].get("construction") == "refused":
-            assert plan["steps"] == []
-            with pytest.raises(ValueError, match="concrete Context version"):
-                run.build_client()
-            return
         run.ctx = run.build_client()
         replay.reset_counts()
         try:
@@ -178,11 +152,8 @@ def test_every_plan_is_accounted_for() -> None:
 
 
 def test_checklist_items_every_executed_plan_leaves_uncovered() -> None:
-    """C05 is the shared-route item, not applicable to one method per body.
-
-    C08 and C09 are measured by cancellation plans only.
-    """
+    """C07 and C08 are measured by cancellation plans only."""
     executed = [p for p in PLANS["plans"] if p["id"] in RUNNABLE]
     covered = {item for plan in executed for item in plan["covers"]}
     declared = {item["id"] for item in PLANS["checklist"]}
-    assert declared - covered == {"C05", "C08", "C09"}
+    assert declared - covered == {"C07", "C08"}

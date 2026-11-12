@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@13d215c6b6e54dfa6b81f2793addccce736c0db99baf565dd18c26426f1cddff. DO NOT EDIT.
+# Code generated from vendored contracts@2b279d1369c41a3ac53981797f0d369bb0ef3c4a75e990d3f74c5458aab372f9. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -12,38 +12,17 @@ from ._model_helpers import (
     _ClosedOnConstruction,
     _ContextDescriptionMixin,
     _KnownOnConstruction,
-    _SourceIdentityMixin,
     _WireModel,
 )
 class Confidence(str, Enum):
     """How the assertion was produced: `certain` when read or handed in as stated,
     `inferred` when an inference rule added it, or `repaired` when the engine added or
-    rewrote it while repairing the marking. The engine does not assign `uncertain`
-    itself.
+    rewrote it while repairing the marking.
     """
 
     certain = 'certain'
     inferred = 'inferred'
     repaired = 'repaired'
-    uncertain = 'uncertain'
-
-class Attribution(_WireModel):
-    """Provenance attached to every source so downstream consumers can render proper
-    attribution and license notices.
-
-    Mandatory because most source data we'll integrate (NIST, ICS, IANA, external
-    taxonomies) requires citation. Sources that don't have a formal license should set
-    `license: 'unspecified'` rather than omit it.
-    """
-
-    name: str
-    """Display name of the upstream source (e.g. "NIST CSWP-29")."""
-    license: str
-    """SPDX identifier or short license token (e.g. "CC-BY-4.0", "public-domain")."""
-    license_url: Optional[str] = Field(default=None, alias='licenseUrl')
-    """Canonical URL where the license terms can be inspected."""
-    citation: Optional[str] = None
-    """Suggested citation string for academic / regulatory use."""
 
 class ArtifactReference(_WireModel):
     """Identifies an immutable artifact participating in a composed operation."""
@@ -57,30 +36,6 @@ class ArtifactReference(_WireModel):
     digest: Optional[str] = None
     """Content digest when the resolver can supply one."""
 
-class SourceReference(_SourceIdentityMixin):
-    """Records source identity and mandatory attribution for an operation."""
-
-    reproducibility: Annotated[Union[Literal['reproducible', 'best-effort'], str], _KnownOnConstruction]
-    """Whether the source observation can be reproduced byte-for-byte."""
-    snapshot_id: Optional[str] = Field(default=None, alias='snapshotId')
-    """Immutable content identity."""
-    locator: Optional[str] = None
-    """Location from which the mutable content was observed."""
-    provider_id: str = Field(alias='providerId')
-    """Stable identifier for the source provider."""
-    attribution: Attribution
-    """Attribution and license information for the observed source."""
-
-class RuleSourceReference(_SourceIdentityMixin):
-    """Compact source join carried by a qualified rule reference."""
-
-    provider_id: str = Field(alias='providerId')
-    """Stable identifier for the source provider."""
-    reproducibility: Annotated[Union[Literal['reproducible', 'best-effort'], str], _KnownOnConstruction]
-    """Whether the source observation can be reproduced byte-for-byte."""
-    snapshot_id: Optional[str] = Field(default=None, alias='snapshotId')
-    """Immutable snapshot containing the rule."""
-
 class RuleReference(_WireModel):
     """Identifies the exact resolved semantics of one policy rule."""
 
@@ -90,8 +45,6 @@ class RuleReference(_WireModel):
     """Rule identifier within the owning artifact."""
     rule_digest: str = Field(alias='ruleDigest')
     """RFC 8785/SHA-256 digest of the canonical resolved rule content."""
-    source: Optional[RuleSourceReference] = None
-    """External source identity when the rule was not supplied inline."""
 
 class AssertionReference(_WireModel):
     """Compact reference to an assertion without engine-production metadata."""
@@ -142,16 +95,14 @@ class AccessRuleActivation(_WireModel):
     """Context paths consulted by activation."""
 
 class Assertion(_ClosedOnConstruction):
-    """A concept asserted in a category during processing, with confidence level and
-    provenance metadata.
+    """A concept asserted in a category during processing, with how it was produced and
+    where it came from.
 
     Assertions are the core data unit flowing through the engine pipeline. `confidence`
     records how the assertion was produced: `'certain'` when read or handed in as
     stated, `'inferred'` when an inference rule added it, and `'repaired'` when the
-    engine added or rewrote it while repairing the marking. The engine does not assign
-    `'uncertain'` itself. `source` says where the assertion came from. `expiresAt`
-    records caller-supplied expiry metadata. The engine does not evaluate that date or
-    automatically change confidence or the marking; the host applies its expiry policy.
+    engine added or rewrote it while repairing the marking. `source` says where the
+    assertion came from.
     """
 
     category_id: str = Field(alias='categoryId')
@@ -161,32 +112,7 @@ class Assertion(_ClosedOnConstruction):
     confidence: Annotated[Union[Confidence, str], _KnownOnConstruction] = Confidence.certain
     """How the assertion was produced: `certain` when read or handed in as stated,
     `inferred` when an inference rule added it, or `repaired` when the engine added or
-    rewrote it while repairing the marking. The engine does not assign `uncertain`
-    itself.
-    """
-    expires_at: Optional[str] = Field(default=None, alias='expiresAt')
-    """Caller-supplied ISO 8601 expiry date; the engine does not evaluate it."""
-    metadata: Optional[Dict[str, Any]] = None
-    """Caller-defined data attached to the assertion. The engine assigns it no meaning.
-    """
-    provenance: Optional[SourceReference] = None
-    """Source provenance for the concept that backed this assertion.
-
-    Populated only when the concept came from an external source whose records were
-    loaded with the scheme (typically one a scheme's `concepts.external` block
-    declares). Inline-backed assertions leave this field undefined to keep payloads
-    compact for the common single-source case. A concept a scheme document declares in
-    its `inline` list has none, even when one of that document's `external` sources also
-    serves a record with its id. A concept read through a queryable-only source
-    (`SourceCapabilities.queryableOnly`) has none either: that source is asked per
-    lookup and never loaded whole, and a lookup does not say which source answered. Such
-    a source still appears in a composed operation's `resolution.sources`. Across a
-    layered stack the later layer decides: a concept a later layer's source supplies
-    carries that source's provenance even when an earlier document declares it inline,
-    and a concept a later layer declares inline carries none.
-
-    Identity fields mirror the source's `sourceIdentity()` observation at engine-load
-    time (or the immutable value the Context pinned).
+    rewrote it while repairing the marking.
     """
     replaced_concept_id: Optional[str] = Field(default=None, alias='replacedConceptId')
     """The deprecated concept this assertion was modernized from.
@@ -239,9 +165,9 @@ class ValidationError(_WireModel):
     a human-readable message.
 
     Carried in the `errors` of every result that judges a marking. `constraintId`
-    identifies the rule that fired; `message` is human-readable. When `severity` is
-    `'warning'`, the violation is advisory and does not set `valid` to `false`. Use
-    `categoryId` and `affectedConcepts` to highlight the specific UI elements involved.
+    identifies the rule that fired; `message` is human-readable. Every entry sets
+    `valid` to `false`; advisories are warnings, not errors. Use `categoryId` and
+    `affectedConcepts` to highlight the specific UI elements involved.
 
     Two of the ids the engine keeps for itself are for a fact a caller hands in that
     cannot be settled as given: `_missing_assertion_value`, a concept that takes a value
@@ -286,20 +212,11 @@ class ValidationError(_WireModel):
     naming a different concept would point the author away from a word they spelled
     right.
 
-    It is not a fix: nothing here has been proven to make the marking valid, and
-    `suggestedFix` and the result's fix paths do not depend on it.
+    It is not a fix: nothing here has been proven to make the marking valid, and the
+    result's fix paths do not depend on it.
     """
     message: str
     """What is wrong, in words a person can act on."""
-    severity: Optional[Union[Literal['error', 'warning'], str]] = None
-    """Severity: 'error' blocks validity, 'warning' is advisory. Default: 'error'."""
-    suggested_fix: Optional[str] = Field(default=None, alias='suggestedFix')
-    """The `message` of the proposed fix that answers this error, such as "Add CTRL-A".
-
-    Set only on a result that carries that fix in its own `proposedFixes`. A result with
-    no fix paths, such as a `ValidateResult` or a scan region, never sets it, so a
-    reader never holds a pointer to a fix it was not given.
-    """
 
 class EngineWarning(_WireModel):
     """A non-blocking informational signal surfaced in a result's `warnings`.
@@ -477,11 +394,8 @@ class ValidateResult(_WireModel):
     override this presentation default.
     """
     errors: List[ValidationError]
-    """What the scheme's rules find wrong with the settled marking. An entry whose severity
-    is `error` makes `valid` false.
-
-    No entry here points at a fix path: `suggestedFix` is set only on a result that
-    carries the fix it names, and this result carries none.
+    """What the scheme's rules find wrong with the settled marking. Any entry makes `valid`
+    false.
     """
     input_was_valid: StrictBool = Field(alias='inputWasValid')
     """True when the text or facts as given needed no change to stand.
@@ -577,25 +491,11 @@ class ProcessResult(ValidateResult):
     explain answers, from the same request.
     """
 
-    assertions_before_repair: Optional[List[Assertion]] = Field(default=None, alias='assertionsBeforeRepair')
-    """What was read before repair: the assertions the input stated, before the repair pass
-    took anything away or rewrote it. A retired concept appears under its replacement's
-    name, as it does in `assertions` and in the fixes.
-
-    Present only when repair rewrote something that was read. Absent, everything read
-    came through repair. This is a record of the reading; proposed fixes are computed
-    against the resulting `assertions`, never against this earlier set. Repair leaves
-    author-stated rule conflicts in the resulting value for the author to resolve.
-
-    Listed in print order, placed by the same rendering as `assertions`. A concept
-    repair took away has no place in it, so it follows the others of its category.
-    """
     proposed_fixes: List[Fix] = Field(alias='proposedFixes')
     """The ways to make the resulting value valid, computed from that value after applied
     changes, each a whole marking the engine has read back and found valid before
     offering it. Empty when the marking is valid, or when no change the engine could
-    prove would make it so. An error's `suggestedFix` names one of these by its
-    `message`.
+    prove would make it so.
 
     A request's `parts` go back in with each fix, as the caller will send them, so they
     are read again in the fix's whole and the fix is judged with them: every part that
@@ -674,8 +574,6 @@ class TraceRepair(_WireModel):
     """The id of the repair rule that fired."""
     description: str
     """What the repair does, as the scheme describes it."""
-    confidence: Union[Literal['safe', 'uncertain'], str]
-    """The confidence the scheme declares for the repair rule."""
     before: str
     """The text before the repair."""
     after: str
@@ -929,7 +827,7 @@ class ScanLimits(_WireModel):
 
     status: Union[Literal['complete', 'truncated', 'resource-limit'], str]
     """Whether the document was read to the end, and if not, why not."""
-    limit_hit: Optional[Union[Literal['aborted', 'input-length', 'transitions', 'lookups', 'live-states', 'wall-clock', 'grammar-size', 'depth'], str]] = Field(default=None, alias='limitHit')
+    limit_hit: Optional[Union[Literal['input-length', 'transitions', 'lookups', 'live-states'], str]] = Field(default=None, alias='limitHit')
     """The ceiling that stopped the scan, when one did."""
     regions_found: int = Field(alias='regionsFound')
     """Candidate regions the scan considered."""
@@ -1042,18 +940,6 @@ class AccessDecision(_WireModel):
 
     granted: StrictBool
     """True when every rule that was not skipped granted access."""
-    provenance: Optional[SourceReference] = None
-    """Source provenance for the access-rule source that evaluated this decision.
-
-    Populated only when the `AccessEngine` was wired with an external `AccessRuleSource`
-    override at load time (typically a `MappedAccessRuleSource` the server's Context
-    loader built from an access YAML's `rules.external` block). Inline-backed decisions
-    leave this field undefined to keep payloads compact for the common single-source
-    case.
-
-    Identity fields mirror the source's `sourceIdentity()` observation at
-    engine-construction time.
-    """
     rules: List[AccessRuleResult]
     """One result per rule in the policy, in policy order."""
     warnings: List[EngineWarning]
@@ -1071,8 +957,8 @@ class GuideRule(_WireModel):
     contribution. Rules with `when` are computed; they auto-activate based on sibling
     rule selection state and do not appear as user-visible checkboxes.
 
-    This is the named runtime/read-result shape. Authoring input is carried by the guide
-    definition's `rules.inline` entries.
+    This is the named runtime/read-result shape. A guide document authors its rules as
+    `GuideRuleDoc` entries in `guide.rules`.
     """
 
     category: Optional[str] = None
@@ -1103,9 +989,8 @@ class GuideRule(_WireModel):
     rationale: Optional[str] = None
     """Explanation of why this outcome applies."""
     when: Optional[Union[str, List[str], Dict[str, Any]]] = None
-    """When present, this rule auto-activates based on other rules' selection state. Uses
-    the same when framework as scheme rules. `has` references guide rule IDs. Rules with
-    `when` are "computed"; they don't appear as checkboxes.
+    """When present, the rule is computed: it activates when this block holds over the
+    rules the user selected, and it is not offered as a checkbox.
     """
 
 class GuideScanSpan(_WireModel):
@@ -1113,11 +998,6 @@ class GuideScanSpan(_WireModel):
     matched.
     """
 
-    confidence: Optional[float] = None
-    """Advisory confidence in [0, 1], present only when the scan asked for it with the
-    `confidence` scan option. An ordinal hint derived from the match's shape, not a
-    calibrated probability.
-    """
     end: int
     """Offset in the scanned text just past the end of the match, in UTF-16 code units.
     """
@@ -1141,18 +1021,6 @@ class GuideScanResult(_WireModel):
     """
     matched_keywords: List[str] = Field(alias='matchedKeywords')
     """Each keyword or matcher label that fired, once each."""
-    provenance: Optional[SourceReference] = None
-    """Source provenance for the guide-rule source that supplied the matched rule.
-
-    Populated only when the rule came from an external `GuideRuleSource` override wired
-    into the `GuideEngine` at load time (typically a `MappedGuideRuleSource` the
-    server's Context loader built from a guide YAML's `rules.external` block).
-    Inline-backed results leave this field undefined to keep payloads compact for the
-    common single-source case.
-
-    Identity fields mirror the source's `sourceIdentity()` observation at
-    engine-construction time.
-    """
     rule: GuideRule
     """The guide rule that matched."""
     spans: List[GuideScanSpan]
@@ -1203,8 +1071,6 @@ class EvaluationResult(_WireModel):
     """
     guide_id: Optional[str] = Field(default=None, alias='guideId')
     """The id of the guide evaluated. Absent when the result combines several guides."""
-    provenance: Optional[SourceReference] = None
-    """External guide-rule source observation used by this evaluation."""
     selected_rules: List[GuideRule] = Field(alias='selectedRules')
     """The selected rules that were evaluated. Rules with a `when` condition are computed,
     not selected, and are not listed here.
@@ -1232,15 +1098,10 @@ class CoverageReport(_WireModel):
     and anything else it carries is excess. A shorter list, or none, is allowed and is
     not missing.
 
-    In a `max`, `min` or `least_upper_bound` category the children roll up to one value,
-    ordered by rank (`max`, `min`) or by the concept hierarchy (`least_upper_bound`).
-    The parent must sit at or above that value for `max` and `least_upper_bound`, and at
-    or below it for `min`. A parent anywhere else, including one the hierarchy does not
-    order against that value, is reported once, under `missing`, and never under
-    `excess`. The value reported is what the parent and children roll up to together.
-    For `max` and `min` that is the children's own value. For `least_upper_bound` it is
-    the bound the parent and children share, which can sit beyond the children's value,
-    and it is the children's own value when the hierarchy gives them no common bound.
+    In a `max` or `min` category the children roll up to one value, ordered by rank. The
+    parent must sit at or above that value for `max`, and at or below it for `min`. A
+    parent anywhere else is reported once, under `missing`, and never under `excess`.
+    The value reported is the children's own value.
 
     In a `pipeline` category the parent covers when rolling it up with the children
     leaves it unchanged. This relies on the pipeline leaving a parent rolled up on its
@@ -1262,17 +1123,17 @@ class CoverageReport(_WireModel):
     findings already decided for the pipelines before it and the full findings for those
     after it.
 
-    In a `first` or `last` category the children roll up to one value and the rollup has
-    no restrictive direction, so the parent must state that value. A parent that states
-    a different one is reported once, under `missing`, as the value it should state, and
+    In a `first` category the children roll up to one value and the rollup has no
+    restrictive direction, so the parent must state that value. A parent that states a
+    different one is reported once, under `missing`, as the value it should state, and
     never under `excess`. In such a category that holds several values, values the
     parent states beyond the picked one are not reported.
 
     In a category where the scheme has an `expand_group` rule, a parent that carries
     every member a group declares in that category states the group, and the group is
     not missing from it. This does not apply to a category whose rollup has no
-    restrictive direction (`first`, `last`), where the parent must state what the
-    children roll up to as it is.
+    restrictive direction (`first`), where the parent must state what the children roll
+    up to as it is.
 
     In a `union` or `pipeline` category the scheme marks as a hierarchy root, a parent
     value ranked at or above a needed value also covers it.
@@ -1360,28 +1221,6 @@ class ConceptDescription(_WireModel):
     """Pre-formatted lines for tooltip display (header, description, guidance, rules).
     """
 
-class FilterCount(_WireModel):
-    """Aggregate counts across all categories."""
-
-    visible: int
-    """Items that matched the query."""
-    total: int
-    """Items in every category."""
-
-class FilterResult(_WireModel):
-    """JSON-safe serialization of the engine's Set/Map-based FilterResult.
-
-    The engine returns FilterResult with Set<string> and Map<string, ...> fields; this
-    interface is what the server writes to the wire.
-    """
-
-    visible_ids: List[str] = Field(alias='visibleIds')
-    """IDs of concepts or rules that matched the query."""
-    category_counts: Dict[str, FilterCount] = Field(alias='categoryCounts')
-    """Per-category counts."""
-    total: FilterCount
-    """Aggregate counts across all categories."""
-
 class Notice(_WireModel):
     """A notice that was resolved and collected for a specific concept in a processed
     marking. Notices originate from the concept's `documentation.notices` definitions
@@ -1398,7 +1237,7 @@ class Notice(_WireModel):
     """The concept the notice is attached to."""
     concept_name: str = Field(alias='conceptName')
     """The concept's display name, for showing beside the notice."""
-    type: Union[Literal['warning', 'handling', 'admonition', 'distribution', 'info'], str]
+    type: Union[Literal['warning', 'admonition'], str]
     """What kind of notice this is."""
     text: str
     """The notice text the marking requires."""
@@ -1431,36 +1270,10 @@ class SuggestResult(_WireModel):
     belong to validate and process.
     """
 
-class RuleDescription(_WireModel):
-    """Human-readable description of a guide rule. Parallels `ConceptDescription` on the
-    scheme side.
-    """
-
-    rule: RuleReference
-    """Qualified rule being described."""
-    guide: ArtifactReference
-    """Guide artifact that owns the rule."""
-    name: str
-    """Human-readable rule name."""
-    description: Optional[str] = None
-    """Optional policy-authored description."""
-    outcome_text: str = Field(alias='outcomeText')
-    """Human-readable outcome expression."""
-    when_text: Optional[str] = Field(default=None, alias='whenText')
-    """Human-readable activation expression."""
-    is_computed: StrictBool = Field(alias='isComputed')
-    """Whether the rule is computed from other guide facts."""
-    depends_on: List[RuleReference] = Field(alias='dependsOn')
-    """Qualified rules referenced by this rule's activation block."""
-    overrides: List[RuleReference]
-    """Qualified rules this rule overrides when it fires."""
-    lines: List[str]
-    """Flattened multi-line description matching `ConceptDescription.lines`."""
-
 class AccessRuleDescription(_WireModel):
     """Human-readable description of a single access rule.
 
-    Returned by `AccessEngineAdapter.describeAccessRule`. Tooling (LLM agents, UI
+    Returned by `AccessEngineAdapter.describeAllAccessRules`. Tooling (LLM agents, UI
     tooltips) can render `requirementText` directly or walk `attributesNeeded` to know
     which `userAttributes` values a caller has to provide.
     """
@@ -1485,8 +1298,6 @@ class AccessRuleDescription(_WireModel):
     """Qualified rules this rule depends on."""
     overrides: List[RuleReference]
     """Qualified rules this rule overrides."""
-    lines: List[str]
-    """Line-oriented rendering of the description."""
 
 class AccessRequirementsDescription(_WireModel):
     """Aggregated immutable-policy requirements for a trusted target."""
@@ -1516,8 +1327,6 @@ class AccessRequirementsDescription(_WireModel):
     """Combined human-readable requirement expression."""
     combined_attributes_needed: List[str] = Field(alias='combinedAttributesNeeded')
     """Union of subject and context paths needed to evaluate the target."""
-    lines: List[str]
-    """Line-oriented rendering of the combined description."""
 
 class ConceptView(_WireModel):
     """Resolved view of a concept, suitable for display and adapter consumers.
@@ -1980,19 +1789,6 @@ class FormatView(_WireModel):
     syntax: Optional[Dict[str, Any]] = None
     """Encoding. Absent means plain text."""
 
-class SchemeGrammar(_WireModel):
-    """Context scheme grammar response: the scheme's recognition policy.
-
-    No separator. Every boundary belongs to the field that writes it, so there is no
-    global one to publish; what is left is how a spelling found at a boundary is
-    compared against the vocabulary.
-    """
-
-    case_sensitive: StrictBool = Field(alias='caseSensitive')
-    """Whether the vocabulary is matched case-sensitively."""
-    strip_whitespace: StrictBool = Field(alias='stripWhitespace')
-    """Whether surrounding whitespace is ignored when a spelling is compared."""
-
 class LabelPresetView(_WireModel):
     """A named shortcut marking, name only: the marking it stands for stays server-side and
     is expanded by `applyPreset`.
@@ -2064,8 +1860,6 @@ class ContextResolution(_WireModel):
     """Concrete Context version used by the operation."""
     artifacts: List[ArtifactReference]
     """Ordered artifacts participating in the composition."""
-    sources: List[SourceReference]
-    """De-duplicated source observations used by the operation."""
 
 class AssessmentLimitation(_WireModel):
     """Explains why an assessment dimension or conclusion is constrained."""
@@ -2336,12 +2130,6 @@ class DocumentResponseCounts(_WireModel):
     """Number of evidence spans."""
     guide_units: int = Field(alias='guideUnits')
     """Number of evaluated guide units."""
-    access_rule_results: int = Field(alias='accessRuleResults')
-    """Access-rule results across all scenarios."""
-    content_requirements: int = Field(alias='contentRequirements')
-    """Content requirements across all scenarios."""
-    context_requirements: int = Field(alias='contextRequirements')
-    """Context requirements across all scenarios."""
 
 class DocumentResponseProjection(_WireModel):
     """Describes the explicit projection applied after full evaluation."""
@@ -2366,12 +2154,6 @@ class RenderResponse(_WireModel):
     format in the abstract.
     """
 
-class NormalizeResponse(_WireModel):
-    """Response body for Context normalization."""
-
-    result: str
-    """Canonical normalized form of the marking string."""
-
 class ContextSchemeProcessResult(_WireModel):
     """Context envelope returned by scheme processing."""
 
@@ -2379,8 +2161,6 @@ class ContextSchemeProcessResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: ProcessResult
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2391,8 +2171,6 @@ class ContextSchemeValidateResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: ValidateResult
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2403,8 +2181,6 @@ class ContextSchemeExplainResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: ExplanationTrace
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2415,8 +2191,6 @@ class ContextSchemeSuggestResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: SuggestResult
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2429,8 +2203,6 @@ class ContextSchemeSuggestForCategoriesResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: Dict[str, SuggestResult]
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2441,8 +2213,6 @@ class ContextSchemeAggregateResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: AggregateResult
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2453,8 +2223,6 @@ class ContextSchemeScanResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: ScanResponseBody
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2465,20 +2233,6 @@ class ContextSchemeRenderResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: RenderResponse
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
-    response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
-    """Projection metadata, present only for document operations."""
-
-class ContextSchemeNormalizeResult(_WireModel):
-    """Context envelope returned by scheme normalization."""
-
-    resolution: ContextResolution
-    """Single resolved composition used throughout the operation."""
-    result: NormalizeResponse
-    """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2489,8 +2243,6 @@ class ContextSchemeCoverageResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: CoverageReport
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2501,8 +2253,6 @@ class ContextSchemeConceptDescriptionResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: ConceptDescription
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2513,20 +2263,6 @@ class ContextSchemeDiffResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: DiffResult
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
-    response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
-    """Projection metadata, present only for document operations."""
-
-class ContextSchemeFilterConceptsResult(_WireModel):
-    """Context envelope returned by scheme concept filtering."""
-
-    resolution: ContextResolution
-    """Single resolved composition used throughout the operation."""
-    result: FilterResult
-    """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2537,8 +2273,6 @@ class ContextSchemeNoticesResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: List[Notice]
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2549,8 +2283,6 @@ class ContextSchemeViewResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: StructuralView
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2561,8 +2293,6 @@ class ContextGuideScanResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: List[GuideScanResult]
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2573,32 +2303,6 @@ class ContextGuideEvaluationResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: EvaluationResult
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
-    response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
-    """Projection metadata, present only for document operations."""
-
-class ContextGuideFilterRulesResult(_WireModel):
-    """Context envelope returned by guide rule filtering."""
-
-    resolution: ContextResolution
-    """Single resolved composition used throughout the operation."""
-    result: FilterResult
-    """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
-    response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
-    """Projection metadata, present only for document operations."""
-
-class ContextGuideRuleDescriptionResult(_WireModel):
-    """Context envelope returned by guide-rule description."""
-
-    resolution: ContextResolution
-    """Single resolved composition used throughout the operation."""
-    result: RuleDescription
-    """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2609,8 +2313,6 @@ class ContextGuideViewResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: StructuralView
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2621,8 +2323,6 @@ class ContextAccessDecisionResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: AccessDecision
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2633,31 +2333,12 @@ class ContextAccessRequirementsResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: AccessRequirementsDescription
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
-    response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
-    """Projection metadata, present only for document operations."""
-
-class ContextAccessRuleDescriptionResult(_WireModel):
-    """Context envelope returned by access-rule description."""
-
-    resolution: ContextResolution
-    """Single resolved composition used throughout the operation."""
-    result: AccessRuleDescription
-    """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
 class CtxAccessRulesResponseBody(_WireModel):
     """Response body for GET /v1/ctx/{ctxId}/{version?}/access/rules: every rule in the
-    context's access policy.
-
-    One route serves both halves of the adapter contract. A caller that wants the
-    descriptions has them; a caller that only wants the rule ids reads them off the same
-    response instead of spending a second round trip on a projection of what it already
-    holds.
+    context's access policy, with the policy's own marking.
     """
 
     marking: Optional[str] = None
@@ -2772,8 +2453,6 @@ class ContextCrosswalkTranslationResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: Dict[str, Any]
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
@@ -2796,14 +2475,12 @@ class ContextDocumentAuditResult(_WireModel):
     """Single resolved composition used throughout the operation."""
     result: DocumentAuditReport
     """Typed operation result."""
-    operation_limitations: List[AssessmentLimitation] = Field(alias='operationLimitations')
-    """Limitations applying to the operation as a whole."""
     response_projection: Optional[DocumentResponseProjection] = Field(default=None, alias='responseProjection')
     """Projection metadata, present only for document operations."""
 
 
 # Resolve postponed references after every generated declaration exists.
-for _model_name in ['Attribution', 'ArtifactReference', 'SourceReference', 'RuleSourceReference', 'RuleReference', 'AssertionReference', 'AccessOperand', 'AccessComparisonResult', 'AccessRuleActivation', 'Assertion', 'ValidationError', 'EngineWarning', 'FixConceptReference', 'Fix', 'Change', 'ConceptColor', 'ValidateResult', 'ProcessResult', 'TraceEntry', 'TraceRepair', 'TraceValidationIssue', 'TraceInference', 'ExplanationTrace', 'Suggestion', 'AggregateResult', 'DiffResult', 'ScanMatch', 'ScanLimits', 'UnreadMark', 'ScanResponseBody', 'AccessRuleResult', 'AccessDecision', 'GuideRule', 'GuideScanSpan', 'GuideScanResult', 'GuideBreakdownEntry', 'EvaluationResult', 'CoverageReport', 'ConceptDescription', 'FilterCount', 'FilterResult', 'Notice', 'SuggestResult', 'RuleDescription', 'AccessRuleDescription', 'AccessRequirementsDescription', 'ConceptView', 'StructuralViewCategory', 'StructuralView', 'MarkingValidation', 'AuditWhole', 'UnmarkedSpan', 'AuditPart', 'Term', 'ReferenceSurfaceLabel', 'MarkingColorRule', 'SchemeSummary', 'CategoryView', 'FormatView', 'SchemeGrammar', 'LabelPresetView', 'SchemeScope', 'DocumentAuditReport', 'ContextResolution', 'AssessmentLimitation', 'ContentEvidenceSpan', 'GuideNomination', 'GuideFindingDetermination', 'ManualGuideSelectionInput', 'ManualGuideSelection', 'GuideDeterminationInput', 'GuideRuleSelection', 'GuideFactReference', 'AssertionSupport', 'GuideCompiledDetail', 'GuideCompiledResult', 'GuideUnitEvaluation', 'GuideContentEvaluation', 'GuideScopeCoverage', 'DocumentGuideAssessment', 'DocumentResponseCounts', 'DocumentResponseProjection', 'RenderResponse', 'NormalizeResponse', 'ContextSchemeProcessResult', 'ContextSchemeValidateResult', 'ContextSchemeExplainResult', 'ContextSchemeSuggestResult', 'ContextSchemeSuggestForCategoriesResult', 'ContextSchemeAggregateResult', 'ContextSchemeScanResult', 'ContextSchemeRenderResult', 'ContextSchemeNormalizeResult', 'ContextSchemeCoverageResult', 'ContextSchemeConceptDescriptionResult', 'ContextSchemeDiffResult', 'ContextSchemeFilterConceptsResult', 'ContextSchemeNoticesResult', 'ContextSchemeViewResult', 'ContextGuideScanResult', 'ContextGuideEvaluationResult', 'ContextGuideFilterRulesResult', 'ContextGuideRuleDescriptionResult', 'ContextGuideViewResult', 'ContextAccessDecisionResult', 'ContextAccessRequirementsResult', 'ContextAccessRuleDescriptionResult', 'CtxAccessRulesResponseBody', '_HealthResponse', '_CtxListResponseBody', '_CtxVersionsResponseBody', 'ContextComponent', 'ContextSchemeDescriptor', 'ContextDescription', 'ContextCrosswalkTranslationResult', 'CtxCrosswalkDescribeResponseBody', 'ContextDocumentAuditResult']:
+for _model_name in ['ArtifactReference', 'RuleReference', 'AssertionReference', 'AccessOperand', 'AccessComparisonResult', 'AccessRuleActivation', 'Assertion', 'ValidationError', 'EngineWarning', 'FixConceptReference', 'Fix', 'Change', 'ConceptColor', 'ValidateResult', 'ProcessResult', 'TraceEntry', 'TraceRepair', 'TraceValidationIssue', 'TraceInference', 'ExplanationTrace', 'Suggestion', 'AggregateResult', 'DiffResult', 'ScanMatch', 'ScanLimits', 'UnreadMark', 'ScanResponseBody', 'AccessRuleResult', 'AccessDecision', 'GuideRule', 'GuideScanSpan', 'GuideScanResult', 'GuideBreakdownEntry', 'EvaluationResult', 'CoverageReport', 'ConceptDescription', 'Notice', 'SuggestResult', 'AccessRuleDescription', 'AccessRequirementsDescription', 'ConceptView', 'StructuralViewCategory', 'StructuralView', 'MarkingValidation', 'AuditWhole', 'UnmarkedSpan', 'AuditPart', 'Term', 'ReferenceSurfaceLabel', 'MarkingColorRule', 'SchemeSummary', 'CategoryView', 'FormatView', 'LabelPresetView', 'SchemeScope', 'DocumentAuditReport', 'ContextResolution', 'AssessmentLimitation', 'ContentEvidenceSpan', 'GuideNomination', 'GuideFindingDetermination', 'ManualGuideSelectionInput', 'ManualGuideSelection', 'GuideDeterminationInput', 'GuideRuleSelection', 'GuideFactReference', 'AssertionSupport', 'GuideCompiledDetail', 'GuideCompiledResult', 'GuideUnitEvaluation', 'GuideContentEvaluation', 'GuideScopeCoverage', 'DocumentGuideAssessment', 'DocumentResponseCounts', 'DocumentResponseProjection', 'RenderResponse', 'ContextSchemeProcessResult', 'ContextSchemeValidateResult', 'ContextSchemeExplainResult', 'ContextSchemeSuggestResult', 'ContextSchemeSuggestForCategoriesResult', 'ContextSchemeAggregateResult', 'ContextSchemeScanResult', 'ContextSchemeRenderResult', 'ContextSchemeCoverageResult', 'ContextSchemeConceptDescriptionResult', 'ContextSchemeDiffResult', 'ContextSchemeNoticesResult', 'ContextSchemeViewResult', 'ContextGuideScanResult', 'ContextGuideEvaluationResult', 'ContextGuideViewResult', 'ContextAccessDecisionResult', 'ContextAccessRequirementsResult', 'CtxAccessRulesResponseBody', '_HealthResponse', '_CtxListResponseBody', '_CtxVersionsResponseBody', 'ContextComponent', 'ContextSchemeDescriptor', 'ContextDescription', 'ContextCrosswalkTranslationResult', 'CtxCrosswalkDescribeResponseBody', 'ContextDocumentAuditResult']:
     globals()[_model_name].model_rebuild()
 del _model_name
 
@@ -2818,8 +2495,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                             'p': {'left': 'AccessOperand', 'right': 'AccessOperand'}},
  'AccessDecision': {'r': [('granted', False), ('rules', False), ('warnings', False)],
                     'p': {'rules': {'i': 'AccessRuleResult'},
-                          'warnings': {'i': 'Warning'},
-                          'provenance': 'SourceReference'}},
+                          'warnings': {'i': 'Warning'}}},
  'AccessOperand': {'r': [('source', False)],
                    'p': {'assertions': {'i': 'AssertionReference'}}},
  'AccessRequirementsDescription': {'r': [('assertions', False),
@@ -2829,8 +2505,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                          ('appliedRules', False),
                                          ('rules', False),
                                          ('combinedRequirementText', False),
-                                         ('combinedAttributesNeeded', False),
-                                         ('lines', False)],
+                                         ('combinedAttributesNeeded', False)],
                                    'p': {'assertions': {'i': 'Assertion'},
                                          'access': 'ArtifactReference',
                                          'scheme': 'ArtifactReference',
@@ -2847,8 +2522,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                  ('requirementText', False),
                                  ('attributesNeeded', False),
                                  ('dependsOn', False),
-                                 ('overrides', False),
-                                 ('lines', False)],
+                                 ('overrides', False)],
                            'p': {'rule': 'RuleReference',
                                  'access': 'ArtifactReference',
                                  'scheme': 'ArtifactReference',
@@ -2884,8 +2558,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
  'Assertion': {'r': [('categoryId', False),
                      ('conceptId', False),
                      ('confidence', False),
-                     ('source', False)],
-               'p': {'provenance': 'SourceReference'}},
+                     ('source', False)]},
  'AssertionRef': {'r': [('conceptId', False), ('categoryId', False)]},
  'AssertionReference': {'r': [('categoryId', False), ('conceptId', False)]},
  'AssertionSupport': {'r': [('supportId', False),
@@ -2898,13 +2571,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                             'evidence': {'i': 'ContentEvidenceSpan'},
                             'factReferences': {'i': 'GuideFactReference'}}},
  'AssessmentLimitation': {'r': [('code', False), ('reason', False)]},
- 'Attribution': {'r': [('name', False), ('license', False)]},
- 'BestEffortRuleSourceReference': {'r': [('providerId', False),
-                                         ('reproducibility', False)]},
- 'BestEffortSourceReference': {'r': [('attribution', False),
-                                     ('providerId', False),
-                                     ('reproducibility', False)],
-                               'p': {'attribution': 'Attribution'}},
  'CalendarDateValueEncoding': {'r': [('type', False),
                                      ('canonical', False),
                                      ('accepts', False)]},
@@ -2955,27 +2621,14 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                ('offsetEncoding', False),
                                ('rule', False)],
                          'p': {'rule': 'RuleReference'}},
- 'ContextAccessDecisionResult': {'r': [('resolution', False),
-                                       ('result', False),
-                                       ('operationLimitations', False)],
+ 'ContextAccessDecisionResult': {'r': [('resolution', False), ('result', False)],
                                  'p': {'resolution': 'ContextResolution',
                                        'result': 'AccessDecision',
-                                       'operationLimitations': {'i': 'AssessmentLimitation'},
                                        'responseProjection': 'DocumentResponseProjection'}},
- 'ContextAccessRequirementsResult': {'r': [('resolution', False),
-                                           ('result', False),
-                                           ('operationLimitations', False)],
+ 'ContextAccessRequirementsResult': {'r': [('resolution', False), ('result', False)],
                                      'p': {'resolution': 'ContextResolution',
                                            'result': 'AccessRequirementsDescription',
-                                           'operationLimitations': {'i': 'AssessmentLimitation'},
                                            'responseProjection': 'DocumentResponseProjection'}},
- 'ContextAccessRuleDescriptionResult': {'r': [('resolution', False),
-                                              ('result', False),
-                                              ('operationLimitations', False)],
-                                        'p': {'resolution': 'ContextResolution',
-                                              'result': 'AccessRuleDescription',
-                                              'operationLimitations': {'i': 'AssessmentLimitation'},
-                                              'responseProjection': 'DocumentResponseProjection'}},
  'ContextCrosswalkCandidate': {'r': [('disposition', False),
                                      ('id', False),
                                      ('reason', False)],
@@ -2997,169 +2650,87 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                      ('strategy', False),
                                      ('candidates', False)],
                                'p': {'candidates': {'i': 'ContextCrosswalkCandidate'}}},
- 'ContextCrosswalkTranslationResult': {'r': [('resolution', False),
-                                             ('result', False),
-                                             ('operationLimitations', False)],
+ 'ContextCrosswalkTranslationResult': {'r': [('resolution', False), ('result', False)],
                                        'p': {'resolution': 'ContextResolution',
                                              'result': 'CrosswalkTranslationResult',
-                                             'operationLimitations': {'i': 'AssessmentLimitation'},
                                              'responseProjection': 'DocumentResponseProjection'}},
- 'ContextDocumentAuditResult': {'r': [('resolution', False),
-                                      ('result', False),
-                                      ('operationLimitations', False)],
+ 'ContextDocumentAuditResult': {'r': [('resolution', False), ('result', False)],
                                 'p': {'resolution': 'ContextResolution',
                                       'result': 'DocumentAuditReport',
-                                      'operationLimitations': {'i': 'AssessmentLimitation'},
                                       'responseProjection': 'DocumentResponseProjection'}},
- 'ContextGuideEvaluationResult': {'r': [('resolution', False),
-                                        ('result', False),
-                                        ('operationLimitations', False)],
+ 'ContextGuideEvaluationResult': {'r': [('resolution', False), ('result', False)],
                                   'p': {'resolution': 'ContextResolution',
                                         'result': 'EvaluationResult',
-                                        'operationLimitations': {'i': 'AssessmentLimitation'},
                                         'responseProjection': 'DocumentResponseProjection'}},
- 'ContextGuideFilterRulesResult': {'r': [('resolution', False),
-                                         ('result', False),
-                                         ('operationLimitations', False)],
-                                   'p': {'resolution': 'ContextResolution',
-                                         'result': 'FilterResult',
-                                         'operationLimitations': {'i': 'AssessmentLimitation'},
-                                         'responseProjection': 'DocumentResponseProjection'}},
- 'ContextGuideRuleDescriptionResult': {'r': [('resolution', False),
-                                             ('result', False),
-                                             ('operationLimitations', False)],
-                                       'p': {'resolution': 'ContextResolution',
-                                             'result': 'RuleDescription',
-                                             'operationLimitations': {'i': 'AssessmentLimitation'},
-                                             'responseProjection': 'DocumentResponseProjection'}},
- 'ContextGuideScanResult': {'r': [('resolution', False),
-                                  ('result', False),
-                                  ('operationLimitations', False)],
+ 'ContextGuideScanResult': {'r': [('resolution', False), ('result', False)],
                             'p': {'resolution': 'ContextResolution',
                                   'result': {'i': 'GuideScanResult'},
-                                  'operationLimitations': {'i': 'AssessmentLimitation'},
                                   'responseProjection': 'DocumentResponseProjection'}},
- 'ContextGuideViewResult': {'r': [('resolution', False),
-                                  ('result', False),
-                                  ('operationLimitations', False)],
+ 'ContextGuideViewResult': {'r': [('resolution', False), ('result', False)],
                             'p': {'resolution': 'ContextResolution',
                                   'result': 'GuideViewResponse',
-                                  'operationLimitations': {'i': 'AssessmentLimitation'},
                                   'responseProjection': 'DocumentResponseProjection'}},
  'ContextResolution': {'r': [('contextId', False),
                              ('resolvedVersion', False),
-                             ('artifacts', False),
-                             ('sources', False)],
-                       'p': {'artifacts': {'i': 'ArtifactReference'},
-                             'sources': {'i': 'SourceReference'}}},
- 'ContextSchemeAggregateResult': {'r': [('resolution', False),
-                                        ('result', False),
-                                        ('operationLimitations', False)],
+                             ('artifacts', False)],
+                       'p': {'artifacts': {'i': 'ArtifactReference'}}},
+ 'ContextSchemeAggregateResult': {'r': [('resolution', False), ('result', False)],
                                   'p': {'resolution': 'ContextResolution',
                                         'result': 'AggregateResult',
-                                        'operationLimitations': {'i': 'AssessmentLimitation'},
                                         'responseProjection': 'DocumentResponseProjection'}},
  'ContextSchemeConceptDescriptionResult': {'r': [('resolution', False),
-                                                 ('result', False),
-                                                 ('operationLimitations', False)],
+                                                 ('result', False)],
                                            'p': {'resolution': 'ContextResolution',
                                                  'result': 'ConceptDescription',
-                                                 'operationLimitations': {'i': 'AssessmentLimitation'},
                                                  'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeCoverageResult': {'r': [('resolution', False),
-                                       ('result', False),
-                                       ('operationLimitations', False)],
+ 'ContextSchemeCoverageResult': {'r': [('resolution', False), ('result', False)],
                                  'p': {'resolution': 'ContextResolution',
                                        'result': 'CheckCoverageResult',
-                                       'operationLimitations': {'i': 'AssessmentLimitation'},
                                        'responseProjection': 'DocumentResponseProjection'}},
  'ContextSchemeDescriptor': {'r': [('selector', False),
                                    ('id', False),
                                    ('version', False),
                                    ('roles', False)]},
- 'ContextSchemeDiffResult': {'r': [('resolution', False),
-                                   ('result', False),
-                                   ('operationLimitations', False)],
+ 'ContextSchemeDiffResult': {'r': [('resolution', False), ('result', False)],
                              'p': {'resolution': 'ContextResolution',
                                    'result': 'DiffResult',
-                                   'operationLimitations': {'i': 'AssessmentLimitation'},
                                    'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeExplainResult': {'r': [('resolution', False),
-                                      ('result', False),
-                                      ('operationLimitations', False)],
+ 'ContextSchemeExplainResult': {'r': [('resolution', False), ('result', False)],
                                 'p': {'resolution': 'ContextResolution',
                                       'result': 'ExplanationTrace',
-                                      'operationLimitations': {'i': 'AssessmentLimitation'},
                                       'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeFilterConceptsResult': {'r': [('resolution', False),
-                                             ('result', False),
-                                             ('operationLimitations', False)],
-                                       'p': {'resolution': 'ContextResolution',
-                                             'result': 'FilterResult',
-                                             'operationLimitations': {'i': 'AssessmentLimitation'},
-                                             'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeNormalizeResult': {'r': [('resolution', False),
-                                        ('result', False),
-                                        ('operationLimitations', False)],
-                                  'p': {'resolution': 'ContextResolution',
-                                        'result': 'NormalizeResponse',
-                                        'operationLimitations': {'i': 'AssessmentLimitation'},
-                                        'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeNoticesResult': {'r': [('resolution', False),
-                                      ('result', False),
-                                      ('operationLimitations', False)],
+ 'ContextSchemeNoticesResult': {'r': [('resolution', False), ('result', False)],
                                 'p': {'resolution': 'ContextResolution',
                                       'result': {'i': 'Notice'},
-                                      'operationLimitations': {'i': 'AssessmentLimitation'},
                                       'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeProcessResult': {'r': [('resolution', False),
-                                      ('result', False),
-                                      ('operationLimitations', False)],
+ 'ContextSchemeProcessResult': {'r': [('resolution', False), ('result', False)],
                                 'p': {'resolution': 'ContextResolution',
                                       'result': 'ProcessResult',
-                                      'operationLimitations': {'i': 'AssessmentLimitation'},
                                       'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeRenderResult': {'r': [('resolution', False),
-                                     ('result', False),
-                                     ('operationLimitations', False)],
+ 'ContextSchemeRenderResult': {'r': [('resolution', False), ('result', False)],
                                'p': {'resolution': 'ContextResolution',
                                      'result': 'RenderResponse',
-                                     'operationLimitations': {'i': 'AssessmentLimitation'},
                                      'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeScanResult': {'r': [('resolution', False),
-                                   ('result', False),
-                                   ('operationLimitations', False)],
+ 'ContextSchemeScanResult': {'r': [('resolution', False), ('result', False)],
                              'p': {'resolution': 'ContextResolution',
                                    'result': 'ScanResponseBody',
-                                   'operationLimitations': {'i': 'AssessmentLimitation'},
                                    'responseProjection': 'DocumentResponseProjection'}},
  'ContextSchemeSuggestForCategoriesResult': {'r': [('resolution', False),
-                                                   ('result', False),
-                                                   ('operationLimitations', False)],
+                                                   ('result', False)],
                                              'p': {'resolution': 'ContextResolution',
                                                    'result': 'SuggestResultsByCategory',
-                                                   'operationLimitations': {'i': 'AssessmentLimitation'},
                                                    'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeSuggestResult': {'r': [('resolution', False),
-                                      ('result', False),
-                                      ('operationLimitations', False)],
+ 'ContextSchemeSuggestResult': {'r': [('resolution', False), ('result', False)],
                                 'p': {'resolution': 'ContextResolution',
                                       'result': 'SuggestResult',
-                                      'operationLimitations': {'i': 'AssessmentLimitation'},
                                       'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeValidateResult': {'r': [('resolution', False),
-                                       ('result', False),
-                                       ('operationLimitations', False)],
+ 'ContextSchemeValidateResult': {'r': [('resolution', False), ('result', False)],
                                  'p': {'resolution': 'ContextResolution',
                                        'result': 'ValidateResult',
-                                       'operationLimitations': {'i': 'AssessmentLimitation'},
                                        'responseProjection': 'DocumentResponseProjection'}},
- 'ContextSchemeViewResult': {'r': [('resolution', False),
-                                   ('result', False),
-                                   ('operationLimitations', False)],
+ 'ContextSchemeViewResult': {'r': [('resolution', False), ('result', False)],
                              'p': {'resolution': 'ContextResolution',
                                    'result': 'SchemeViewResponse',
-                                   'operationLimitations': {'i': 'AssessmentLimitation'},
                                    'responseProjection': 'DocumentResponseProjection'}},
  'CrosswalkCompletedTranslationResult': {'r': [('crosswalk', False),
                                                ('outcomes', False),
@@ -3334,10 +2905,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                             'p': {'validation': 'MarkingValidation'}},
  'DocumentResponseCounts': {'r': [('nominations', False),
                                   ('evidenceSpans', False),
-                                  ('guideUnits', False),
-                                  ('accessRuleResults', False),
-                                  ('contentRequirements', False),
-                                  ('contextRequirements', False)]},
+                                  ('guideUnits', False)]},
  'DocumentResponseProjection': {'r': [('profile', False),
                                       ('detailsComplete', False),
                                       ('omittedFields', False),
@@ -3360,8 +2928,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                       'p': {'selectedRules': {'i': 'GuideRule'},
                             'activeComputedRules': {'i': 'GuideRule'},
                             'breakdown': {'i': 'GuideBreakdownEntry'},
-                            'contributingBreakdown': {'i': 'GuideBreakdownEntry'},
-                            'provenance': 'SourceReference'}},
+                            'contributingBreakdown': {'i': 'GuideBreakdownEntry'}}},
  'ExplanationTrace': {'r': [('input', False),
                             ('schemeId', False),
                             ('entries', False),
@@ -3375,13 +2942,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                             'validationErrors': {'i': 'TraceValidationIssue'},
                             'inferences': {'i': 'TraceInference'},
                             'finalAssertions': {'i': 'Assertion'}}},
- 'FilterResult': {'r': [('visibleIds', False),
-                        ('categoryCounts', False),
-                        ('total', False)],
-                  'p': {'categoryCounts': {'v': {'r': [('visible', False),
-                                                       ('total', False)]},
-                                           'd': []},
-                        'total': {'r': [('visible', False), ('total', False)]}}},
  'Fix': {'r': [('message', False),
                ('rendered', False),
                ('keeps', False),
@@ -3466,7 +3026,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
  'GuideRule': {'r': [('id', False), ('name', False), ('outcome', False)],
                'p': {'match': {'i': 'MatchNode'},
                      'outcome': 'GuideRuleOutcome',
-                     'when': 'RuleWhen'}},
+                     'when': 'GuideWhen'}},
  'GuideRuleOutcome': {'p': {'concepts': {'i': 'ConceptRef'}}},
  'GuideRuleSelection': {'r': [('guideId', False), ('ruleId', False)]},
  'GuideRuleView': {'r': [('id', False),
@@ -3483,9 +3043,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                            ('guideId', False),
                            ('matchedKeywords', False),
                            ('spans', False)],
-                     'p': {'rule': 'GuideRule',
-                           'spans': {'i': 'GuideScanSpan'},
-                           'provenance': 'SourceReference'}},
+                     'p': {'rule': 'GuideRule', 'spans': {'i': 'GuideScanSpan'}}},
  'GuideScanSpan': {'r': [('keyword', False), ('start', False), ('end', False)]},
  'GuideScopeCoverage': {'r': [('scopeId', False),
                               ('determinedCoverage', True),
@@ -3511,6 +3069,24 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                                         ('items', False)],
                                                   'p': {'items': {'i': 'GuideRuleView'}}}},
                              'uncategorized': {'i': 'GuideRuleView'}}},
+ 'GuideWhen': {'p': {'any': {'i': 'GuideWhenNode'},
+                     'all': {'i': 'GuideWhenNode'},
+                     'none': {'i': 'GuideWhenNode'}}},
+ 'GuideWhenHas': {'r': [('has', False)]},
+ 'GuideWhenNode': {'u': [{'k': 'object', 's': 'GuideWhenHas', 'r': [('has', False)]},
+                         {'k': 'object',
+                          's': 'GuideWhenTest',
+                          'c': {'operator': ['has_concept',
+                                             'not_has_concept',
+                                             'has_content',
+                                             'count_gt',
+                                             'count_gte',
+                                             'count_eq',
+                                             'count_lt',
+                                             'count_lte']},
+                          'r': [('operator', False)]},
+                         {'k': 'object', 's': 'GuideWhen'}]},
+ 'GuideWhenTest': {'r': [('operator', False)]},
  'HealthResponse': {'r': [('status', False),
                           ('engineVersion', False),
                           ('engineSha', False),
@@ -3582,7 +3158,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                        'p': {'validate': 'MatchValidationExpression'}},
  'MatchValidationExpression': {'r': [('candidate', False), ('with', False)],
                                'p': {'candidate': 'MatchNode'}},
- 'NormalizeResponse': {'r': [('result', False)]},
  'Notice': {'r': [('conceptId', False),
                   ('conceptName', False),
                   ('type', False),
@@ -3607,7 +3182,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                          'recognition': 'RecognitionWithCorrections',
                          'notices': {'i': 'Notice'},
                          'displayColor': 'ConceptColor',
-                         'assertionsBeforeRepair': {'i': 'Assertion'},
                          'proposedFixes': {'i': 'Fix'},
                          'renders': 'RenderResultsByFormat',
                          'suggestionsFor': 'SuggestResultsByCategory'}},
@@ -3641,40 +3215,8 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
  'RenderResult': {'r': [('rendered', False), ('assessment', False)],
                   'p': {'assessment': 'RenderAssessment'}},
  'RenderResultsByFormat': {'v': 'RenderResult', 'd': []},
- 'ReproducibleRuleSourceReference': {'r': [('providerId', False),
-                                           ('reproducibility', False),
-                                           ('snapshotId', False)]},
- 'ReproducibleSourceReference': {'r': [('attribution', False),
-                                       ('providerId', False),
-                                       ('reproducibility', False),
-                                       ('snapshotId', False)],
-                                 'p': {'attribution': 'Attribution'}},
- 'RuleDescription': {'r': [('rule', False),
-                           ('guide', False),
-                           ('name', False),
-                           ('outcomeText', False),
-                           ('isComputed', False),
-                           ('dependsOn', False),
-                           ('overrides', False),
-                           ('lines', False)],
-                     'p': {'rule': 'RuleReference',
-                           'guide': 'ArtifactReference',
-                           'dependsOn': {'i': 'RuleReference'},
-                           'overrides': {'i': 'RuleReference'}}},
  'RuleReference': {'r': [('artifact', False), ('ruleId', False), ('ruleDigest', False)],
-                   'p': {'artifact': 'ArtifactReference',
-                         'source': 'RuleSourceReference'}},
- 'RuleSourceReference': {'u': [{'k': 'object',
-                                's': 'ReproducibleRuleSourceReference',
-                                'c': {'reproducibility': ['reproducible']},
-                                'r': [('providerId', False),
-                                      ('reproducibility', False),
-                                      ('snapshotId', False)]},
-                               {'k': 'object',
-                                's': 'BestEffortRuleSourceReference',
-                                'c': {'reproducibility': ['best-effort']},
-                                'r': [('providerId', False),
-                                      ('reproducibility', False)]}]},
+                   'p': {'artifact': 'ArtifactReference'}},
  'RuleWhen': {'u': [{'k': 'array'},
                     {'k': 'object',
                      's': 'RuleWhenQuantifier',
@@ -3703,7 +3245,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                       ('wrapped', False),
                       ('role', False)],
                 'p': {'result': 'ValidateResult'}},
- 'SchemeGrammar': {'r': [('caseSensitive', False), ('stripWhitespace', False)]},
  'SchemeScope': {'r': [('id', False), ('label', False)]},
  'SchemeSummary': {'r': [('id', False),
                          ('version', False),
@@ -3724,19 +3265,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                                          ('items', False)],
                                                    'p': {'items': {'i': 'ConceptView'}}}},
                               'uncategorized': {'i': 'ConceptView'}}},
- 'SourceReference': {'u': [{'k': 'object',
-                            's': 'ReproducibleSourceReference',
-                            'c': {'reproducibility': ['reproducible']},
-                            'r': [('attribution', False),
-                                  ('providerId', False),
-                                  ('reproducibility', False),
-                                  ('snapshotId', False)]},
-                           {'k': 'object',
-                            's': 'BestEffortSourceReference',
-                            'c': {'reproducibility': ['best-effort']},
-                            'r': [('attribution', False),
-                                  ('providerId', False),
-                                  ('reproducibility', False)]}]},
  'SuggestResult': {'r': [('suggestions', False), ('warnings', False)],
                    'p': {'suggestions': {'i': 'Suggestion'},
                          'warnings': {'i': 'Warning'}}},
@@ -3759,7 +3287,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                           ('explanation', False)]},
  'TraceRepair': {'r': [('ruleId', False),
                        ('description', False),
-                       ('confidence', False),
                        ('before', False),
                        ('after', False)]},
  'TraceValidationIssue': {'r': [('constraintId', False), ('message', False)]},
@@ -3823,10 +3350,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
 # The OpenAPI component each public model is generated from, where
 # it has one. A component that requires nothing has no table entry.
 _MODEL_SHAPES: Dict[str, str] = {
-    'Attribution': 'Attribution',
     'ArtifactReference': 'ArtifactReference',
-    'SourceReference': 'SourceReference',
-    'RuleSourceReference': 'RuleSourceReference',
     'RuleReference': 'RuleReference',
     'AssertionReference': 'AssertionReference',
     'AccessOperand': 'AccessOperand',
@@ -3862,10 +3386,8 @@ _MODEL_SHAPES: Dict[str, str] = {
     'EvaluationResult': 'EvaluationResult',
     'CoverageReport': 'CheckCoverageResult',
     'ConceptDescription': 'ConceptDescription',
-    'FilterResult': 'FilterResult',
     'Notice': 'Notice',
     'SuggestResult': 'SuggestResult',
-    'RuleDescription': 'RuleDescription',
     'AccessRuleDescription': 'AccessRuleDescription',
     'AccessRequirementsDescription': 'AccessRequirementsDescription',
     'ConceptView': 'ConceptView',
@@ -3878,7 +3400,6 @@ _MODEL_SHAPES: Dict[str, str] = {
     'SchemeSummary': 'SchemeSummary',
     'CategoryView': 'CategoryView',
     'FormatView': 'FormatView',
-    'SchemeGrammar': 'SchemeGrammar',
     'LabelPresetView': 'LabelPresetView',
     'SchemeScope': 'SchemeScope',
     'DocumentAuditReport': 'DocumentAuditReport',
@@ -3902,7 +3423,6 @@ _MODEL_SHAPES: Dict[str, str] = {
     'DocumentResponseCounts': 'DocumentResponseCounts',
     'DocumentResponseProjection': 'DocumentResponseProjection',
     'RenderResponse': 'RenderResponse',
-    'NormalizeResponse': 'NormalizeResponse',
     'ContextSchemeProcessResult': 'ContextSchemeProcessResult',
     'ContextSchemeValidateResult': 'ContextSchemeValidateResult',
     'ContextSchemeExplainResult': 'ContextSchemeExplainResult',
@@ -3911,21 +3431,16 @@ _MODEL_SHAPES: Dict[str, str] = {
     'ContextSchemeAggregateResult': 'ContextSchemeAggregateResult',
     'ContextSchemeScanResult': 'ContextSchemeScanResult',
     'ContextSchemeRenderResult': 'ContextSchemeRenderResult',
-    'ContextSchemeNormalizeResult': 'ContextSchemeNormalizeResult',
     'ContextSchemeCoverageResult': 'ContextSchemeCoverageResult',
     'ContextSchemeConceptDescriptionResult': 'ContextSchemeConceptDescriptionResult',
     'ContextSchemeDiffResult': 'ContextSchemeDiffResult',
-    'ContextSchemeFilterConceptsResult': 'ContextSchemeFilterConceptsResult',
     'ContextSchemeNoticesResult': 'ContextSchemeNoticesResult',
     'ContextSchemeViewResult': 'ContextSchemeViewResult',
     'ContextGuideScanResult': 'ContextGuideScanResult',
     'ContextGuideEvaluationResult': 'ContextGuideEvaluationResult',
-    'ContextGuideFilterRulesResult': 'ContextGuideFilterRulesResult',
-    'ContextGuideRuleDescriptionResult': 'ContextGuideRuleDescriptionResult',
     'ContextGuideViewResult': 'ContextGuideViewResult',
     'ContextAccessDecisionResult': 'ContextAccessDecisionResult',
     'ContextAccessRequirementsResult': 'ContextAccessRequirementsResult',
-    'ContextAccessRuleDescriptionResult': 'ContextAccessRuleDescriptionResult',
     'CtxAccessRulesResponseBody': 'CtxAccessRulesResponseBody',
     '_HealthResponse': 'HealthResponse',
     '_CtxListResponseBody': 'CtxListResponseBody',

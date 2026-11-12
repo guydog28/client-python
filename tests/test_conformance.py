@@ -36,12 +36,11 @@ _RECORDINGS_DIR = _ENGINE_SPEC / "recordings" / "v1"
 # builds the test-only Context path for each fixture composition.
 
 # Number of engine-slice plan cases this runner must execute against the
-# vendored spec bundle. Engine-only registry vectors are outside the HTTP
-# adapter's contract; all other cases run. The count is a pinned golden: when
+# vendored spec bundle; every case runs. The count is a pinned golden: when
 # the vendored bundle deliberately adds or removes plan cases, update it in the
 # same commit. Without the pin, a missing recording or unreadable fixture would
 # silently shrink the suite.
-_EXPECTED_CASE_COUNT = 148
+_EXPECTED_CASE_COUNT = 143
 
 
 def _context_base(fixture: Any, guide_fixture: str, access_fixture: str) -> str:
@@ -155,9 +154,6 @@ def _build_plan_body(
                 body[key] = value
         return body
 
-    if method in ("registryProcessAll", "registrySuggestAcross"):
-        return "", {}, ("skip", "loose registry operations are not public SDK routes")
-
     if method == "checkAccess":
         # The access policy is bound to the context; the body carries only the
         # data assertions and the subject's user attributes.
@@ -227,9 +223,6 @@ def _build_plan_body(
         else:
             suggest_body = {"input": str_arg(0)}
         return f"{ctx_base}/scheme/suggest", plan_options(suggest_body), None
-
-    if method == "normalize":
-        return f"{ctx_base}/scheme/normalize", plan_options({"input": str_arg(0)}), None
 
     if method == "render":
         render_body: dict = {"assertions": args[0] if args else []}
@@ -330,7 +323,7 @@ def _collect_cases() -> list[tuple[str, dict]]:
     """Collect all engine-slice plan cases as (plan_name, case_dict) pairs."""
     cases: list[tuple[str, dict]] = []
     for plan_path in sorted(_PLANS_DIR.glob("*.json")):
-        if plan_path.name in ("plan-schema.json", "registry.json"):
+        if plan_path.name == "plan-schema.json":
             continue
         plan = json.loads(plan_path.read_text(encoding="utf-8"))
         if plan.get("slice") != "engine":
@@ -492,8 +485,8 @@ def test_conformance_case(
 def test_executed_case_count() -> None:
     """Guard the suite against silent shrinkage.
 
-    Every collected HTTP case must execute. Engine-only registry ownership is
-    checked separately, so new methods cannot silently reduce this count.
+    Every collected HTTP case must execute, so a new method without a driver
+    cannot silently reduce this count.
     """
     executed = []
     for plan_name, tc in _collect_cases():
@@ -629,17 +622,6 @@ def test_equivalent_recorded_request_identity_keeps_same_answer(
     assert list(_build_replayer_map().values()) == [
         {"statusCode": 200, "body": {"valid": True}}
     ]
-
-
-def test_registry_plan_is_owned_by_embedded_engine() -> None:
-    """Ambient registry fan-out is intentionally absent from the HTTP SDK."""
-    plan = json.loads((_PLANS_DIR / "registry.json").read_text())
-    assert plan["slice"] == "engine"
-    assert len(plan["cases"]) == 5
-    assert {case["method"] for case in plan["cases"]} == {
-        "registryProcessAll",
-        "registrySuggestAcross",
-    }
 
 
 def test_unknown_plan_method_fails_execution_contract() -> None:

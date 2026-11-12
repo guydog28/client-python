@@ -37,7 +37,6 @@ NOTICES_PATH = REPO_ROOT / "THIRD-PARTY-NOTICES.md"
 # The packages published to PyPI from this repository, in the order their
 # sections appear in the notices file. Maps package name to source directory.
 PUBLISHED_PACKAGES = {
-    "ezclassify-rest-contract": "types/",
     "ezclassify-rest-client": "client/",
 }
 
@@ -61,14 +60,12 @@ This file lists the direct third-party runtime dependencies of the EzClassify
 Python packages published to PyPI, together with their license identifiers and
 upstream copyright holders.
 
-Two packages are published from this repository:
-
-- `ezclassify-rest-contract` (directory `types/`)
-- `ezclassify-rest-client` (directory `client/`)
+One package is published from this repository: `ezclassify-rest-client`
+(directory `client/`).
 
 The top-level `ezclassify` package (repository root) is a dev-only integration
 harness marked `Private :: Do Not Upload`; it is not published and its only
-direct dependencies are the first-party packages above, so it is not covered
+direct dependency is the first-party package above, so it is not covered
 here.
 
 Each dependency keeps its own license; this file does not relicense any of it.

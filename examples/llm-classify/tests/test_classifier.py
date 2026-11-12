@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from audit_builders import aggregate, audit_report, coverage, part, validation
 from classifier import ClassifyResult, classify, print_report
 from client import EzClassifyClient
-from ezclassify_rest_contract import AggregateResult, DocumentAuditReport, Notice
+from ezclassify_rest_client import AggregateResult, DocumentAuditReport, Notice
 
 SIMPLE_TEXT = "Document with marking HIGH and LOW."
 
@@ -156,18 +156,12 @@ def test_report_explains_why_a_part_failed_validation(
         valid=False,
         errors=[
             {"constraintId": "unknown", "message": "BOGUS is not a recognized marking"},
-            {
-                "constraintId": "style",
-                "message": "advisory only",
-                "severity": "warning",
-            },
         ],
     )
     out = render_report(
         capsys, ClassifyResult(audit_report([bogus, part("LOW", 10)]), None)
     )
     assert "'BOGUS': failed validation\n     BOGUS is not a recognized marking" in out
-    assert "advisory only" not in out
 
 
 def test_report_shows_authored_overall_that_covers_the_parts(

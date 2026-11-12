@@ -17,26 +17,22 @@ import respx
 from ezclassify_rest_client import (
     CtxScheme,
     CtxSchemes,
-    EzClassifyClient,
     EzClassifyClientError,
     EzClassifyContext,
     MalformedResponseError,
     RestClientCredentials,
     connect_context,
 )
-from ezclassify_rest_contract import (
+from ezclassify_rest_client import (
     Assertion,
     CategoryView,
     ConceptView,
     ContextAccessDecisionResult,
     ContextAccessRequirementsResult,
-    ContextAccessRuleDescriptionResult,
     ContextCrosswalkTranslationResult,
     ContextDescription,
     ContextDocumentAuditResult,
     ContextGuideEvaluationResult,
-    ContextGuideFilterRulesResult,
-    ContextGuideRuleDescriptionResult,
     ContextGuideScanResult,
     ContextGuideViewResult,
     ContextSchemeAggregateResult,
@@ -44,8 +40,6 @@ from ezclassify_rest_contract import (
     ContextSchemeCoverageResult,
     ContextSchemeDiffResult,
     ContextSchemeExplainResult,
-    ContextSchemeFilterConceptsResult,
-    ContextSchemeNormalizeResult,
     ContextSchemeNoticesResult,
     ContextSchemeProcessResult,
     ContextSchemeRenderResult,
@@ -193,7 +187,6 @@ def _full_trace() -> dict:
             {
                 "ruleId": "upper-case",
                 "description": "Writes the level in capitals.",
-                "confidence": "safe",
                 "before": "h",
                 "after": "H",
                 "cosmetic": True,
@@ -639,16 +632,6 @@ class TestTokenDefaultedBinding:
             "signed-context-token"
         )
 
-    def test_decision_caching_is_refused(self):
-        with pytest.raises(ValueError, match="concrete Context version"):
-            EzClassifyContext(
-                _BASE,
-                context_id=_CTX,
-                context_version=None,
-                credentials=self._TOKEN,
-                cache_access_decisions=True,
-            )
-
     @respx.mock
     def test_entries_expire_like_latest(self, monkeypatch):
         from ezclassify_rest_client import _response_cache
@@ -715,7 +698,6 @@ class TestResponseCache:
             "scheme/process",
             "scheme/validate",
             "scheme/explain",
-            "scheme/normalize",
             "scheme/render",
             "scheme/diff",
             "scheme/aggregate",
@@ -830,30 +812,6 @@ class TestResponseCache:
             assert ctx.access.check([], {}).result.granted
             assert ctx.access.check([], {}).result.granted
             assert route.call_count == 2
-
-    @respx.mock
-    def test_access_decision_opt_in_requires_a_pin_and_can_be_cleared(self):
-        route = respx.post(_ctx_url("access/check")).mock(
-            return_value=httpx.Response(
-                200,
-                json=_envelope({"granted": True, "rules": [], "warnings": []}),
-                headers=_HDR,
-            )
-        )
-        with pytest.raises(ValueError, match="concrete Context version"):
-            connect_context(_BASE, context_id=_CTX, cache_access_decisions=True)
-        _describe_route()
-        with EzClassifyClient(_BASE) as deployment:
-            with deployment.context(_CTX, _VER, cache_access_decisions=True) as ctx:
-                assert ctx.access.check([], {}).result.granted
-                assert ctx.access.check([], {}).result.granted
-                assert route.call_count == 1
-                assert ctx.access.check_by_marking("H", {}).result.granted
-                assert ctx.access.check_by_marking("H", {}).result.granted
-                assert route.call_count == 2
-                ctx.clear_cache()
-                assert ctx.access.check([], {}).result.granted
-                assert route.call_count == 3
 
     @respx.mock
     def test_a_caller_mutating_its_result_cannot_change_what_others_hold(self):
@@ -1569,19 +1527,6 @@ class TestScheme:
         assert "schemeId" not in body
 
     @respx.mock
-    def test_normalize_unwraps_result(self):
-        respx.post(_ctx_url("scheme/normalize")).mock(
-            return_value=httpx.Response(
-                200,
-                json=_envelope({"result": "LEVEL-HIGH"}),
-                headers=_HDR,
-            )
-        )
-        normalized = _connect().scheme.normalize("high")
-        assert isinstance(normalized, ContextSchemeNormalizeResult)
-        assert normalized.result.result == "LEVEL-HIGH"
-
-    @respx.mock
     def test_check_coverage(self):
         respx.post(_ctx_url("scheme/check-coverage")).mock(
             return_value=httpx.Response(
@@ -1732,22 +1677,6 @@ class TestScheme:
         assert caught.value.detail == "omitted authority AUTH-X=A&B"
 
     @respx.mock
-    def test_normalize_rejects_string_response(self):
-        respx.post(_ctx_url("scheme/normalize")).mock(
-            return_value=httpx.Response(200, json="LEVEL-HIGH", headers=_HDR)
-        )
-        with pytest.raises(MalformedResponseError, match="expected a JSON object"):
-            _connect().scheme.normalize("high")
-
-    @respx.mock
-    def test_normalize_rejects_non_object_response(self):
-        respx.post(_ctx_url("scheme/normalize")).mock(
-            return_value=httpx.Response(200, json=99, headers=_HDR)
-        )
-        with pytest.raises(MalformedResponseError, match="expected a JSON object"):
-            _connect().scheme.normalize("99")
-
-    @respx.mock
     def test_describe_concept_with_view_param(self):
         route = respx.get(_ctx_url("scheme/describe-concept")).mock(
             return_value=httpx.Response(
@@ -1792,30 +1721,6 @@ class TestScheme:
         result = _connect().scheme.diff("A", "B")
         assert isinstance(result, ContextSchemeDiffResult)
         assert len(result.result.added) == 1
-
-    @respx.mock
-    def test_filter_concepts(self):
-        respx.post(_ctx_url("scheme/filter-concepts")).mock(
-            return_value=httpx.Response(
-                200,
-                json=_envelope(
-                    {
-                        "visibleIds": ["a", "b"],
-                        "categoryCounts": {"level": {"visible": 2, "total": 5}},
-                        "total": {"visible": 2, "total": 9},
-                    }
-                ),
-                headers=_HDR,
-            )
-        )
-        result = _connect().scheme.filter_concepts("hi")
-        assert isinstance(result, ContextSchemeFilterConceptsResult)
-        assert result.result.visible_ids == ["a", "b"]
-        assert (
-            result.result.category_counts["level"].visible == 2
-            and result.result.category_counts["level"].total == 5
-        )
-        assert result.result.total.total == 9
 
     @respx.mock
     def test_notices(self):
@@ -2113,24 +2018,6 @@ class TestSchemeResources:
         assert view.role == "part"
 
     @respx.mock
-    def test_grammar(self):
-        route = respx.get(_ctx_url("scheme/grammar")).mock(
-            return_value=httpx.Response(
-                200,
-                json={
-                    "caseSensitive": False,
-                    "stripWhitespace": True,
-                },
-                headers=_HDR,
-            )
-        )
-        grammar = _connect().scheme.grammar()
-        assert (
-            route.calls.last.request.url.path == f"/v1/ctx/{_CTX}/{_VER}/scheme/grammar"
-        )
-        assert grammar.case_sensitive is False
-
-    @respx.mock
     def test_scopes(self):
         respx.get(_ctx_url("scheme/scopes")).mock(
             return_value=httpx.Response(
@@ -2248,11 +2135,11 @@ class TestSchemeResources:
 
     @respx.mock
     def test_object_resource_rejects_an_array_body(self):
-        respx.get(_ctx_url("scheme/grammar")).mock(
+        respx.get(_ctx_url("scheme")).mock(
             return_value=httpx.Response(200, json=[], headers=_HDR)
         )
         with pytest.raises(MalformedResponseError, match="expected a JSON object"):
-            _connect().scheme.grammar()
+            _connect().scheme.summary()
 
     @respx.mock
     def test_resource_read_surfaces_a_404(self):
@@ -2300,7 +2187,6 @@ _SCHEME_VIEW_CALLS = {
     ),
     "scan": ("POST", "scheme/scan", lambda s: s.scan("text H")),
     "render": ("POST", "scheme/render", lambda s: s.render([_FACT])),
-    "normalize": ("POST", "scheme/normalize", lambda s: s.normalize("h")),
     "check_coverage": (
         "POST",
         "scheme/check-coverage",
@@ -2312,18 +2198,12 @@ _SCHEME_VIEW_CALLS = {
         lambda s: s.describe_concept("H", "level"),
     ),
     "diff": ("POST", "scheme/diff", lambda s: s.diff("H", "L")),
-    "filter_concepts": (
-        "POST",
-        "scheme/filter-concepts",
-        lambda s: s.filter_concepts("hi"),
-    ),
     "notices": ("POST", "scheme/notices", lambda s: s.notices([_FACT])),
     "view": ("POST", "scheme/view", lambda s: s.view()),
     "summary": ("GET", "scheme", lambda s: s.summary()),
     "concepts": ("GET", "scheme/concepts", lambda s: s.concepts()),
     "categories": ("GET", "scheme/categories", lambda s: s.categories()),
     "formats": ("GET", "scheme/formats", lambda s: s.formats()),
-    "grammar": ("GET", "scheme/grammar", lambda s: s.grammar()),
     "scopes": ("GET", "scheme/scopes", lambda s: s.scopes()),
     "label_presets": ("GET", "scheme/label-presets", lambda s: s.label_presets()),
     "apply_preset": (
@@ -2583,93 +2463,6 @@ class TestGuide:
         assert not route.called
 
     @respx.mock
-    def test_filter_rules(self):
-        respx.post(_ctx_url("guide/filter-rules")).mock(
-            return_value=httpx.Response(
-                200,
-                json=_envelope(
-                    {
-                        "visibleIds": ["r1"],
-                        "categoryCounts": {},
-                        "total": {"visible": 1, "total": 3},
-                    }
-                ),
-                headers=_HDR,
-            )
-        )
-        result = _connect().guide.filter_rules("sec")
-        assert isinstance(result, ContextGuideFilterRulesResult)
-        assert result.result.visible_ids == ["r1"]
-
-    @respx.mock
-    def test_filter_rules_with_guide_id(self):
-        route = respx.post(_ctx_url("guide/filter-rules")).mock(
-            return_value=httpx.Response(
-                200,
-                json=_envelope(
-                    {
-                        "visibleIds": [],
-                        "categoryCounts": {},
-                        "total": {"visible": 0, "total": 0},
-                    }
-                ),
-                headers=_HDR,
-            )
-        )
-        _connect().guide.filter_rules("sec", guide_id="g1")
-        assert json.loads(route.calls.last.request.content)["guideId"] == "g1"
-
-    @respx.mock
-    def test_describe_rule(self):
-        respx.post(_ctx_url("guide/describe-rule")).mock(
-            return_value=httpx.Response(
-                200,
-                json=_envelope(
-                    {
-                        "rule": _rule("guide", "g1"),
-                        "guide": _artifact("guide", "g1"),
-                        "name": "Rule",
-                        "outcomeText": "marks H",
-                        "isComputed": False,
-                        "dependsOn": [],
-                        "overrides": [],
-                        "lines": [],
-                    }
-                ),
-                headers=_HDR,
-            )
-        )
-        result = _connect().guide.describe_rule("r1")
-        assert (
-            isinstance(result, ContextGuideRuleDescriptionResult)
-            and result.result.outcome_text == "marks H"
-            and result.result.is_computed is False
-        )
-
-    @respx.mock
-    def test_describe_rule_with_guide_id(self):
-        route = respx.post(_ctx_url("guide/describe-rule")).mock(
-            return_value=httpx.Response(
-                200,
-                json=_envelope(
-                    {
-                        "rule": _rule("guide", "g1"),
-                        "guide": _artifact("guide", "g1"),
-                        "name": "Rule",
-                        "outcomeText": "marks H",
-                        "isComputed": False,
-                        "dependsOn": [],
-                        "overrides": [],
-                        "lines": [],
-                    }
-                ),
-                headers=_HDR,
-            )
-        )
-        _connect().guide.describe_rule("r1", guide_id="g1")
-        assert json.loads(route.calls.last.request.content)["guideId"] == "g1"
-
-    @respx.mock
     def test_view(self):
         respx.post(_ctx_url("guide/view")).mock(
             return_value=httpx.Response(
@@ -2754,9 +2547,9 @@ class TestAccess:
 
     @respx.mock
     def test_check_preserves_all_populated_assertion_fields(self):
-        # A data assertion's expiry and provenance must reach the server on the
-        # ctx surface; dropping expiresAt would let an expired marking be
-        # evaluated as live. The ctx serializer must match the client serializer.
+        # Every populated assertion field must reach the server on the ctx
+        # surface, so a substitution the engine recorded can be explained from
+        # transported assertions. The ctx serializer must match the client one.
         route = respx.post(_ctx_url("access/check")).mock(
             return_value=httpx.Response(
                 200,
@@ -2770,24 +2563,13 @@ class TestAccess:
                 categoryId="level",
                 confidence="certain",
                 source="parse",
-                expiresAt="2020-01-01T00:00:00Z",
-                sourceRule="r-42",
-                metadata={"k": "v"},
-                provenance={
-                    "providerId": "idp-1",
-                    "attribution": {"name": "IdP", "license": "internal"},
-                    "reproducibility": "best-effort",
-                },
-                value="CAP",
+                replacedConceptId="L_OLD",
             )
         ]
         _connect().access.check(a, {"clearance": "HIGH"})
         wire = json.loads(route.calls.last.request.content)["assertions"][0]
-        assert wire["expiresAt"] == "2020-01-01T00:00:00Z"
-        assert wire["sourceRule"] == "r-42"
-        assert wire["metadata"] == {"k": "v"}
-        assert wire["provenance"]["providerId"] == "idp-1"
-        assert wire["value"] == "CAP"
+        assert wire["replacedConceptId"] == "L_OLD"
+        assert wire["source"] == "parse"
 
     @respx.mock
     def test_check_by_marking(self):
@@ -2828,34 +2610,6 @@ class TestAccess:
         result = _connect().access.describe_requirements("HIGH/I")
         assert isinstance(result, ContextAccessRequirementsResult)
         assert result.result.combined_attributes_needed == ["team"]
-
-    @respx.mock
-    def test_describe_rule(self):
-        respx.post(_ctx_url("access/describe-rule")).mock(
-            return_value=httpx.Response(
-                200,
-                json=_envelope(
-                    {
-                        "rule": _rule("access", "ap"),
-                        "access": _artifact("access", "ap"),
-                        "scheme": _artifact("scheme", "s"),
-                        "name": "Internal",
-                        "requirementText": "internal only",
-                        "attributesNeeded": ["team"],
-                        "dependsOn": [],
-                        "overrides": [],
-                        "lines": [],
-                    }
-                ),
-                headers=_HDR,
-            )
-        )
-        result = _connect().access.describe_rule("r1")
-        assert (
-            isinstance(result, ContextAccessRuleDescriptionResult)
-            and result.result.name == "Internal"
-            and result.result.attributes_needed == ["team"]
-        )
 
     @respx.mock
     def test_rules(self):

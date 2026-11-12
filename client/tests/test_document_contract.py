@@ -10,7 +10,7 @@ import respx
 from pydantic import ValidationError
 
 from ezclassify_rest_client import EzClassifyClientError, connect_context
-from ezclassify_rest_contract import (
+from ezclassify_rest_client import (
     ContextDocumentAuditResult,
     ContextAccessDecisionResult,
     GuideDeterminationInput,
@@ -35,15 +35,6 @@ def _resolution() -> dict:
         "requestedVersion": "1.0.0",
         "resolvedVersion": "1.0.0",
         "artifacts": [{"kind": "scheme", "id": "scheme", "version": "1.0.0"}],
-        "sources": [
-            {
-                "providerId": "catalog",
-                "attribution": {"name": "Catalog", "license": "Apache-2.0"},
-                "reproducibility": "reproducible",
-                "snapshotId": "sha256:abc",
-                "locator": "memory://catalog",
-            }
-        ],
     }
 
 
@@ -108,7 +99,6 @@ def test_audit_returns_typed_envelope_and_preserves_omissions() -> None:
             json={
                 "resolution": _resolution(),
                 "result": _audit(),
-                "operationLimitations": [],
                 "responseProjection": _projection(),
             },
             headers=HEADERS,
@@ -122,7 +112,7 @@ def test_audit_returns_typed_envelope_and_preserves_omissions() -> None:
         )
 
     assert isinstance(result, ContextDocumentAuditResult)
-    assert result.resolution.sources[0].snapshot_id == "sha256:abc"
+    assert result.resolution.resolved_version == "1.0.0"
     assert result.result.document_digest == "sha256:document"
     assert result.result.unmarked_spans[0].text is None
     assert result.result.unmarked_spans[0].offset_encoding == "utf-8-bytes"
@@ -254,23 +244,11 @@ def test_full_nested_document_models_are_lossless_and_strict() -> None:
             }
         ],
         "warnings": [],
-        "provenance": {
-            "providerId": "catalog",
-            "attribution": {
-                "name": "Catalog",
-                "license": "Apache-2.0",
-                "licenseUrl": "https://example.test/license",
-                "citation": "Catalog release 1.",
-            },
-            "reproducibility": "reproducible",
-            "snapshotId": "sha256:source",
-        },
     }
     result = ContextDocumentAuditResult.from_dict(
         {
             "resolution": _resolution(),
             "result": audit,
-            "operationLimitations": [],
         }
     )
 
@@ -279,13 +257,10 @@ def test_full_nested_document_models_are_lossless_and_strict() -> None:
         {
             "resolution": _resolution(),
             "result": decision_payload,
-            "operationLimitations": [],
         }
     ).result
     assert nomination.evidence[0].rule.rule_digest == "sha256:rule"
     assert decision.rules[0].comparisons[0].missing == ["blue"]
-    assert decision.provenance.attribution.license_url == "https://example.test/license"
-    assert decision.provenance.attribution.citation == "Catalog release 1."
 
     malformed = _audit()
     del malformed["documentDigest"]
@@ -294,7 +269,6 @@ def test_full_nested_document_models_are_lossless_and_strict() -> None:
             {
                 "resolution": _resolution(),
                 "result": malformed,
-                "operationLimitations": [],
             }
         )
 
@@ -307,7 +281,6 @@ def test_full_nested_document_models_are_lossless_and_strict() -> None:
             {
                 "resolution": _resolution(),
                 "result": malformed,
-                "operationLimitations": [],
             }
         )
 
@@ -320,7 +293,6 @@ def test_typed_guide_determinations_serialize_to_canonical_wire_shape() -> None:
             json={
                 "resolution": _resolution(),
                 "result": _audit(),
-                "operationLimitations": [],
             },
             headers=HEADERS,
         )

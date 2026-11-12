@@ -50,9 +50,9 @@ def test_members_inherited_from_another_module_reach_the_surface(surface):
 
 
 def test_every_wire_model_publishes_its_decoder(surface):
-    import ezclassify_rest_contract as contract
+    import ezclassify_rest_client as contract
 
-    models_block = surface.split("module ezclassify_rest_contract.models", 1)[1]
+    models_block = surface.split("module ezclassify_rest_client.models", 1)[1]
     for name in contract.__all__:
         header = f"  class {name}("
         if header not in models_block:

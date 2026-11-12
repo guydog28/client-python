@@ -47,7 +47,7 @@ jobs:
       # never sees errors our own CI did not.
       - name: Static type check (mypy --strict)
         run: |
-          pip install --quiet mypy==2.4.0 ./types ./client
+          pip install --quiet mypy==2.4.0 ./client
           mypy
 
       # Verifies that the shipped production models match the vendored
@@ -94,23 +94,23 @@ jobs:
 
       - name: Check for unexpected changes
         run: |
-          if ! git diff --exit-code -- types/ezclassify_rest_contract/models.py; then
+          if ! git diff --exit-code -- client/ezclassify_rest_client/models.py; then
             echo ""
             echo "ERROR: Shipped generated models differ from the vendored contracts."
             echo "Run 'make regen' locally and commit models.py."
             exit 1
           fi
 
-      # The public API of the published packages (ezclassify-rest-contract,
-      # -client) is frozen at 1.0. This diffs the live source
+      # The public API of the published package (ezclassify-rest-client) is
+      # frozen at 1.0. This diffs the live source
       # surface against the reviewed api-surface.txt and fails on any drift.
       # Stdlib-only ast walk, so no build or install is needed. Deliberate API
       # changes regenerate the golden with 'make api-surface' and commit it.
       - name: Check 1.0 public API surface
         run: python3 scripts/check_api_surface.py --check
 
-      # License compliance over the real production closure: the two
-      # published packages installed non-editable into a clean venv, then
+      # License compliance over the real production closure: the
+      # published package installed non-editable into a clean venv, then
       # checked by pip-licenses (CI-only tool, pinned) against a permissive
       # allowlist. certifi (MPL-2.0, transitive of httpx) is the single
       # reviewed exception and is gated separately so the main allowlist
@@ -121,7 +121,7 @@ jobs:
           # and the final offline SBOM environment; do not rebuild the handoff.
           snapshot="$RUNNER_TEMP/python-dependencies"
           mkdir -p "$snapshot/wheels"
-          pip wheel --no-deps --wheel-dir "$snapshot/wheels" ./types ./client
+          pip wheel --no-deps --wheel-dir "$snapshot/wheels" ./client
           python -m venv "$RUNNER_TEMP/prod-closure"
           "$RUNNER_TEMP/prod-closure/bin/pip" install --quiet "$snapshot"/wheels/*.whl
           pip install --quiet pip-licenses==5.5.5
@@ -150,7 +150,7 @@ jobs:
           python -c 'import platform; print(platform.python_version())' > "$snapshot/python-version"
           "$RUNNER_TEMP/prod-closure/bin/pip" list --format=freeze > "$snapshot/requirements.txt"
           "$RUNNER_TEMP/prod-closure/bin/pip" list --format=json > "$snapshot/installed.json"
-          sed -E '/^ezclassify-rest-(client|contract)==/Id' "$snapshot/requirements.txt" > "$snapshot/third-party.txt"
+          sed -E '/^ezclassify-rest-client==/Id' "$snapshot/requirements.txt" > "$snapshot/third-party.txt"
           pip download --only-binary=:all: --no-deps --dest "$snapshot/wheels" -r "$snapshot/third-party.txt"
           "$RUNNER_TEMP/prod-closure/bin/python" scripts/check_frozen_wheels.py "$snapshot/wheels"
           (cd "$snapshot" && sha256sum requirements.txt installed.json wheels/* > SHA256SUMS)
@@ -186,12 +186,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Build and test ezclassify-rest-contract
-        working-directory: types
-        run: |
-          pip install -e ".[dev]"
-          pytest
-
       - name: Build and test ezclassify-rest-client
         working-directory: client
         run: |
@@ -218,7 +212,7 @@ jobs:
       # earlier step runs on the downgraded install.
       - name: Construction and decoding split on the Pydantic floor
         if: matrix.python-version == '3.11'
-        working-directory: types
+        working-directory: client
         run: |
           pip install "pydantic==2.14.1"
           pytest --no-cov tests/test_wire_fidelity.py -k "ConstructionClosed or UnknownResponse or UnknownRequest"

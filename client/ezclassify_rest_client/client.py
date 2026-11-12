@@ -27,7 +27,7 @@ from urllib.parse import quote
 import httpx
 from pydantic import ValidationError as PydanticValidationError
 
-from ezclassify_rest_contract.models import (
+from .models import (
     _CtxListResponseBody,
     _CtxVersionsResponseBody,
     _HealthResponse,
@@ -356,43 +356,29 @@ class RestClientCredentials:
             raise ValueError("context_token must be None or non-blank")
 
 
-def _validate_application_credential(
-    headers: Dict[str, str], credentials: RestClientCredentials
-) -> str | None:
-    """Validate the opaque application auth mode before creating a transport."""
-    if any(not isinstance(name, str) for name in headers):
-        raise ValueError("HTTP header names must be strings")
-    application_headers = [
-        name for name in headers if name.lower() == "x-ezclassify-application-grant"
-    ]
-    if not application_headers:
-        return None
+APPLICATION_ID_HEADER = "x-ezclassify-application-id"
+
+
+def validate_application_id(application_id: str) -> str:
+    """Check an application id before it is sent as a header value.
+
+    The id is the name the application is registered under in Studio. It must
+    be nonempty printable ASCII without leading or trailing whitespace so it
+    travels in an HTTP header unchanged.
+    """
     if (
-        len(application_headers) != 1
-        or credentials.context_token is not None
+        not isinstance(application_id, str)
+        or not application_id
+        or application_id != application_id.strip()
         or any(
-            name.lower() in {"authorization", "x-ezclassify-context-token"}
-            for name in headers
+            ord(character) < 32 or ord(character) >= 127 for character in application_id
         )
     ):
         raise ValueError(
-            "An application credential requires one header and cannot be combined "
-            "with Context tokens or an explicit Authorization header; supply a "
-            "user bearer through RestClientCredentials.access_token"
+            "application_id must be nonempty printable ASCII without leading "
+            "or trailing whitespace"
         )
-    name = application_headers[0]
-    value = headers[name]
-    if (
-        not isinstance(value, str)
-        or not value
-        or value != value.strip()
-        or any(ord(character) < 32 or ord(character) >= 127 for character in value)
-    ):
-        raise ValueError(
-            "An application credential must be nonempty printable ASCII without "
-            "leading or trailing whitespace"
-        )
-    return name
+    return application_id
 
 
 class EzClassifyClient:
@@ -406,18 +392,16 @@ class EzClassifyClient:
     to finish, the whole response body included. A call that runs out raises
     :class:`RequestTimeoutError`.
 
-    Supply an opaque managed application credential through
-    ``headers={"X-EzClassify-Application-Grant": credential}``. It is sent only
-    on Context routes, never health probes. Supply the current user's bearer
-    through ``RestClientCredentials.access_token`` when the application's user
-    policy requires it. Context token credentials cannot accompany the grant.
-    The Runtime verifies both credentials under the configured policy.
+    ``application_id`` names the calling application, the id it is registered
+    under in Studio. It is sent as the ``x-ezclassify-application-id`` header
+    on Context routes, never health probes, so the deployment can report
+    usage per application. It is not a credential and authorizes nothing.
 
     Raises:
         TypeError: ``timeout`` is not a number.
-        ValueError: ``timeout`` is not positive and finite, or an application
-            credential is empty, malformed, duplicated or mixed with Context
-            credentials or an explicit Authorization header.
+        ValueError: ``timeout`` is not positive and finite, or
+            ``application_id`` is not nonempty printable ASCII without leading
+            or trailing whitespace.
     """
 
     def __init__(
@@ -427,13 +411,14 @@ class EzClassifyClient:
         timeout: float = 30.0,
         headers: Dict[str, str] | None = None,
         credentials: RestClientCredentials | None = None,
+        application_id: str | None = None,
     ) -> None:
         self._timeout = require_timeout(timeout)
         self._base = base_url.rstrip("/")
         self._headers = dict(headers or {})
         self._credentials = credentials or RestClientCredentials()
-        self._application_header = _validate_application_credential(
-            self._headers, self._credentials
+        self._application_id = (
+            None if application_id is None else validate_application_id(application_id)
         )
         self._client = httpx.Client(
             base_url=self._base,
@@ -464,8 +449,8 @@ class EzClassifyClient:
         if path == "/v1/ctx" or path.startswith("/v1/ctx/"):
             if self._credentials.context_token is not None:
                 headers["x-ezclassify-context-token"] = self._credentials.context_token
-        elif self._application_header is not None:
-            del headers[self._application_header]
+            if self._application_id is not None:
+                headers[APPLICATION_ID_HEADER] = self._application_id
         return headers
 
     def list_contexts(self) -> List[str]:
@@ -500,7 +485,6 @@ class EzClassifyClient:
         context_id: str,
         context_version: str | None = None,
         *,
-        cache_access_decisions: bool = False,
         disable_cache: bool = False,
     ) -> "EzClassifyContext":
         """Resolve and return an operation client bound to one Context.
@@ -513,15 +497,13 @@ class EzClassifyClient:
         The returned handle owns its own connection pool, and the caller owns
         the handle: close it, or use it as a context manager. Closing this
         deployment client does not close handles it has handed out. Access
-        decisions are uncached by default so every call leaves a server audit
-        record. ``cache_access_decisions=True`` requires a concrete version
-        and trades those records for fewer requests. ``disable_cache=True``
-        sends every operation to the server.
+        decisions are never cached, so every call leaves a server audit
+        record. ``disable_cache=True`` sends every other operation to the
+        server too.
 
         Raises:
-            ValueError: A blank or dot-segment ``context_id``, a ``context_version``
-                that is only whitespace or a dot segment, or ``cache_access_decisions`` on an unpinned
-                binding.
+            ValueError: A blank or dot-segment ``context_id``, or a
+                ``context_version`` that is only whitespace or a dot segment.
             MalformedResponseError: The Context description is not the one
                 the contract describes.
             RequestTimeoutError: The description did not arrive within this
@@ -538,7 +520,7 @@ class EzClassifyClient:
             timeout=self._timeout,
             headers=self._headers,
             credentials=self._credentials,
-            cache_access_decisions=cache_access_decisions,
+            application_id=self._application_id,
             disable_cache=disable_cache,
         )
 

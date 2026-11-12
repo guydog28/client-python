@@ -1,8 +1,7 @@
 # Dev-only integration harness, NOT published to PyPI.
-# The public ship set is ezclassify-rest-contract (types/) and
-# ezclassify-rest-client (client/).
+# The public ship set is the single ezclassify-rest-client package (client/).
 # This package carries no implementation of its own: it hosts the conformance
-# replayer and delegates every public name to the published packages, which the
+# replayer and delegates every public name to the published package, which the
 # Makefile and CI install editable from this workspace before running it.
 # The "Private :: Do Not Upload" classifier below makes PyPI reject any accidental upload.
 [build-system]
@@ -17,7 +16,6 @@ readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.11"
 dependencies = [
-    "ezclassify-rest-contract",
     "ezclassify-rest-client",
 ]
 classifiers = ["Private :: Do Not Upload"]
@@ -41,7 +39,7 @@ extend-exclude = [
     "vendor",
     # Generator output: freshness requires it to match scripts/gen_models.py
     # byte for byte, so format changes belong in the generator.
-    "types/ezclassify_rest_contract/models.py",
+    "client/ezclassify_rest_client/models.py",
 ]
 
 [tool.ruff.lint]
@@ -65,11 +63,12 @@ select = ["E4", "E7", "E9", "F", "S", "BLE", "RUF100"]
 # Fixture tokens for a mocked transport, never real credentials.
 "client/tests/test_client.py" = ["S106"]
 "client/tests/test_context.py" = ["S106"]
+"client/tests/test_application_id.py" = ["S106"]
 "tests/test_cache_conformance.py" = ["S106"]
 # Fixture tokens for the example adapter test, never real credentials.
 "examples/llm-classify/tests/test_client.py" = ["S105", "S106"]
 
-# mypy gates the two published, py.typed packages (types/, client/) in --strict mode; the repo-root dev harness is out
+# mypy gates the published, py.typed package (client/) in --strict mode; the repo-root dev harness is out
 # of scope, same as for the api-surface golden. The generated production models are included:
 # freshness is not a substitute for checking the annotations users import.
 # The pydantic plugin teaches mypy the alias/populate_by_name constructor
@@ -80,11 +79,10 @@ strict = true
 python_version = "3.11"
 plugins = ["pydantic.mypy"]
 files = [
-    "types/ezclassify_rest_contract",
     "client/ezclassify_rest_client",
 ]
 
 # Reject an undeclared keyword when a model is constructed, so a typo such as
-# Assertion(expiresat=...) fails type checking as well as at runtime.
+# Assertion(categroy_id=...) fails type checking as well as at runtime.
 [tool.pydantic-mypy]
 init_forbid_extra = true

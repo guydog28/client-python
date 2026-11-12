@@ -11,7 +11,7 @@ import httpx
 import pytest
 
 from ezclassify_rest_client.client import _api_error
-from ezclassify_rest_contract import (
+from ezclassify_rest_client import (
     ContextAccessRequirementsResult,
     ContextDocumentAuditResult,
 )

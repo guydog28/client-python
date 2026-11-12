@@ -9,12 +9,11 @@ wire field silently as the spec evolves.
 import pytest
 from pydantic import ValidationError
 
-from ezclassify_rest_contract import (
+from ezclassify_rest_client import (
     CategoryView,
     ConceptView,
     FormatView,
     LabelPresetView,
-    AccessDecision,
     AccessRuleResult,
     AggregateResult,
     ArtifactReference,
@@ -31,13 +30,10 @@ from ezclassify_rest_contract import (
     EvaluationResult,
     GuideBreakdownEntry,
     GuideRule,
-    GuideScanResult,
-    GuideScanSpan,
     Notice,
     ProcessResult,
     RuleReference,
     ScanMatch,
-    SourceReference,
     SuggestResult,
     Suggestion,
     ValidateResult,
@@ -146,23 +142,6 @@ class TestSchemeResourceViews:
 
 
 class TestAssertionWireFields:
-    def test_provenance_is_parsed(self):
-        a = Assertion.from_dict(
-            {
-                "conceptId": "X",
-                "categoryId": "c",
-                "confidence": "certain",
-                "source": "parse",
-                "provenance": {
-                    "providerId": "ext-1",
-                    "attribution": {"name": "External", "license": "Apache-2.0"},
-                    "reproducibility": "reproducible",
-                    "snapshotId": "s-42",
-                },
-            }
-        )
-        assert a.provenance is not None and a.provenance.snapshot_id == "s-42"
-
     def test_replaced_concept_id_is_parsed(self):
         a = Assertion.from_dict(
             {
@@ -323,25 +302,6 @@ class TestProcessResultWireFields:
             "unmatched": [],
         }
 
-    def test_did_you_mean_on_an_error_is_preserved(self):
-        r = ValidateResult.from_dict(
-            {
-                **_JUDGED,
-                "valid": False,
-                "inputWasValid": False,
-                "rendered": "",
-                "errors": [
-                    {
-                        "constraintId": "_unmatched_token",
-                        "message": "CRITCAL was not read; did you mean HIGH?",
-                        "didYouMean": ["HIGH"],
-                    }
-                ],
-            }
-        )
-        assert r.errors[0].did_you_mean == ["HIGH"]
-        assert r.errors[0].suggested_fix is None
-
     def test_notices_are_parsed_into_the_exported_notice_model(self):
         r = ProcessResult.from_dict(
             {
@@ -365,40 +325,6 @@ class TestProcessResultWireFields:
         with pytest.raises(ValidationError) as failure:
             ProcessResult.from_dict(payload)
         assert failure.value.errors()[0]["loc"] == ("notices",)
-
-    def test_what_was_read_before_repair_is_preserved(self):
-        # Sent only when repair changed the marking. A fix for a rule repair
-        # enforced is applied to this reading, not to `assertions`, so a model
-        # that dropped it would apply the fix to the wrong set.
-        def assertion(concept_id):
-            return {
-                "conceptId": concept_id,
-                "categoryId": "level",
-                "confidence": "certain",
-                "source": "user",
-            }
-
-        r = ProcessResult.from_dict(
-            {
-                **_AUTHORED,
-                "valid": False,
-                "rendered": "SENSITIVE",
-                "renders": {},
-                "assertions": [assertion("SENSITIVE")],
-                "assertionsBeforeRepair": [assertion("OPEN"), assertion("SENSITIVE")],
-            }
-        )
-        assert r.assertions_before_repair is not None
-        assert [a.concept_id for a in r.assertions_before_repair] == [
-            "OPEN",
-            "SENSITIVE",
-        ]
-        assert all(isinstance(a, Assertion) for a in r.assertions_before_repair)
-
-        untouched = ProcessResult.from_dict(
-            {**_AUTHORED, "valid": True, "rendered": "OPEN", "renders": {}}
-        )
-        assert untouched.assertions_before_repair is None
 
     def test_aggregate_carries_the_same_notices_field(self):
         r = AggregateResult.from_dict(
@@ -553,23 +479,6 @@ class TestAccessRuleResultWireFields:
         assert r.modernized_from is None
 
 
-class TestAccessDecisionWireFields:
-    def test_provenance_is_parsed(self):
-        d = AccessDecision.from_dict(
-            {
-                "granted": True,
-                "rules": [],
-                "warnings": [],
-                "provenance": {
-                    "providerId": "idp-1",
-                    "attribution": {"name": "IdP", "license": "internal"},
-                    "reproducibility": "best-effort",
-                },
-            }
-        )
-        assert d.provenance is not None and d.provenance.provider_id == "idp-1"
-
-
 class TestGuideRuleWireFields:
     def test_full_rule_shape_is_parsed(self):
         r = GuideRule.from_dict(
@@ -605,35 +514,6 @@ class TestGuideRuleWireFields:
             "X",
             "Y",
         ]
-
-
-class TestGuideScanWireFields:
-    def test_guide_scan_span_confidence_survives(self):
-        s = GuideScanSpan.from_dict(
-            {
-                "keyword": "k",
-                "start": 0,
-                "end": 1,
-                "confidence": 0.8,
-            }
-        )
-        assert s.confidence == 0.8
-
-    def test_scan_result_provenance(self):
-        r = GuideScanResult.from_dict(
-            {
-                "guideId": "g1",
-                "matchedKeywords": [],
-                "rule": {"id": "r1", "name": "n", "outcome": {}},
-                "spans": [],
-                "provenance": {
-                    "providerId": "ext-1",
-                    "attribution": {"name": "External", "license": "internal"},
-                    "reproducibility": "best-effort",
-                },
-            }
-        )
-        assert r.provenance is not None and r.provenance.provider_id == "ext-1"
 
 
 class TestEvaluationResultBreakdown:
@@ -767,8 +647,8 @@ class TestUnknownResponseFields:
         # in a response. A closed model that also comes back in responses, such
         # as Assertion, decodes openly and refuses unknown keywords only when a
         # caller constructs it; see TestConstructionClosedModels.
-        import ezclassify_rest_contract as contract
-        from ezclassify_rest_contract import models
+        import ezclassify_rest_client as contract
+        from ezclassify_rest_client import models
 
         closed = sorted(
             name
@@ -851,8 +731,8 @@ class TestConstructionClosedModels:
     """A model callers build and servers return is strict only on construction."""
 
     def test_the_construction_closed_set_is_the_models_used_both_ways(self):
-        import ezclassify_rest_contract as contract
-        from ezclassify_rest_contract import _model_helpers, models
+        import ezclassify_rest_client as contract
+        from ezclassify_rest_client import _model_helpers, models
 
         closed_on_construction = sorted(
             name
@@ -875,10 +755,12 @@ class TestConstructionClosedModels:
         assert failure.value.errors()[0]["loc"] == ("expiresat",)
 
     def test_declared_keywords_and_wire_aliases_construct(self):
-        by_name = Assertion(category_id="level", concept_id="S", expires_at="2027")
-        by_alias = Assertion(categoryId="level", conceptId="S", expiresAt="2027")
+        by_name = Assertion(
+            category_id="level", concept_id="S", replaced_concept_id="T"
+        )
+        by_alias = Assertion(categoryId="level", conceptId="S", replacedConceptId="T")
 
-        assert by_name.expires_at == by_alias.expires_at == "2027"
+        assert by_name.replaced_concept_id == by_alias.replaced_concept_id == "T"
 
     def test_an_unknown_field_on_a_decoded_assertion_is_tolerated(self):
         decoded = Assertion.from_dict(
@@ -950,7 +832,7 @@ class TestUnknownResponseEnumValues:
                         "source": "parse",
                     }
                 ],
-                "errors": [{"constraintId": "c1", "message": "m", "severity": "fatal"}],
+                "errors": [{"constraintId": "c1", "message": "m"}],
                 "warnings": [{"kind": "advisory", "message": "w"}],
                 "notices": [
                     dict(TestProcessResultWireFields._NOTICE, type="classified-by")
@@ -959,7 +841,7 @@ class TestUnknownResponseEnumValues:
         )
 
         assert decoded.assertions[0].confidence == "probable"
-        assert decoded.errors[0].severity == "fatal"
+        assert decoded.errors[0].constraint_id == "c1"
         assert decoded.warnings[0].kind == "advisory"
         assert decoded.notices[0].type == "classified-by"
         assert decoded.notices[0].concept_id == "INT"
@@ -971,7 +853,6 @@ class TestUnknownResponseEnumValues:
                     "contextId": "ctx",
                     "resolvedVersion": "1.0.0",
                     "artifacts": [],
-                    "sources": [],
                 },
                 "result": {
                     "results": [],
@@ -982,7 +863,6 @@ class TestUnknownResponseEnumValues:
                         "regionsFound": 0,
                     },
                 },
-                "operationLimitations": [],
             }
         )
 
@@ -1000,25 +880,6 @@ class TestUnknownResponseEnumValues:
         )
 
         assert decoded.artifact.kind == "policy"
-
-    def test_an_unknown_source_reference_discriminator_is_kept(self):
-        decoded = AccessDecision.from_dict(
-            {
-                "granted": True,
-                "rules": [],
-                "warnings": [],
-                "provenance": {
-                    "providerId": "idp-1",
-                    "attribution": {"name": "IdP", "license": "internal"},
-                    "reproducibility": "pinned",
-                    "snapshotId": "snap-1",
-                },
-            }
-        )
-
-        assert decoded.provenance is not None
-        assert decoded.provenance.reproducibility == "pinned"
-        assert decoded.provenance.snapshot_id == "snap-1"
 
     def test_a_decoded_unknown_value_serializes_back_unchanged(self):
         decoded = Assertion.from_dict(
@@ -1096,19 +957,6 @@ class TestUnknownRequestEnumValues:
 
         assert failure.value.errors()[0]["type"] == "literal_error"
         assert failure.value.errors()[0]["loc"] == ("kind",)
-
-    def test_constructing_a_source_reference_with_an_unknown_discriminator_is_refused(
-        self,
-    ):
-        with pytest.raises(ValidationError) as failure:
-            SourceReference(
-                provider_id="idp-1",
-                attribution={"name": "IdP", "license": "internal"},
-                reproducibility="pinned",
-                snapshot_id="snap-1",
-            )
-
-        assert failure.value.errors()[0]["loc"] == ("reproducibility",)
 
     def test_an_unknown_value_nested_in_a_constructed_request_is_refused(self):
         with pytest.raises(ValidationError) as failure:

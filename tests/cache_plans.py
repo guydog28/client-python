@@ -53,7 +53,6 @@ STEP_TIMEOUT = 10.0
 NOT_APPLICABLE_CAPABILITIES = (
     "cancellation",
     "explicitNullMember",
-    "sharedRouteOperations",
 )
 
 _VERSION_PLACEHOLDER = "{version}"
@@ -315,7 +314,6 @@ class PlanRun:
             context_id=spec.get("context", "ez-full"),
             context_version=version,
             credentials=RestClientCredentials(context_token=_CARRIER),
-            cache_access_decisions=spec.get("cacheAccessDecisions", False),
         )
 
     # -- calls ---------------------------------------------------------------

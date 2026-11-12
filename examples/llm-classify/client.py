@@ -9,7 +9,7 @@ from ezclassify_rest_client import (
     RestClientCredentials,
     connect_context,
 )
-from ezclassify_rest_contract import AggregateResult, DocumentAuditReport
+from ezclassify_rest_client import AggregateResult, DocumentAuditReport
 
 
 def credentials_from_env() -> RestClientCredentials | None:

@@ -9,7 +9,7 @@ The client entry points are re-exported for convenience::
 
     from ezclassify import EzClassifyClient, connect_context
 
-Wire-format model types live in ``ezclassify_rest_contract``.
+Wire-format model types live in ``ezclassify_rest_client.models``.
 """
 
 from ezclassify_rest_client import EzClassifyClient, connect_context

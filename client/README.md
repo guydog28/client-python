@@ -57,21 +57,20 @@ only accompanies text, on both `suggest` and `validate`; fact inputs accept
 options = ctx.scheme.suggest(assertions=[], surface="classification").result
 ```
 
-Assertion `source` is an open string. The SDK forwards custom labels, values,
-metadata and provenance without assigning meaning to them. Core processing
+Assertion `source` is an open string. The SDK forwards custom labels without
+assigning meaning to them. Core processing
 recognizes `infer`, `default`, `context`, and `repair` with `source_rule` as
 previously derived facts; other labels, including `parse`, `user` and `stated`,
 remain authored input. The engine owns settling and derivation.
 
-## Application credentials
+## Application id
 
-For a managed application, set
-`headers={"X-EzClassify-Application-Grant": credential}` when creating
-`EzClassifyClient` or calling `connect_context`. Obtain the credential from
-your Runtime administrator. The client forwards it unchanged on Context routes,
-keeps it off health probes and refuses redirects. Use it instead of bearer or
-Context token credentials. Invalid or mixed credentials raise `ValueError`
-before the HTTP client is created.
+Pass `application_id="case-intake-portal"`, the id your application is
+registered under in Studio, when creating `EzClassifyClient` or calling
+`connect_context`. The client sends it as the `x-ezclassify-application-id`
+header on Context routes and keeps it off health probes. It names the caller for
+usage reporting and is not a credential. A blank or malformed id raises
+`ValueError` before the HTTP client is created.
 
 ## Errors and rate limits
 
@@ -141,19 +140,10 @@ authentication answers unauthenticated requests with, the handle drops every
 answer it holds. A 404 about a missing resource leaves them in place. To act as
 someone else, build a new handle.
 
-Access checks make a server request every time by default so each decision is
-recorded in the deployment's audit trail. Document audit and access assessment,
-access requirements and crosswalk translation are never cached, whatever the
-options. A caller that accepts missing server audit records may opt in to
-caching of the two access checks, `access.check` and `access.check_by_marking`,
-and only under a concrete Context version. The option is refused with a
-`ValueError` on an omitted version or `"latest"`, because the policy behind
-either can change under the handle:
-
-```python
-with deployment.context("my-context", "1.0.0", cache_access_decisions=True) as ctx:
-    decision = ctx.access.check_by_marking("LEVEL-A", {"clearance": "LEVEL_A"})
-```
+Access checks make a server request every time so each decision is recorded in
+the deployment's audit trail. Document audit and access assessment, access
+requirements and crosswalk translation are never cached either, whatever the
+options.
 
 Pass `disable_cache=True` when creating a handle to send every operation to the
 server. `clear_cache()` discards stored operation results without disconnecting.
@@ -209,7 +199,52 @@ decision = ctx.access.check_by_marking("LEVEL-A", {"clearance": "LEVEL_A"})
 print(decision.result.granted)
 ```
 
+## Wire models
+
+Every model reads a server response the forgiving way: a field the server adds
+in a later release is ignored, so an older SDK keeps decoding newer responses.
+`from_dict` and `model_validate` both work like this.
+
+`from_dict` is also strict about what the contract requires. A member the
+OpenAPI document marks required has to be present, at any depth, and may be
+null only where the contract allows null; otherwise `from_dict` raises
+`pydantic.ValidationError` whose `loc` names the member, such as
+`("result", "assessment", "omitted")`. That holds inside the members kept as
+plain dictionaries too. A default a model declares for a required member, such
+as `Assertion.source`, applies when you build one with keywords, never when
+`from_dict` decodes a response. `model_validate` is Pydantic's structural
+check and does not look for these members.
+
+`Assertion` is different because you also build it yourself, for example to
+pass assertions to an access check. Building one with keywords refuses a
+keyword the model does not declare, so a typo fails at once instead of
+silently dropping the value before the request is sent:
+
+```python
+from ezclassify_rest_client import Assertion
+
+Assertion(category_id="level", concept_id="LOW", source="user")  # ok
+Assertion(category_id="level", concept_id="LOW", sourc="user")  # ValidationError
+```
+
+That check covers keyword construction only. `Assertion.model_validate(...)`
+and `Assertion.from_dict(...)` treat their input as wire data and ignore keys
+they do not know, so a misspelled key in a dictionary is dropped without an
+error. When you build assertions from your own configuration, unpack it into
+the constructor (`Assertion(**config)`) so a misspelled key is caught. The same
+applies to `model_copy(update=...)`, which does not validate its keys.
+
+If you type-check with the Pydantic mypy plugin, setting `init_forbid_extra = true`
+under `[tool.pydantic-mypy]` catches the same typo before the code runs.
+
+## How the models are maintained
+
+`models.py` is generated from the OpenAPI components and JSON Schemas the
+[ezclassify/contracts](https://github.com/ezclassify/contracts) repository publishes, so the models in the wheel match the
+wire contract the runtime answers with. Handwritten Python ergonomics and
+cross-field validation are isolated in `_model_helpers.py`.
+
 ## Dependencies
 
-`httpx` and `httpcore`, plus the `ezclassify-rest-contract` package. pip
-resolves the exact floors from the package metadata.
+`httpx`, `httpcore`, `pydantic>=2.14.1,<3` and `typing-extensions>=4.15`.
+[`pyproject.toml`](pyproject.toml) is authoritative for the exact floors.

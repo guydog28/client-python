@@ -24,7 +24,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Protocol
 
-from ezclassify_rest_contract import (
+from ezclassify_rest_client import (
     AggregateResult,
     AuditPart,
     DocumentAuditReport,
@@ -105,12 +105,8 @@ def classify(
 
 
 def _reasons(errors: list[ValidationError]) -> list[str]:
-    """Return the messages of the errors that make a marking not valid.
-
-    Warnings are advisory and never set ``valid`` to false, so they are not
-    reasons a marking failed.
-    """
-    return [e.message for e in errors if e.severity != "warning"]
+    """Return the messages of the errors that make a marking not valid."""
+    return [e.message for e in errors]
 
 
 def print_report(result: ClassifyResult) -> None:

@@ -29,7 +29,8 @@ from .client import (
     MalformedResponseError,
     RestClientCredentials,
     _api_error,
-    _validate_application_credential,
+    APPLICATION_ID_HEADER,
+    validate_application_id,
     _decode_json,
     _decode_model,
     _decode_models,
@@ -37,16 +38,13 @@ from .client import (
     _Model,
     _transport_error,
 )
-from ezclassify_rest_contract import (
+from .models import (
     Assertion,
     ContextDocumentAuditResult,
     ContextAccessDecisionResult,
     ContextAccessRequirementsResult,
-    ContextAccessRuleDescriptionResult,
     ContextCrosswalkTranslationResult,
     ContextGuideEvaluationResult,
-    ContextGuideFilterRulesResult,
-    ContextGuideRuleDescriptionResult,
     ContextGuideScanResult,
     ContextGuideViewResult,
     ContextSchemeAggregateResult,
@@ -54,8 +52,6 @@ from ezclassify_rest_contract import (
     ContextSchemeCoverageResult,
     ContextSchemeDiffResult,
     ContextSchemeExplainResult,
-    ContextSchemeFilterConceptsResult,
-    ContextSchemeNormalizeResult,
     ContextSchemeNoticesResult,
     ContextSchemeProcessResult,
     ContextSchemeRenderResult,
@@ -73,7 +69,6 @@ from ezclassify_rest_contract import (
     GuideRuleSelection,
     FormatView,
     LabelPresetView,
-    SchemeGrammar,
     SchemeScope,
     SchemeSummary,
 )
@@ -82,13 +77,13 @@ _RESOLVED_VERSION_HEADER = "X-EzClassify-Resolved-Version"
 
 # The operations whose answers the response cache keeps. explain posts the
 # same body process does, to its own route, so the two never share an entry.
-# access/check joins them only when a binding opts in to caching decisions.
+# access/check is never among them: every decision reaches the server so the
+# deployment records it.
 _CACHED_POSTS = frozenset(
     {
         "scheme/process",
         "scheme/validate",
         "scheme/explain",
-        "scheme/normalize",
         "scheme/render",
         "scheme/diff",
         "scheme/aggregate",
@@ -135,12 +130,9 @@ def _refuses_the_caller(response: httpx.Response) -> bool:
 def _assertion_to_wire(a: Assertion) -> Dict[str, Any]:
     """Project an assertion to the camelCase wire shape the engine expects.
 
-    Serializes every populated field, not just the required quartet: an
-    assertion carrying ``expiresAt``, ``matchedViews``, ``sourceRule``,
-    ``parseConfidence``, ``metadata``, or ``provenance`` must round-trip those
-    through the ctx surface too. Dropping them would silently strip an
-    expiry from a data assertion on ``access/check`` and break the lossless
-    transport contract on ``aggregate_assertions``.
+    Serializes every populated field, not just the required quartet, so an
+    assertion round-trips through the ctx surface unchanged. Dropping a field
+    would break the lossless transport contract on ``aggregate_assertions``.
     """
     return a.model_dump(mode="json", by_alias=True, exclude_none=True)
 
@@ -182,7 +174,7 @@ def connect_context(
     timeout: float = 30.0,
     headers: Dict[str, str] | None = None,
     credentials: RestClientCredentials | None = None,
-    cache_access_decisions: bool = False,
+    application_id: str | None = None,
     disable_cache: bool = False,
 ) -> "EzClassifyContext":
     """Connect to a named Context and return a bound client.
@@ -196,27 +188,23 @@ def connect_context(
     header and exposed via :attr:`EzClassifyContext.resolved_version`. This
     call checks the binding against the Context description before returning.
 
-    Access decisions reach the server on every call by default so the deployment
-    records each audit decision. ``cache_access_decisions=True`` trades that
-    audit completeness for fewer requests and requires a concrete Context
-    version, because the composition behind an unpinned binding can change
-    under the client.
+    Access decisions are never cached: every call reaches the server, so the
+    deployment records each audit decision.
 
     ``timeout`` is the most time, in seconds, any one request may take from
     start to finish, the whole response body included; this call's own
-    request included. ``headers`` may supply one opaque managed application
-    credential in ``X-EzClassify-Application-Grant``. It may accompany the
-    current user's ``RestClientCredentials.access_token`` when required by the
-    application's user policy, but never a Context token. Both are passed
-    unchanged for Runtime verification.
+    request included. ``application_id`` names the calling application, the id it
+    is registered under in Studio. It is sent as the
+    ``x-ezclassify-application-id`` header on every Context request so the deployment
+    can report usage per application. It is not a credential and authorizes
+    nothing.
 
     Raises:
         TypeError: ``timeout`` is not a number.
         ValueError: ``context_id`` is blank or a dot segment, ``context_version`` is
-            only whitespace or a dot segment, ``timeout`` is not positive and finite, or
-            ``cache_access_decisions`` is set on an unpinned binding, or the
-            application credential is malformed, duplicated or mixed with Context
-            credentials or an explicit Authorization header.
+            only whitespace or a dot segment, ``timeout`` is not positive and
+            finite, or ``application_id`` is not nonempty printable ASCII
+            without leading or trailing whitespace.
         MalformedResponseError: The Context description is not the one the
             contract describes.
         RequestTimeoutError: The description did not arrive within
@@ -231,7 +219,7 @@ def connect_context(
         timeout=timeout,
         headers=headers,
         credentials=credentials,
-        cache_access_decisions=cache_access_decisions,
+        application_id=application_id,
         disable_cache=disable_cache,
     )
     try:
@@ -275,10 +263,9 @@ class EzClassifyContext:
     Raises:
         TypeError: ``timeout`` is not a number.
         ValueError: ``context_id`` is blank or a dot segment, ``context_version`` is
-            only whitespace or a dot segment, ``timeout`` is not positive and finite, or
-            ``cache_access_decisions`` is set on an unpinned binding, or the
-            application credential is malformed, duplicated or mixed with Context
-            credentials or an explicit Authorization header.
+            only whitespace or a dot segment, ``timeout`` is not positive and
+            finite, or ``application_id`` is not nonempty printable ASCII
+            without leading or trailing whitespace.
     """
 
     def __init__(
@@ -290,7 +277,7 @@ class EzClassifyContext:
         timeout: float = 30.0,
         headers: Dict[str, str] | None = None,
         credentials: RestClientCredentials | None = None,
-        cache_access_decisions: bool = False,
+        application_id: str | None = None,
         disable_cache: bool = False,
     ) -> None:
         if not context_id or not context_id.strip() or context_id in {".", ".."}:
@@ -305,17 +292,14 @@ class EzClassifyContext:
                 "context_version must not be only whitespace or a dot segment"
             )
         resolved_credentials = credentials or RestClientCredentials()
-        if cache_access_decisions and (
-            context_version is None or context_version == "latest"
-        ):
-            raise ValueError(
-                "access decision caching requires a concrete Context version"
-            )
         self._base = base_url.rstrip("/")
         self._context_id = context_id
         self._version = context_version
         request_headers = dict(headers or {})
-        _validate_application_credential(request_headers, resolved_credentials)
+        if application_id is not None:
+            request_headers[APPLICATION_ID_HEADER] = validate_application_id(
+                application_id
+            )
         if resolved_credentials.access_token is not None:
             request_headers["Authorization"] = (
                 f"Bearer {resolved_credentials.access_token}"
@@ -331,7 +315,6 @@ class EzClassifyContext:
             transport=deadline_transport(self._base),
         )
         self._response_cache = ResponseCache()
-        self._cache_access_decisions = cache_access_decisions
         self._disable_cache = disable_cache
         self._resolved_version: Optional[str] = None
         self.scheme = CtxScheme(self)
@@ -475,9 +458,7 @@ class EzClassifyContext:
             return False
         if method == "GET":
             return op in _CACHED_GETS
-        return op in _CACHED_POSTS or (
-            op == "access/check" and self._cache_access_decisions
-        )
+        return op in _CACHED_POSTS
 
     def _post(
         self,
@@ -1176,32 +1157,6 @@ class CtxScheme:
         _put_if_set(body, "preservation", preservation)
         return self._post("scheme/render", body, ContextSchemeRenderResult)
 
-    def normalize(
-        self,
-        marking: str,
-        *,
-        output_format: str | None = None,
-        input_format: str | None = None,
-    ) -> ContextSchemeNormalizeResult:
-        """Return the canonical normalized form of a marking.
-
-        Args:
-            marking: Marking string to normalize.
-            output_format: Optional output the canonical form is written in:
-                a format id, or for a scheme that declares surfaces a view id,
-                a ``surface/view`` address, or the id of a form exactly one
-                view names. It selects output only and never narrows what
-                may be read. Omitted, the scheme's default.
-            input_format: Optional format the input is written in. For a
-                scheme that declares surfaces, a view id, a ``surface/view``
-                address, or the id of one of a view's forms. Omitted,
-                recognition works it out.
-        """
-        body: Dict[str, Any] = {"input": marking}
-        _put_if_set(body, "inputFormat", input_format)
-        _put_if_set(body, "outputFormat", output_format)
-        return self._post("scheme/normalize", body, ContextSchemeNormalizeResult)
-
     def check_coverage(
         self,
         children: List[str],
@@ -1278,14 +1233,6 @@ class CtxScheme:
         body: Dict[str, Any] = {"a": marking_a, "b": marking_b}
         _put_if_set(body, "inputFormat", input_format)
         return self._post("scheme/diff", body, ContextSchemeDiffResult)
-
-    def filter_concepts(self, query: str) -> ContextSchemeFilterConceptsResult:
-        """Substring-filter the context's concepts."""
-        return self._post(
-            "scheme/filter-concepts",
-            {"query": query},
-            ContextSchemeFilterConceptsResult,
-        )
 
     def notices(self, assertions: List[Assertion]) -> ContextSchemeNoticesResult:
         """Collect the concept notices for a set of assertions.
@@ -1388,21 +1335,6 @@ class CtxScheme:
                 the connection failed. A 429 carries ``retry_after``.
         """
         return self._get_list("scheme/formats", FormatView)
-
-    def grammar(self) -> SchemeGrammar:
-        """Read the composed scheme's parse grammar.
-
-        Returns:
-            Case sensitivity and whitespace handling as a
-            :class:`SchemeGrammar`.
-
-        Raises:
-            MalformedResponseError: The answer is not the one the contract
-                describes.
-            EzClassifyClientError: The server returned a non-2xx response or
-                the connection failed. A 429 carries ``retry_after``.
-        """
-        return self._get("scheme/grammar", SchemeGrammar)
 
     def scopes(self) -> List[SchemeScope]:
         """List the composed scheme's scope definitions, in declaration order.
@@ -1568,28 +1500,6 @@ class CtxGuide:
             "guide/evaluate", {"selections": wire}, ContextGuideEvaluationResult
         )
 
-    def filter_rules(
-        self, query: str, guide_id: Optional[str] = None
-    ) -> ContextGuideFilterRulesResult:
-        """Substring-filter the context's guide rules."""
-        body: Dict[str, Any] = {"query": query}
-        if guide_id is not None:
-            body["guideId"] = guide_id
-        return self._ctx._post(
-            "guide/filter-rules", body, ContextGuideFilterRulesResult
-        )
-
-    def describe_rule(
-        self, rule_id: str, guide_id: Optional[str] = None
-    ) -> ContextGuideRuleDescriptionResult:
-        """Describe a single guide rule."""
-        body: Dict[str, Any] = {"ruleId": rule_id}
-        if guide_id is not None:
-            body["guideId"] = guide_id
-        return self._ctx._post(
-            "guide/describe-rule", body, ContextGuideRuleDescriptionResult
-        )
-
     def view(self, guide_id: Optional[str] = None) -> ContextGuideViewResult:
         """Build a render-ready structural view of a guide (defaults to the first)."""
         body: Dict[str, Any] = {}
@@ -1663,14 +1573,6 @@ class CtxAccess:
         _put_assertions_if_set(body, assertions)
         return self._ctx._post(
             "access/describe-requirements", body, ContextAccessRequirementsResult
-        )
-
-    def describe_rule(self, rule_id: str) -> ContextAccessRuleDescriptionResult:
-        """Describe a single access rule by id."""
-        return self._ctx._post(
-            "access/describe-rule",
-            {"ruleId": rule_id},
-            ContextAccessRuleDescriptionResult,
         )
 
     def rules(self) -> CtxAccessRulesResponseBody:

@@ -5,7 +5,7 @@
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://pypi.org/project/ezclassify-rest-client/)
 
-Apache-licensed HTTP client for a licensed EzClassify REST runtime. It contains wire models and client ergonomics, not the proprietary engine or enterprise content. Two PyPI packages are provided: `ezclassify-rest-contract` and `ezclassify-rest-client`.
+Apache-licensed HTTP client for a licensed EzClassify REST runtime. It contains wire models and client ergonomics, not the proprietary engine or enterprise content. One PyPI package is provided: `ezclassify-rest-client`, which carries both the client and the wire models.
 
 The [ezclassify/contracts](https://github.com/ezclassify/contracts) repository owns
 document and wire types; EzClassify Runtime owns
@@ -24,7 +24,7 @@ isolated from system packages.
 pip install ezclassify-rest-client
 ```
 
-That pulls in `ezclassify-rest-contract` as a dependency. Python 3.11+. The SDK ships client-only: use `EzClassifyClient` against a running REST API server.
+Python 3.11+. The SDK ships client-only: use `EzClassifyClient` against a running REST API server.
 
 ## Quickstart
 
@@ -112,37 +112,28 @@ and `ctx.crosswalk`. `ctx.scheme` is the Context's primary scheme;
 `ctx.schemes.get(key)` is any other scheme the Context holds. There is
 intentionally no loose scheme-addressed mode.
 
-### Managed application credentials
+### Naming your application
 
-When your administrator supplies an application credential, pass it through
-`headers`. When its user policy requires a bearer token, also supply the
-current user's token from your application's identity provider:
+Pass the id your application is registered under in Studio as `application_id`.
+The runtime counts requests per application and reports usage to Studio. The id
+is not a credential and authorizes nothing; a request without one, or with an id
+the deployment has not registered, is served the same way.
 
 ```python
 with EzClassifyClient(
     "https://runtime.example.com",
-    headers={
-        "X-EzClassify-Application-Grant": os.environ[
-            "EZCLASSIFY_APPLICATION_CREDENTIAL"
-        ]
-    },
-    credentials=RestClientCredentials(access_token=current_user_access_token),
+    application_id="case-intake-portal",
 ) as deployment:
     with deployment.context("cedar-valley") as ctx:
         print(ctx.describe().version)
 ```
 
-The client sends the opaque value unchanged on Context routes and omits it
-from health probes. Runtime verifies the credential and its current application
-permissions. Omit `credentials` when the application's policy does not use a
-bearer token. Keep each client and its caches scoped to one caller; the SDK
-does not sign users in. Combining a grant with a Context token or an explicit
-Authorization header, duplicate application headers, blank values, control
-characters or surrounding whitespace raises `ValueError` before a connection
-is created. Redirects are refused rather than followed. Runtime execution
-requires an authorized application definition and its configured proof, also
-for ordinary caller credentials; an application identifier alone grants no
-access. Protected standalone configuration works without Studio.
+The client sends it as the `x-ezclassify-application-id` header on Context
+routes and omits it from health probes. A blank value, control characters or
+surrounding whitespace raise `ValueError` before a connection is created.
+`connect_context` takes the same option. When a user bearer is required, supply
+it through `RestClientCredentials(access_token=...)`; the SDK does not sign
+users in.
 
 ## API surface
 
@@ -204,8 +195,8 @@ only accompanies text, on both `suggest` and `validate`; fact inputs accept
 options = ctx.scheme.suggest(assertions=[], surface="classification").result
 ```
 
-Assertion `source` is an open string. The SDK forwards custom labels, values,
-metadata and provenance without assigning meaning to them. Core processing
+Assertion `source` is an open string. The SDK forwards custom labels without
+assigning meaning to them. Core processing
 recognizes `infer`, `default`, `context`, and `repair` with `source_rule` as
 previously derived facts; other labels, including `parse`, `user` and `stated`,
 remain authored input. The engine owns settling and derivation.

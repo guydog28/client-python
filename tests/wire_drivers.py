@@ -17,7 +17,7 @@ from ezclassify_rest_client import (
 )
 from ezclassify_rest_client._deadline import _DeadlineTransport
 from ezclassify_rest_client.client import _api_error
-from ezclassify_rest_contract import Assertion, GuideRuleSelection
+from ezclassify_rest_client import Assertion, GuideRuleSelection
 
 from .wire_corpus import WireCase
 
@@ -139,7 +139,6 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
             "scheme/concepts": s.concepts,
             "scheme/categories": s.categories,
             "scheme/formats": s.formats,
-            "scheme/grammar": s.grammar,
             "scheme/scopes": s.scopes,
             "scheme/label-presets": s.label_presets,
             "access/rules": ctx.access.rules,
@@ -199,8 +198,6 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
         )
     if op == "scheme/explain":
         return s.explain(_text(body, "input"))
-    if op == "scheme/normalize":
-        return s.normalize(_text(body, "input"))
     if op == "scheme/render":
         return s.render(
             _facts(body["assertions"]),
@@ -212,8 +209,6 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
         return s.view()
     if op == "scheme/notices":
         return s.notices(_facts(body["assertions"]))
-    if op == "scheme/filter-concepts":
-        return s.filter_concepts(_text(body, "query"))
     if op == "scheme/scan":
         return s.scan(_text(body, "text"))
     if op == "scheme/aggregate":
@@ -236,8 +231,6 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
         return ctx.access.check_by_marking(
             _text(body, "marking"), _attributes(body), context=_context(body)
         )
-    if op == "access/describe-rule":
-        return ctx.access.describe_rule(_text(body, "ruleId"))
     if op == "access/describe-requirements":
         return ctx.access.describe_requirements(_text(body, "marking"))
     if op == "guide/scan":
@@ -253,14 +246,8 @@ def run_context(case: WireCase, ctx: EzClassifyContext) -> object:
         rules = _strings(body, "selectedRuleIds")
         assert rules is not None
         return ctx.guide.evaluate(_text(body, "guideId"), *rules)
-    if op == "guide/describe-rule":
-        return ctx.guide.describe_rule(
-            _text(body, "ruleId"), _optional_text(body, "guideId")
-        )
     if op == "guide/view":
         return ctx.guide.view(_optional_text(body, "guideId"))
-    if op == "guide/filter-rules":
-        return ctx.guide.filter_rules(_text(body, "query"))
     if op == "crosswalk/translate":
         if "assertions" in body:
             return ctx.crosswalk.translate(
@@ -353,7 +340,6 @@ PRIVATE_SEAMS: dict[str, str] = {
     "ctx-scheme-process.undeclared-request-field-unknownField": UNBUILDABLE_REQUEST,
     "ctx-scheme-validate.undeclared-field": UNBUILDABLE_REQUEST,
     "ctx-scheme-explain.undeclared-field": UNBUILDABLE_REQUEST,
-    "ctx-scheme-normalize.undeclared-field": UNBUILDABLE_REQUEST,
     "ctx-scheme-aggregate.undeclared-field": UNBUILDABLE_REQUEST,
     "ctx-scheme-suggest.undeclared-field": UNBUILDABLE_REQUEST,
     "ctx-scheme-suggest-for-categories.undeclared-field": UNBUILDABLE_REQUEST,

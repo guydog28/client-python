@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from ezclassify_rest_contract import (
+from ezclassify_rest_client import (
     AggregateResult,
     AuditPart,
     CoverageReport,

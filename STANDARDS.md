@@ -19,7 +19,7 @@ Design, code quality, testing, and decision-making rules for this project. All c
 
 - **Zero trust at public boundaries.** Validate all inputs on the public API and all external API responses. Trust internal calls between private methods. Fail fast with clear errors at boundaries.
 - **Type hints everywhere.** Annotate public signatures. Remove unused imports. Prefix intentionally unused parameters with `_`. Do not paper over type errors with `# type: ignore` unless the reason is documented inline.
-- **Generated code is not hand-edited.** The Pydantic models under [`types/`](types/) are regenerated from the spec (`make regen`). Change the generator or the spec, never the output file.
+- **Generated code is not hand-edited.** The Pydantic models in [`client/ezclassify_rest_client/models.py`](client/ezclassify_rest_client/models.py) are regenerated from the spec (`make regen`). Change the generator or the spec, never the output file.
 
 ## Testing
 

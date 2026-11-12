@@ -1,7 +1,7 @@
 """from_dict wire-parsing tests for the remaining result models.
 
-Covers EngineWarning, Fix, CoverageReport, ConceptDescription, FilterCount,
-FilterResult, Notice, SuggestResult, RuleDescription, AccessRuleDescription,
+Covers EngineWarning, Fix, CoverageReport, ConceptDescription, Notice,
+SuggestResult, AccessRuleDescription,
 AccessRequirementsDescription, StructuralViewCategory, StructuralView,
 MarkingValidation, AuditWhole, UnmarkedSpan, AuditPart, and
 DocumentAuditReport (the core engine results live in test_types.py), plus
@@ -17,8 +17,8 @@ from pydantic import ValidationError
 
 from unittest.mock import patch
 
-import ezclassify_rest_contract as _et
-from ezclassify_rest_contract.models import (
+import ezclassify_rest_client as _et
+from ezclassify_rest_client.models import (
     AccessRequirementsDescription,
     AccessRuleDescription,
     AuditPart,
@@ -27,12 +27,9 @@ from ezclassify_rest_contract.models import (
     CoverageReport,
     ConceptDescription,
     DocumentAuditReport,
-    FilterCount,
-    FilterResult,
     Fix,
     MarkingValidation,
     Notice,
-    RuleDescription,
     StructuralView,
     StructuralViewCategory,
     SuggestResult,
@@ -277,57 +274,6 @@ class TestConceptDescriptionFromDict:
         assert c.definition == "def"
 
 
-class TestFilterCountFromDict:
-    def test_basic(self):
-        fc = FilterCount.from_dict({"visible": 3, "total": 10})
-        assert fc.visible == 3
-        assert fc.total == 10
-
-    def test_rejects_missing_counts(self):
-        with pytest.raises(ValidationError):
-            FilterCount.from_dict({})
-
-
-class TestFilterResultFromDict:
-    def test_empty(self):
-        fr = FilterResult.from_dict(
-            {
-                "visibleIds": [],
-                "categoryCounts": {},
-                "total": {"visible": 0, "total": 0},
-            }
-        )
-        assert fr.visible_ids == []
-        assert fr.category_counts == {}
-        assert fr.total.visible == 0
-
-    def test_with_category_counts(self):
-        fr = FilterResult.from_dict(
-            {
-                "visibleIds": ["id1", "id2"],
-                "categoryCounts": {
-                    "level": {"visible": 2, "total": 5},
-                    "sci": {"visible": 0, "total": 3},
-                },
-                "total": {"visible": 2, "total": 8},
-            }
-        )
-        assert "level" in fr.category_counts
-        assert fr.category_counts["level"].visible == 2
-        assert fr.total.total == 8
-        assert fr.visible_ids == ["id1", "id2"]
-
-    def test_rejects_null_category_counts(self):
-        with pytest.raises(ValidationError):
-            FilterResult.from_dict(
-                {
-                    "visibleIds": [],
-                    "categoryCounts": None,
-                    "total": {"visible": 0, "total": 0},
-                }
-            )
-
-
 class TestNoticeFromDict:
     def test_basic(self):
         n = Notice.from_dict(
@@ -391,37 +337,6 @@ class TestSuggestResultFromDict:
         assert len(sr.suggestions) == 1
         assert sr.suggestions[0].concept_id == "H"
         assert len(sr.warnings) == 1
-
-
-class TestRuleDescriptionFromDict:
-    def test_minimal(self):
-        with pytest.raises(ValidationError):
-            RuleDescription.from_dict({"ruleId": "r1", "guideId": "g1"})
-
-    def test_full(self):
-        r = RuleDescription.from_dict(
-            {
-                "rule": {
-                    "artifact": {"kind": "guide", "id": "g2", "version": "1"},
-                    "ruleId": "r2",
-                    "ruleDigest": "sha256:r2",
-                },
-                "guide": {"kind": "guide", "id": "g2", "version": "1"},
-                "name": "Rule Two",
-                "outcomeText": "outcome",
-                "isComputed": True,
-                "dependsOn": [],
-                "overrides": [],
-                "lines": ["line1"],
-                "description": "desc",
-                "whenText": "when X",
-            }
-        )
-        assert r.is_computed is True
-        assert r.rule.rule_id == "r2"
-        assert r.guide.id == "g2"
-        assert r.description == "desc"
-        assert r.when_text == "when X"
 
 
 class TestAccessRuleDescriptionFromDict:
@@ -793,7 +708,7 @@ class TestVersionFallback:
             with patch(
                 "importlib.metadata.version",
                 side_effect=importlib.metadata.PackageNotFoundError(
-                    "ezclassify-rest-contract"
+                    "ezclassify-rest-client"
                 ),
             ):
                 importlib.reload(_et)

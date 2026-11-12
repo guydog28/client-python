@@ -2,7 +2,6 @@
 
 The exported API of every package this repo ships to PyPI is frozen at 1.0:
 
-    ezclassify-rest-contract    (types/ezclassify_rest_contract)
     ezclassify-rest-client   (client/ezclassify_rest_client)
 
 This script parses the package sources with ``ast`` (no imports, no installed
@@ -43,7 +42,6 @@ REGEN_COMMAND = "make api-surface"
 # Every package published to PyPI at 1.0. The repo-root "ezclassify" package
 # is a dev-only harness (Private :: Do Not Upload) and is intentionally absent.
 PACKAGES: List[Tuple[str, str]] = [
-    ("ezclassify-rest-contract", "types/ezclassify_rest_contract"),
     ("ezclassify-rest-client", "client/ezclassify_rest_client"),
 ]
 

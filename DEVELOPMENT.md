@@ -7,16 +7,14 @@ spec-vendoring workflow for working on this repo. For the contribution process
 
 ## Repository layout
 
-Two PyPI packages plus a repo-root harness that is not published:
+One PyPI package plus a repo-root harness that is not published:
 
 | Directory | PyPI name | Purpose |
 |---|---|---|
-| [`types/`](types/) | `ezclassify-rest-contract` | Pydantic wire and domain contracts |
-| [`client/`](client/) | `ezclassify-rest-client` | HTTP client via `httpx` |
-| *(repo root)* | `ezclassify` *(not on PyPI)* | Conformance suite + HTTP replayer; delegates to the published packages |
+| [`client/`](client/) | `ezclassify-rest-client` | HTTP client via `httpx` and the Pydantic wire models |
+| *(repo root)* | `ezclassify` *(not on PyPI)* | Conformance suite + HTTP replayer; delegates to the published package |
 
-The two publishable packages are version-bumped in lockstep; [`client/`](client/)
-depends on [`types/`](types/), so editable installs go in that order.
+The harness and the published package share one version number.
 
 ## Local development
 
@@ -30,13 +28,13 @@ make test   # creates .venv, installs test dependencies, and runs every suite
 
 | Action | Command | Notes |
 |--------|---------|-------|
-| Install for development | `pip install -e types/ -e client/` | Editable installs in dependency order. |
-| Generate API reference | `make docs` | Requires editable local packages installed in `.venv`; open `dist/api/ezclassify_rest_client.html` and `dist/api/ezclassify_rest_contract.html`. |
-| Test | `make test` | Runs contract, client, example, and root conformance suites; `make test-verbose` adds detailed output. |
+| Install for development | `pip install -e client/` | Editable install. |
+| Generate API reference | `make docs` | Requires editable local packages installed in `.venv`; open `dist/api/ezclassify_rest_client.html`. |
+| Test | `make test` | Runs client, example, and root conformance suites; `make test-verbose` adds detailed output. |
 | Lint + format check | `make lint` | `ruff check .` and `ruff format --check .` at the pinned version CI uses (CI runs this target). `ruff format .` applies the formatting. |
-| Type check | `make typecheck` | `mypy --strict` over the two `py.typed` packages (config in the root [`pyproject.toml`](pyproject.toml) `[tool.mypy]`); the Makefile pins the mypy version CI uses. |
-| Conformance only | `pip install -e types/ -e client/ -e ".[dev]" && pytest tests/test_conformance.py` | Self-contained HTTP replayer; no server needed. |
-| Build distributions (wheel + sdist) | `python3 -m build client/` | or `make build` (builds both publishable packages into `dist/`). The build backend is `hatchling`; install the front-end once with `pip install build`. |
+| Type check | `make typecheck` | `mypy --strict` over the `py.typed` package (config in the root [`pyproject.toml`](pyproject.toml) `[tool.mypy]`); the Makefile pins the mypy version CI uses. |
+| Conformance only | `pip install -e client/ -e ".[dev]" && pytest tests/test_conformance.py` | Self-contained HTTP replayer; no server needed. |
+| Build distributions (wheel + sdist) | `python3 -m build client/` | or `make build` (builds the publishable package into `dist/`). The build backend is `hatchling`; install the front-end once with `pip install build`. |
 | Regenerate models | `make regen` | See "Spec and conformance" below. [`vendor/spec/`](vendor/spec/) itself is bot-owned; you cannot refresh it from here. |
 | Clean | `make clean` (`make distclean` also drops the virtualenvs) | |
 
@@ -48,14 +46,14 @@ make lint test typecheck check-api-surface
 ```
 
 The conformance and unit suites are the functional gate. The public API of the
-published packages is frozen at 1.0 in [`api-surface.txt`](api-surface.txt); `make check-api-surface`
+published package is frozen at 1.0 in [`api-surface.txt`](api-surface.txt); `make check-api-surface`
 is the CI gate, and `make api-surface` regenerates it for a deliberate,
 reviewed API change committed alongside that change.
 
 ## Spec and conformance
 
 - **The spec is vendored, not authored here.** The Pydantic models in
-  `ezclassify-rest-contract` track the OpenAPI spec under [`vendor/spec/`](vendor/spec/). That
+  `ezclassify-rest-client` track the OpenAPI spec under [`vendor/spec/`](vendor/spec/). That
   mirror is written exclusively by the EzClassify spec bot from
   [ezclassify/contracts](https://github.com/ezclassify/contracts), landing as `ezclassify-spec-bot`;
   `vendor-readonly.yml` rejects a [`vendor/spec/`](vendor/spec/) commit from anyone else. There
@@ -71,7 +69,7 @@ reviewed API change committed alongside that change.
   replayer (no server needed):
 
   ```sh
-  pip install -e types/ -e client/ -e ".[dev]"   # packages + harness test dependencies
+  pip install -e client/ -e ".[dev]"   # packages + harness test dependencies
   pytest tests/test_conformance.py
   ```
 
@@ -92,9 +90,9 @@ reviewed API change committed alongside that change.
 ## Source reference
 
 `make docs` uses Python's standard-library `pydoc` to write HTML for every
-module in the two published packages, including the generated contract models
-and private support modules. It imports the local editable packages, so install
-them with `.venv/bin/pip install -e types -e client` first. Generation makes no
+module in the published package, including the generated models and private
+support modules. It imports the local editable package, so install it with
+`.venv/bin/pip install -e client` first. Generation makes no
 REST requests. The output stays under ignored `dist/api/`; examples, repository
 scripts and the unpublished conformance harness are outside this package API.
 Pydoc displays docstrings as plain text, including Sphinx role notation. Its

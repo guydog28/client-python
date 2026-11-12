@@ -9,14 +9,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 ROOT_MANIFEST = Path("pyproject.toml")
 CANONICAL_MANIFESTS = {
     ROOT_MANIFEST,
-    Path("types/pyproject.toml"),
     Path("client/pyproject.toml"),
 }
 VERSION_LINE = re.compile(r'^version\s*=\s*"(?P<version>[^"]+)"')
-INTERNAL_DEPENDENCY_LINE = re.compile(
-    r'^\s*"(?P<name>ezclassify-rest-contract)>='
-    r'(?P<version>[^"]+)",\s*$'
-)
 
 
 def _project_version(path: Path) -> Optional[Tuple[str, str]]:
@@ -49,23 +44,20 @@ def test_canonical_manifests_are_every_versioned_package():
     assert _version_bearing_manifests() == CANONICAL_MANIFESTS
 
 
-def test_package_versions_and_internal_floors_move_in_lockstep():
-    """Keep package versions and client dependency floors on one release number."""
+def test_package_versions_move_in_lockstep():
+    """Keep the harness and the published client on one release number."""
     versions = {
         relative: _project_version(REPO_ROOT / relative)
         for relative in CANONICAL_MANIFESTS
     }
     assert all(version is not None for version in versions.values())
-    current_versions = {version[0] for version in versions.values() if version}
-    assert len(current_versions) == 1
-    current_version = current_versions.pop()
+    assert len({version[0] for version in versions.values() if version}) == 1
 
-    dependency_versions = {}
+
+def test_the_client_has_no_first_party_dependency():
+    """The client is the only published package, so nothing pins a sibling."""
     client_manifest = (REPO_ROOT / "client/pyproject.toml").read_text(encoding="utf-8")
-    for line in client_manifest.splitlines():
-        if match := INTERNAL_DEPENDENCY_LINE.match(line):
-            dependency_versions[match.group("name")] = match.group("version")
-
-    assert dependency_versions == {
-        "ezclassify-rest-contract": current_version,
-    }
+    assert (
+        "ezclassify-rest"
+        not in client_manifest.split("dependencies = [", 1)[1].split("]", 1)[0]
+    )
