@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@2b279d1369c41a3ac53981797f0d369bb0ef3c4a75e990d3f74c5458aab372f9. DO NOT EDIT.
+# Code generated from vendored contracts@fa1a64c03251d59630775a91a587af70f232256d47e543fce26cd37d03811df8. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -3223,7 +3223,20 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                      'c': {'target': ['contributors'],
                            'quantifier': ['any', 'all', 'none']}}]},
  'RuleWhenNode': {'u': [{'k': 'object',
-                         'c': {'role': ['whole', 'part'],
+                         'c': {'operator': ['has_content',
+                                            'has_concept',
+                                            'not_has_concept',
+                                            'count_gt',
+                                            'count_gte',
+                                            'count_eq',
+                                            'count_lt',
+                                            'count_lte',
+                                            'min_order',
+                                            'subset_of',
+                                            'shares_concept_with',
+                                            'every_has_concept',
+                                            'any_lacks_concept'],
+                               'role': ['whole', 'part'],
                                'target': ['self', 'context', 'contributors']}},
                         {'k': 'object',
                          's': 'RuleWhenQuantifier',
