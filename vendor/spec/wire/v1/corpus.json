@@ -317,7 +317,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -343,14 +342,10 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "responseProjection": {
                         "counts": {
-                            "accessRuleResults": 0,
-                            "contentRequirements": 0,
-                            "contextRequirements": 0,
                             "evidenceSpans": 0,
                             "guideUnits": 1,
                             "nominations": 0
@@ -956,7 +951,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -972,8 +966,7 @@
                         ],
                         "contextId": "ez-presets",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -1284,7 +1277,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -1310,8 +1302,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -1382,7 +1373,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -1408,8 +1398,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -1471,7 +1460,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -1497,8 +1485,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -1617,7 +1604,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -1643,8 +1629,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -1718,7 +1703,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -1744,8 +1728,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -1950,7 +1933,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -1976,8 +1958,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "entries": [
@@ -2059,7 +2040,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2085,8 +2065,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "assessment": {
@@ -2134,7 +2113,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2160,8 +2138,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "assessment": {
@@ -2204,7 +2181,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2230,8 +2206,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "added": [
@@ -2280,7 +2255,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2306,8 +2280,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "categories": [
@@ -2380,7 +2353,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2416,8 +2388,7 @@
                         ],
                         "contextId": "ez-marked",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "categories": [
@@ -2524,7 +2495,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2550,8 +2520,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": []
                 },
@@ -2584,7 +2553,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2610,8 +2578,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "limits": {
@@ -2654,7 +2621,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2680,8 +2646,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -2747,7 +2712,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2773,8 +2737,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -2823,7 +2786,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2849,8 +2811,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "suggestions": [
@@ -2914,7 +2875,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2930,8 +2890,7 @@
                         ],
                         "contextId": "ez-gated",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "suggestions": [],
@@ -2969,7 +2928,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -2985,8 +2943,7 @@
                         ],
                         "contextId": "ez-gated",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "suggestions": [
@@ -3050,7 +3007,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -3076,8 +3032,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "suggestions": [
@@ -3245,7 +3200,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -3271,8 +3225,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "level": {
@@ -3340,7 +3293,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -3366,8 +3318,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "level": {
@@ -3435,7 +3386,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -3461,8 +3411,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "covered": true,
@@ -3506,7 +3455,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -3522,8 +3470,7 @@
                         ],
                         "contextId": "ez-share",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "covered": false,
@@ -3582,7 +3529,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -3598,8 +3544,7 @@
                         ],
                         "contextId": "ez-release",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "covered": false,
@@ -3674,7 +3619,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -3690,8 +3634,7 @@
                         ],
                         "contextId": "ez-controls",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "covered": false,
@@ -3777,7 +3720,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -3803,8 +3745,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "categoryId": "level",
@@ -3854,7 +3795,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -3880,8 +3820,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "granted": true,
@@ -3926,7 +3865,7 @@
                                         "kind": "access",
                                         "version": "1.0.0"
                                     },
-                                    "ruleDigest": "sha256:927e90a423517c78d4690c0b5f35c1dcd095ea32f76c3c90b1cbfa1bee493f62",
+                                    "ruleDigest": "sha256:8df6d71e8cbf82347e379eb84fb59eda241f1d3134ee0ce265ffa8bfd0ef28c2",
                                     "ruleId": "level-rule"
                                 },
                                 "ruleIndex": 0,
@@ -3982,7 +3921,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -4008,8 +3946,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "granted": true,
@@ -4054,7 +3991,7 @@
                                         "kind": "access",
                                         "version": "1.0.0"
                                     },
-                                    "ruleDigest": "sha256:927e90a423517c78d4690c0b5f35c1dcd095ea32f76c3c90b1cbfa1bee493f62",
+                                    "ruleDigest": "sha256:8df6d71e8cbf82347e379eb84fb59eda241f1d3134ee0ce265ffa8bfd0ef28c2",
                                     "ruleId": "level-rule"
                                 },
                                 "ruleIndex": 0,
@@ -4104,7 +4041,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -4130,8 +4066,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "granted": true,
@@ -4176,7 +4111,7 @@
                                         "kind": "access",
                                         "version": "1.0.0"
                                     },
-                                    "ruleDigest": "sha256:927e90a423517c78d4690c0b5f35c1dcd095ea32f76c3c90b1cbfa1bee493f62",
+                                    "ruleDigest": "sha256:8df6d71e8cbf82347e379eb84fb59eda241f1d3134ee0ce265ffa8bfd0ef28c2",
                                     "ruleId": "level-rule"
                                 },
                                 "ruleIndex": 0,
@@ -4216,7 +4151,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -4242,8 +4176,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "access": {
@@ -4258,7 +4191,7 @@
                                     "kind": "access",
                                     "version": "1.0.0"
                                 },
-                                "ruleDigest": "sha256:927e90a423517c78d4690c0b5f35c1dcd095ea32f76c3c90b1cbfa1bee493f62",
+                                "ruleDigest": "sha256:8df6d71e8cbf82347e379eb84fb59eda241f1d3134ee0ce265ffa8bfd0ef28c2",
                                 "ruleId": "level-rule"
                             }
                         ],
@@ -4277,13 +4210,6 @@
                             "clearance"
                         ],
                         "combinedRequirementText": "(clearance >= data.level)",
-                        "lines": [
-                            "Access requirements for: OPEN",
-                            "",
-                            "• Level Access: clearance >= data.level",
-                            "",
-                            "Attributes needed: clearance"
-                        ],
                         "marking": "OPEN",
                         "rules": [
                             {
@@ -4296,13 +4222,6 @@
                                     "clearance"
                                 ],
                                 "dependsOn": [],
-                                "lines": [
-                                    "Level Access",
-                                    "",
-                                    "Requirement: clearance >= data.level",
-                                    "",
-                                    "Attributes needed: clearance"
-                                ],
                                 "name": "Level Access",
                                 "overrides": [],
                                 "requirementText": "clearance >= data.level",
@@ -4312,7 +4231,7 @@
                                         "kind": "access",
                                         "version": "1.0.0"
                                     },
-                                    "ruleDigest": "sha256:927e90a423517c78d4690c0b5f35c1dcd095ea32f76c3c90b1cbfa1bee493f62",
+                                    "ruleDigest": "sha256:8df6d71e8cbf82347e379eb84fb59eda241f1d3134ee0ce265ffa8bfd0ef28c2",
                                     "ruleId": "level-rule"
                                 },
                                 "scheme": {
@@ -4364,13 +4283,6 @@
                                 "clearance"
                             ],
                             "dependsOn": [],
-                            "lines": [
-                                "Level Access",
-                                "",
-                                "Requirement: clearance >= data.level",
-                                "",
-                                "Attributes needed: clearance"
-                            ],
                             "name": "Level Access",
                             "overrides": [],
                             "requirementText": "clearance >= data.level",
@@ -4380,7 +4292,7 @@
                                     "kind": "access",
                                     "version": "1.0.0"
                                 },
-                                "ruleDigest": "sha256:927e90a423517c78d4690c0b5f35c1dcd095ea32f76c3c90b1cbfa1bee493f62",
+                                "ruleDigest": "sha256:8df6d71e8cbf82347e379eb84fb59eda241f1d3134ee0ce265ffa8bfd0ef28c2",
                                 "ruleId": "level-rule"
                             },
                             "scheme": {
@@ -4427,13 +4339,6 @@
                                 "clearance"
                             ],
                             "dependsOn": [],
-                            "lines": [
-                                "Level Access",
-                                "",
-                                "Requirement: clearance >= data.level",
-                                "",
-                                "Attributes needed: clearance"
-                            ],
                             "name": "Level Access",
                             "overrides": [],
                             "requirementText": "clearance >= data.level",
@@ -4443,7 +4348,7 @@
                                     "kind": "access",
                                     "version": "1.0.0"
                                 },
-                                "ruleDigest": "sha256:927e90a423517c78d4690c0b5f35c1dcd095ea32f76c3c90b1cbfa1bee493f62",
+                                "ruleDigest": "sha256:8df6d71e8cbf82347e379eb84fb59eda241f1d3134ee0ce265ffa8bfd0ef28c2",
                                 "ruleId": "level-rule"
                             },
                             "scheme": {
@@ -4509,7 +4414,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -4535,8 +4439,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": [
                         {
@@ -4597,7 +4500,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -4623,8 +4525,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "activeComputedRules": [],
@@ -4718,7 +4619,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -4744,8 +4644,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "activeComputedRules": [],
@@ -4833,7 +4732,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -4859,8 +4757,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "categories": [],
@@ -4913,7 +4810,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -4939,8 +4835,7 @@
                         ],
                         "contextId": "ez-full",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "categories": [],
@@ -4993,7 +4888,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -5029,8 +4923,7 @@
                         ],
                         "contextId": "ez-marked",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "categories": [],
@@ -5255,7 +5148,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -5291,8 +5183,7 @@
                         ],
                         "contextId": "ez-marked",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "crosswalk": {
@@ -5454,7 +5345,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -5480,8 +5370,7 @@
                         ],
                         "contextId": "ez-crosswalk",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "crosswalk": {
@@ -5615,7 +5504,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -5641,8 +5529,7 @@
                         ],
                         "contextId": "ez-crosswalk",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "crosswalk": {
@@ -5893,7 +5780,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -5919,8 +5805,7 @@
                         ],
                         "contextId": "ez-crosswalk",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -6000,7 +5885,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -6026,8 +5910,7 @@
                         ],
                         "contextId": "ez-crosswalk",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],
@@ -6107,7 +5990,6 @@
             },
             "response": {
                 "body": {
-                    "operationLimitations": [],
                     "resolution": {
                         "artifacts": [
                             {
@@ -6133,8 +6015,7 @@
                         ],
                         "contextId": "ez-crosswalk",
                         "requestedVersion": "1.0.0",
-                        "resolvedVersion": "1.0.0",
-                        "sources": []
+                        "resolvedVersion": "1.0.0"
                     },
                     "result": {
                         "appliedFixes": [],

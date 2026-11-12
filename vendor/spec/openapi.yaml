@@ -7502,7 +7502,7 @@ components:
         - count_eq
         - count_lt
         - count_lte
-        - min_order
+        - min_rank
         - subset_of
         - shares_concept_with
         - every_has_concept
@@ -7511,10 +7511,10 @@ components:
         The test a scheme condition applies to one category's assertions. `has_concept` and `not_has_concept` name a
         concept in `value`; `has_content` holds when the category holds anything; the `count_*` tests (greater than,
         greater than or equal, equal, less than, less than or equal) compare the number of concepts in the category with
-        the number in `value`; `min_order` holds when a concept sits at or above the order in `value`; `subset_of` holds
-        when this category's concepts are a subset of the category named in `value`, and `shares_concept_with` when the
-        two share a concept; `every_has_concept` and `any_lacks_concept` ask whether every assertion set, or at least
-        one, holds the concept named in `value`.
+        the number in `value`; `min_rank` holds when the category holds a concept ranked at or above the rank in
+        `value`; `subset_of` holds when this category's concepts are a subset of the category named in `value`, and
+        `shares_concept_with` when the two share a concept; `every_has_concept` and `any_lacks_concept` ask whether
+        every assertion set, or at least one, holds the concept named in `value`.
     RuleConditionTarget:
       type: string
       enum:
@@ -8737,9 +8737,12 @@ components:
       description: >
         Identifies the calling application for per-application usage reporting: the id the application is registered
         under. It is not a credential and authorizes nothing. A request without it, or with an id the deployment has not
-        registered, is served the same way.
+        registered, is served the same way. An id is 1 to 128 printable ASCII characters (0x21 to 0x7E), with no spaces.
+        A value that does not match is served and counted as unidentified.
       schema:
         type: string
+        pattern: ^[\x21-\x7e]{1,128}$
+        maxLength: 128
       example: case-intake-portal
   headers:
     ResolvedVersion:
