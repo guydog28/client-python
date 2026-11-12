@@ -7,12 +7,16 @@ updates:
   - package-ecosystem: pip
     directories:
       - /
-      - /types
       - /client
       - /examples/llm-classify
     schedule:
       interval: weekly
       day: monday
+    cooldown:
+      # check_dependency_age.py refuses any third-party upload younger than
+      # seven days; without a matching cooldown Dependabot opens a bump that
+      # fails its own quarantine gate.
+      default-days: 7
     groups:
       pip-production:
         dependency-type: production
@@ -35,6 +39,8 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    cooldown:
+      default-days: 7
     groups:
       github-actions:
         patterns: ["*"]

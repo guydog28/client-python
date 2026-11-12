@@ -132,6 +132,14 @@ jobs:
             --packages certifi \
             --allow-only "MPL-2.0;Mozilla Public License 2.0 (MPL 2.0)"
 
+      # Quarantine: no third-party distribution in the production closure or
+      # the generator pin may have been uploaded to PyPI in the last seven
+      # days. Reads the registry's own upload time; fails closed.
+      - name: Dependency age (seven-day quarantine)
+        run: |
+          "$RUNNER_TEMP/prod-closure/bin/pip" list --format=freeze > "$RUNNER_TEMP/closure.txt"
+          python3 scripts/check_dependency_age.py --lockfile "$RUNNER_TEMP/closure.txt" --lockfile tools/requirements-regen.txt
+
       # THIRD-PARTY-NOTICES.md is generated from the packages' declared
       # runtime dependencies; regenerate and diff so it cannot go stale.
       - name: Third-party notices are current

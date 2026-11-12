@@ -1,6 +1,6 @@
 # <img src="assets/icon.svg" alt="" width="32"> EzClassify Python SDK
 
-[![CI](https://github.com/ezclassify/client-python/actions/workflows/ci.yml/badge.svg)](https://github.com/ezclassify/client-python/actions/workflows/ci.yml)
+[![CI](https://github.com/ezclassify/sdk-python/actions/workflows/ci.yml/badge.svg)](https://github.com/ezclassify/sdk-python/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/ezclassify-rest-client?label=ezclassify-rest-client)](https://pypi.org/project/ezclassify-rest-client/)
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://pypi.org/project/ezclassify-rest-client/)
