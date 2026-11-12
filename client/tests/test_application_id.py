@@ -119,6 +119,12 @@ def test_no_id_means_no_header(factory: Any) -> None:
         assert _HEADER not in respx.calls.last.request.headers
 
 
+@pytest.mark.parametrize("application_id", ["!", "a" * 128, "~case.intake_portal-1"])
+def test_application_id_inside_the_grammar_is_accepted(application_id: str) -> None:
+    with EzClassifyClient(_BASE, application_id=application_id):
+        pass
+
+
 @pytest.mark.parametrize(
     "factory", [EzClassifyClient, EzClassifyContext, connect_context]
 )
@@ -134,6 +140,8 @@ def test_no_id_means_no_header(factory: Any) -> None:
         "null\x00",
         "del\x7f",
         "café",
+        "inner space",
+        "a" * 129,
     ],
 )
 def test_malformed_application_id_refuses_before_client_creation(

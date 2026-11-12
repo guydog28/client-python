@@ -359,24 +359,24 @@ class RestClientCredentials:
 APPLICATION_ID_HEADER = "x-ezclassify-application-id"
 
 
+_APPLICATION_ID_MAX_LENGTH = 128
+
+
 def validate_application_id(application_id: str) -> str:
     """Check an application id before it is sent as a header value.
 
-    The id is the name the application is registered under in Studio. It must
-    be nonempty printable ASCII without leading or trailing whitespace so it
-    travels in an HTTP header unchanged.
+    The id is the name the application is registered under in Studio. It is 1
+    to 128 characters, each in the printable ASCII range ``!`` to ``~`` (no
+    spaces), so it travels in an HTTP header unchanged.
     """
     if (
         not isinstance(application_id, str)
-        or not application_id
-        or application_id != application_id.strip()
-        or any(
-            ord(character) < 32 or ord(character) >= 127 for character in application_id
-        )
+        or not 1 <= len(application_id) <= _APPLICATION_ID_MAX_LENGTH
+        or any(not 0x21 <= ord(character) <= 0x7E for character in application_id)
     ):
         raise ValueError(
-            "application_id must be nonempty printable ASCII without leading "
-            "or trailing whitespace"
+            "application_id must be 1 to 128 characters, each printable ASCII "
+            "from '!' to '~' (no spaces)"
         )
     return application_id
 
@@ -400,8 +400,8 @@ class EzClassifyClient:
     Raises:
         TypeError: ``timeout`` is not a number.
         ValueError: ``timeout`` is not positive and finite, or
-            ``application_id`` is not nonempty printable ASCII without leading
-            or trailing whitespace.
+            ``application_id`` is not 1 to 128 characters of printable ASCII
+            from ``!`` to ``~``.
     """
 
     def __init__(

@@ -129,8 +129,8 @@ with EzClassifyClient(
 ```
 
 The client sends it as the `x-ezclassify-application-id` header on Context
-routes and omits it from health probes. A blank value, control characters or
-surrounding whitespace raise `ValueError` before a connection is created.
+routes and omits it from health probes. An id is 1 to 128 printable ASCII characters (`!` to `~`, no spaces); anything
+else raises `ValueError` naming the rule before a connection is created.
 `connect_context` takes the same option. When a user bearer is required, supply
 it through `RestClientCredentials(access_token=...)`; the SDK does not sign
 users in.

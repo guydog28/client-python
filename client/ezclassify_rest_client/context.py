@@ -203,8 +203,8 @@ def connect_context(
         TypeError: ``timeout`` is not a number.
         ValueError: ``context_id`` is blank or a dot segment, ``context_version`` is
             only whitespace or a dot segment, ``timeout`` is not positive and
-            finite, or ``application_id`` is not nonempty printable ASCII
-            without leading or trailing whitespace.
+            finite, or ``application_id`` is not 1 to 128 characters of
+            printable ASCII from ``!`` to ``~``.
         MalformedResponseError: The Context description is not the one the
             contract describes.
         RequestTimeoutError: The description did not arrive within
@@ -264,8 +264,8 @@ class EzClassifyContext:
         TypeError: ``timeout`` is not a number.
         ValueError: ``context_id`` is blank or a dot segment, ``context_version`` is
             only whitespace or a dot segment, ``timeout`` is not positive and
-            finite, or ``application_id`` is not nonempty printable ASCII
-            without leading or trailing whitespace.
+            finite, or ``application_id`` is not 1 to 128 characters of
+            printable ASCII from ``!`` to ``~``.
     """
 
     def __init__(
