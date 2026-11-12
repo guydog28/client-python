@@ -12,9 +12,13 @@ of each distribution file of that version at
 ``<registry>/pypi/<name>/<version>/json``. The newest upload counts, so a file
 added to an old version later is held to the window too.
 
-First-party distributions (``ezclassify`` and ``ezclassify-*``) are exempt: a
-package published minutes ago by this project must stay installable in the
-ordinary publish-then-refresh loop. The window belongs on third-party intake.
+First-party distributions are exempt: a package published minutes ago by this
+project must stay installable in the ordinary publish-then-refresh loop. The
+window belongs on third-party intake. First-party means a distribution this
+repository builds, named by the ``[project] name`` of its own pyproject.toml
+files (``ezclassify`` and ``ezclassify-rest-client``). PyPI has no namespaces,
+so a shared prefix proves nothing: any other ``ezclassify-*`` name is checked
+like every third-party distribution.
 
 The gate fails closed. A registry that cannot be read, a version with no
 upload time, a requirement that is not pinned with ``==`` and a run that
@@ -38,6 +42,7 @@ import os
 import re
 import sys
 import time
+import tomllib
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -51,12 +56,10 @@ DEFAULT_REGISTRY = "https://pypi.org"
 # that accepts the connection and never answers, not hang the job.
 REQUEST_TIMEOUT_SECONDS = 20.0
 DEFAULT_OVERALL_TIMEOUT_MS = 5 * 60_000
-DEFAULT_LOCKFILE = (
-    Path(__file__).resolve().parents[1] / "tools" / "requirements-regen.txt"
-)
-
-# PEP 503 names owned by this project.
-_FIRST_PARTY = re.compile(r"^ezclassify(-.+)?$")
+REPOSITORY = Path(__file__).resolve().parents[1]
+DEFAULT_LOCKFILE = REPOSITORY / "tools" / "requirements-regen.txt"
+# The projects this repository builds; their names are the first-party set.
+FIRST_PARTY_PROJECTS = ("pyproject.toml", "client/pyproject.toml")
 _PINNED = re.compile(
     r"^(?P<name>[A-Za-z0-9][A-Za-z0-9._-]*)(\[[^\]]*\])?\s*==\s*(?P<version>[A-Za-z0-9][A-Za-z0-9._+!-]*)$"
 )
@@ -77,8 +80,24 @@ def normalize(name: str) -> str:
     return re.sub(r"[-_.]+", "-", name).lower()
 
 
-def is_first_party(name: str) -> bool:
-    return _FIRST_PARTY.match(normalize(name)) is not None
+def first_party_names() -> frozenset[str]:
+    """Normalized ``[project] name`` of each project this repository builds."""
+    names: set[str] = set()
+    for relative in FIRST_PARTY_PROJECTS:
+        path = REPOSITORY / relative
+        try:
+            project = tomllib.loads(path.read_text(encoding="utf-8")).get("project")
+        except (OSError, tomllib.TOMLDecodeError) as cause:
+            raise GateError(
+                f"Cannot read the first-party project {path}: {cause}"
+            ) from cause
+        name = project.get("name") if isinstance(project, dict) else None
+        if not isinstance(name, str) or not name:
+            raise GateError(
+                f"{path} names no [project] name; cannot tell first-party apart."
+            )
+        names.add(normalize(name))
+    return frozenset(names)
 
 
 def read_requirements(path: Path) -> list[Requirement]:
@@ -106,11 +125,13 @@ def read_requirements(path: Path) -> list[Requirement]:
     return requirements
 
 
-def third_party(requirements: list[Requirement]) -> list[Requirement]:
+def third_party(
+    requirements: list[Requirement], first_party: frozenset[str]
+) -> list[Requirement]:
     """Distinct third-party ``name==version`` pairs, in first-seen order."""
     seen: dict[tuple[str, str], Requirement] = {}
     for requirement in requirements:
-        if is_first_party(requirement.name):
+        if normalize(requirement.name) in first_party:
             continue
         seen.setdefault((normalize(requirement.name), requirement.version), requirement)
     return list(seen.values())
@@ -221,7 +242,7 @@ def main(argv: list[str]) -> int:
         requirements: list[Requirement] = []
         for lockfile in options.lockfile or [DEFAULT_LOCKFILE]:
             requirements += read_requirements(lockfile)
-        packages = third_party(requirements)
+        packages = third_party(requirements, first_party_names())
         if days == 0:
             print("Dependency quarantine window is 0 days; nothing to check.")
             return 0

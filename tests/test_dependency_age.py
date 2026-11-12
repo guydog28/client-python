@@ -135,13 +135,43 @@ def test_first_party_distributions_are_exempt_without_a_registry_lookup(
     registry, tmp_path
 ):
     # Nothing is published to the stand-in, so any lookup would answer 404.
+    # The names are the projects this repository builds, in any PEP 503 spelling.
     result = _run(
         registry,
         tmp_path,
-        "ezclassify-rest-client==1.0.0\nEzClassify_Contract==1.0.0\nezclassify==1.0.0\n",
+        "ezclassify-rest-client==1.0.0\nEzClassify_Rest.Client==1.0.0\nezclassify==1.0.0\n",
     )
     assert result.returncode == 0, result.stderr
     assert "passed: 0 third-party" in result.stdout
+
+
+def test_a_distribution_sharing_our_prefix_that_this_repository_does_not_build_is_checked(
+    registry, tmp_path
+):
+    # PyPI has no namespaces: anyone can upload ezclassify-anything.
+    registry.publish("ezclassify-contract", "1.0.0", 1)
+    result = _run(registry, tmp_path, "ezclassify-contract==1.0.0\n")
+    assert result.returncode == 1
+    assert "ezclassify-contract==1.0.0 uploaded" in result.stderr
+
+
+def test_the_gate_fails_closed_when_it_cannot_read_the_projects_it_builds(tmp_path):
+    # A copy of the script outside this repository has no pyproject.toml beside
+    # it, so it cannot tell first-party apart and must not guess.
+    (tmp_path / "scripts").mkdir()
+    copy = tmp_path / "scripts" / SCRIPT.name
+    copy.write_text(SCRIPT.read_text(encoding="utf-8"), encoding="utf-8")
+    lockfile = tmp_path / "requirements.txt"
+    lockfile.write_text("ezclassify==1.0.0\n", encoding="utf-8")
+    result = subprocess.run(
+        [sys.executable, str(copy), f"--lockfile={lockfile}"],
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=60,
+    )
+    assert result.returncode == 1
+    assert "first-party project" in result.stderr
 
 
 def test_a_third_party_name_that_only_starts_like_ours_is_not_exempt(

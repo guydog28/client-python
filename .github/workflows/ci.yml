@@ -15,6 +15,13 @@ on:
 permissions:
   contents: read
 
+env:
+  # Every pip resolution in this workflow, build isolation included, takes
+  # only versions uploaded at least seven days ago. The dependency age steps
+  # then verify what was actually installed against the registry and fail
+  # closed, so a pip that ignores this setting cannot slip a fresh upload in.
+  PIP_UPLOADED_PRIOR_TO: P7D
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
@@ -38,6 +45,16 @@ jobs:
         with:
           python-version: "3.12"
 
+      # The checks job's own Python tools go in first, so the quarantine gate
+      # sees them, and the generator pin, before any of them runs.
+      - name: Install the CI tools
+        run: pip install --quiet mypy==2.4.0 pip-licenses==5.5.5 ./client
+
+      - name: Dependency age of the CI tools (seven-day quarantine)
+        run: |
+          pip list --format=freeze > "$RUNNER_TEMP/ci-tools.txt"
+          python3 scripts/check_dependency_age.py --lockfile "$RUNNER_TEMP/ci-tools.txt" --lockfile tools/requirements-regen.txt
+
       - name: Lint and check formatting (ruff)
         run: make lint
 
@@ -46,9 +63,7 @@ jobs:
       # pyproject.toml [tool.mypy] table) so a PEP 561 consumer running mypy
       # never sees errors our own CI did not.
       - name: Static type check (mypy --strict)
-        run: |
-          pip install --quiet mypy==2.4.0 ./client
-          mypy
+        run: mypy
 
       # Verifies that the shipped production models match the vendored
       # OpenAPI/JSON Schema contracts. The helper module is handwritten;
@@ -124,7 +139,6 @@ jobs:
           pip wheel --no-deps --wheel-dir "$snapshot/wheels" ./client
           python -m venv "$RUNNER_TEMP/prod-closure"
           "$RUNNER_TEMP/prod-closure/bin/pip" install --quiet "$snapshot"/wheels/*.whl
-          pip install --quiet pip-licenses==5.5.5
           pip-licenses --python "$RUNNER_TEMP/prod-closure/bin/python" --from=mixed \
             --ignore-packages certifi \
             --allow-only "MIT;MIT License;BSD;BSD License;BSD-2-Clause;BSD-3-Clause;ISC;ISC License (ISCL);Apache-2.0;Apache Software License;PSF-2.0;Python Software Foundation License"
@@ -133,12 +147,14 @@ jobs:
             --allow-only "MPL-2.0;Mozilla Public License 2.0 (MPL 2.0)"
 
       # Quarantine: no third-party distribution in the production closure or
-      # the generator pin may have been uploaded to PyPI in the last seven
-      # days. Reads the registry's own upload time; fails closed.
-      - name: Dependency age (seven-day quarantine)
+      # the lint environment (make lint installs ruff and runs it in one
+      # recipe) may have been uploaded to PyPI in the last seven days. Reads
+      # the registry's own upload time; fails closed.
+      - name: Dependency age of the production closure and lint tools (seven-day quarantine)
         run: |
           "$RUNNER_TEMP/prod-closure/bin/pip" list --format=freeze > "$RUNNER_TEMP/closure.txt"
-          python3 scripts/check_dependency_age.py --lockfile "$RUNNER_TEMP/closure.txt" --lockfile tools/requirements-regen.txt
+          .venv/bin/pip list --format=freeze > "$RUNNER_TEMP/lint-tools.txt"
+          python3 scripts/check_dependency_age.py --lockfile "$RUNNER_TEMP/closure.txt" --lockfile "$RUNNER_TEMP/lint-tools.txt"
 
       # THIRD-PARTY-NOTICES.md is generated from the packages' declared
       # runtime dependencies; regenerate and diff so it cannot go stale.
@@ -194,11 +210,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Build and test ezclassify-rest-client
+      - name: Install ezclassify-rest-client and its test tools
         working-directory: client
+        run: pip install -e ".[dev]"
+
+      - name: Dependency age of the test tools (seven-day quarantine)
         run: |
-          pip install -e ".[dev]"
-          pytest
+          pip list --format=freeze > "$RUNNER_TEMP/test-tools.txt"
+          python3 scripts/check_dependency_age.py --lockfile "$RUNNER_TEMP/test-tools.txt"
+
+      - name: Test ezclassify-rest-client
+        working-directory: client
+        run: pytest
 
       # Examples gate: the llm-classify demo's suite runs registry-free
       # (stdlib mocks, local editable installs). Its MCP-subprocess live tests
@@ -211,6 +234,8 @@ jobs:
       - name: Conformance suite (repo-root test harness)
         run: |
           pip install -e ".[dev]"
+          pip list --format=freeze > "$RUNNER_TEMP/harness-tools.txt"
+          python3 scripts/check_dependency_age.py --lockfile "$RUNNER_TEMP/harness-tools.txt"
           pytest tests/
 
       # Pydantic floor. Assertion keeps decoding open and keyword construction
@@ -223,6 +248,8 @@ jobs:
         working-directory: client
         run: |
           pip install "pydantic==2.14.1"
+          pip list --format=freeze > "$RUNNER_TEMP/floor.txt"
+          python3 ../scripts/check_dependency_age.py --lockfile "$RUNNER_TEMP/floor.txt"
           pytest --no-cov tests/test_wire_fidelity.py -k "ConstructionClosed or UnknownResponse or UnknownRequest"
 
       - name: Working tree is clean after build
@@ -279,6 +306,8 @@ jobs:
       - name: Generate qualified SBOM from the validated production closure
         run: |
           pip install --quiet cyclonedx-bom==7.5.0
+          pip list --format=freeze > "$RUNNER_TEMP/sbom-tools.txt"
+          python3 scripts/check_dependency_age.py --lockfile "$RUNNER_TEMP/sbom-tools.txt"
           mkdir -p dist
           cyclonedx-py environment "$RUNNER_TEMP/prod-closure/bin/python" -o dist/sbom.json
 
