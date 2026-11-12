@@ -40,7 +40,7 @@ conformance tests against it.
 | `specSourceUrl`           | https://github.com/ezclassify/contracts/tree/9059f61c223c103a38ae191560650e6408251a79/libs/openapi/openapi.yaml             |
 | `targetRepo`              | `python`          |
 | `releaseDateUtc`          | `2026-11-12T10:00:02.000Z`          |
-| `generatorScript@`        | `bec75f84a9e9`      |
+| `generatorScript@`        | `1e569429d371`      |
 
 `abiVersion` is the wire interface version the server reports on `/v1/health`. It is fixed at `v1`.
 
