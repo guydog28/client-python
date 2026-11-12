@@ -142,26 +142,6 @@
             "required": ["categoryId", "conceptId"],
             "type": "object"
         },
-        "BestEffortRuleSourceReference": {
-            "description": "Best-effort external source join carried by a qualified rule reference.",
-            "properties": {
-                "providerId": {
-                    "description": "Stable identifier for the source provider.",
-                    "type": "string"
-                },
-                "reproducibility": {
-                    "const": "best-effort",
-                    "description": "Whether the source observation can be reproduced byte-for-byte.",
-                    "type": "string"
-                },
-                "snapshotId": {
-                    "description": "Snapshot identity is forbidden when reproducibility is not proven.",
-                    "not": {}
-                }
-            },
-            "required": ["providerId", "reproducibility"],
-            "type": "object"
-        },
         "ConceptModernization": {
             "description": "One deprecated-to-current concept substitution that processing applied before an access rule was evaluated.\n\nThe id fields are machine keys; the `*Display` companions carry the rendered marking view, following the same split as `missing` / `missingDisplay`.",
             "properties": {
@@ -190,26 +170,6 @@
             ],
             "type": "object"
         },
-        "ReproducibleRuleSourceReference": {
-            "description": "Compact source join carried by a qualified rule reference.",
-            "properties": {
-                "providerId": {
-                    "description": "Stable identifier for the source provider.",
-                    "type": "string"
-                },
-                "reproducibility": {
-                    "const": "reproducible",
-                    "description": "Whether the source observation can be reproduced byte-for-byte.",
-                    "type": "string"
-                },
-                "snapshotId": {
-                    "description": "Immutable snapshot containing the rule.",
-                    "type": "string"
-                }
-            },
-            "required": ["providerId", "reproducibility", "snapshotId"],
-            "type": "object"
-        },
         "RuleReference": {
             "description": "Identifies the exact resolved semantics of one policy rule.",
             "properties": {
@@ -224,25 +184,10 @@
                 "ruleId": {
                     "description": "Rule identifier within the owning artifact.",
                     "type": "string"
-                },
-                "source": {
-                    "$ref": "#/definitions/RuleSourceReference",
-                    "description": "External source identity when the rule was not supplied inline."
                 }
             },
             "required": ["artifact", "ruleId", "ruleDigest"],
             "type": "object"
-        },
-        "RuleSourceReference": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/ReproducibleRuleSourceReference"
-                },
-                {
-                    "$ref": "#/definitions/BestEffortRuleSourceReference"
-                }
-            ],
-            "description": "Compact source join carried by a qualified rule reference."
         }
     },
     "description": "Result of evaluating a single qualified access rule entry.",

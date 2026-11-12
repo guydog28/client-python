@@ -67,7 +67,6 @@
                     "treatment": {
                         "enum": [
                             "cached",
-                            "decision",
                             "never",
                             "uncached",
                             "resource"
@@ -246,13 +245,6 @@
                 "context": {
                     "description": "Context id the client binds. Defaults to ez-full.",
                     "type": "string"
-                },
-                "cacheAccessDecisions": {
-                    "type": "boolean"
-                },
-                "construction": {
-                    "description": "refused: building this client must fail, and the plan has no steps.",
-                    "const": "refused"
                 }
             }
         },

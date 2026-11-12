@@ -21,83 +21,81 @@
           "single": true
         }
       ],
-      "concepts": {
-        "inline": [
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "LOW",
-            "name": "Low",
-            "rank": 0,
-            "views": {
-              "default": "LOW",
-              "short": "L"
-            }
-          },
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "HIGH",
-            "name": "High",
-            "rank": 1,
-            "views": {
-              "default": "HIGH",
-              "short": "H"
-            }
-          },
-          {
-            "categories": [
-              "level"
-            ],
-            "deprecated": true,
-            "deprecated_message": "Use LOW.",
-            "deprecated_replacement": "LOW",
-            "id": "OLD_LOW",
-            "name": "Old low",
-            "rank": 0,
-            "views": {
-              "default": "OLD-LOW",
-              "short": "OL"
-            }
-          },
-          {
-            "categories": [
-              "handling"
-            ],
-            "id": "SEALED",
-            "name": "Sealed",
-            "views": {
-              "default": "SEALED"
-            }
-          },
-          {
-            "categories": [
-              "review"
-            ],
-            "id": "REVIEW_ON",
-            "name": "Review on a date",
-            "text_input": {
-              "encoding": {
-                "accepts": [
-                  "YYYYMMDD",
-                  "YYYY-MM-DD"
-                ],
-                "canonical": "YYYY-MM-DD",
-                "type": "calendar-date",
-                "views": {
-                  "default": "YYYYMMDD"
-                }
-              },
-              "label": "Review date"
-            },
-            "views": {
-              "default": "REVIEW {value}"
-            }
+      "concepts": [
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "LOW",
+          "name": "Low",
+          "rank": 0,
+          "views": {
+            "default": "LOW",
+            "short": "L"
           }
-        ]
-      }
+        },
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "HIGH",
+          "name": "High",
+          "rank": 1,
+          "views": {
+            "default": "HIGH",
+            "short": "H"
+          }
+        },
+        {
+          "categories": [
+            "level"
+          ],
+          "deprecated": true,
+          "deprecated_message": "Use LOW.",
+          "deprecated_replacement": "LOW",
+          "id": "OLD_LOW",
+          "name": "Old low",
+          "rank": 0,
+          "views": {
+            "default": "OLD-LOW",
+            "short": "OL"
+          }
+        },
+        {
+          "categories": [
+            "handling"
+          ],
+          "id": "SEALED",
+          "name": "Sealed",
+          "views": {
+            "default": "SEALED"
+          }
+        },
+        {
+          "categories": [
+            "review"
+          ],
+          "id": "REVIEW_ON",
+          "name": "Review on a date",
+          "text_input": {
+            "encoding": {
+              "accepts": [
+                "YYYYMMDD",
+                "YYYY-MM-DD"
+              ],
+              "canonical": "YYYY-MM-DD",
+              "type": "calendar-date",
+              "views": {
+                "default": "YYYYMMDD"
+              }
+            },
+            "label": "Review date"
+          },
+          "views": {
+            "default": "REVIEW {value}"
+          }
+        }
+      ]
     },
     "default_scope": "marking",
     "description": "Settling conformance scheme. A whole is written in `line`, which writes the level, the handling and a review date; a part is written in `short_line`, which writes only the level. A HIGH marking is sealed by rule, so a part read in `short_line` gains a fact its view does not write. A part may not be above its whole, OLD_LOW is a retired spelling of LOW, and the review date is a calendar date stored as YYYY-MM-DD and written as YYYYMMDD.",

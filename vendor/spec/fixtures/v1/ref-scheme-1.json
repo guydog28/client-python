@@ -19,75 +19,71 @@
           "single": false
         }
       ],
-      "concepts": {
-        "inline": [
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "LOW",
-            "name": "Low",
-            "parents": [],
-            "position": 0,
-            "views": {
-              "default": "LOW",
-              "portion": "L"
-            },
-            "rank": 0
+      "concepts": [
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "LOW",
+          "name": "Low",
+          "parents": [],
+          "position": 0,
+          "views": {
+            "default": "LOW",
+            "portion": "L"
           },
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "MED",
-            "name": "Med",
-            "parents": [],
-            "position": 1,
-            "views": {
-              "default": "MED",
-              "portion": "M"
-            },
-            "rank": 1
+          "rank": 0
+        },
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "MED",
+          "name": "Med",
+          "parents": [],
+          "position": 1,
+          "views": {
+            "default": "MED",
+            "portion": "M"
           },
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "HIGH",
-            "name": "High",
-            "parents": [],
-            "position": 2,
-            "views": {
-              "default": "HIGH",
-              "portion": "H"
-            },
-            "rank": 2
+          "rank": 1
+        },
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "HIGH",
+          "name": "High",
+          "parents": [],
+          "position": 2,
+          "views": {
+            "default": "HIGH",
+            "portion": "H"
           },
-          {
-            "categories": [
-              "controls"
-            ],
-            "id": "CTRL-A",
-            "name": "Control A",
-            "parents": [
-              "HIGH"
-            ],
-            "position": 0,
-            "views": {
-              "default": "CTRL-A"
-            }
+          "rank": 2
+        },
+        {
+          "categories": [
+            "controls"
+          ],
+          "id": "CTRL-A",
+          "name": "Control A",
+          "parents": [
+            "HIGH"
+          ],
+          "position": 0,
+          "views": {
+            "default": "CTRL-A"
           }
-        ]
-      }
+        }
+      ]
     },
     "default_scope": "banner",
     "description": "Canonical conformance test scheme. Two categories: level (max rollup, required) and controls (union rollup, optional). Four concepts: LOW/MED/HIGH in level, CTRL-A in controls requiring parent HIGH.",
     "id": "ref-scheme-1",
     "name": "Reference Scheme 1",
     "parse": {
-      "case_sensitive": false,
-      "normalize": [],
-      "strip_whitespace": true
+      "normalize": []
     },
     "render": {
       "default": "default",
@@ -125,8 +121,7 @@
           "surface": "banner",
           "view": "portion"
         }
-      ],
-      "of_invalid": "drop_unmatched"
+      ]
     },
     "rules": [],
     "scopes": [

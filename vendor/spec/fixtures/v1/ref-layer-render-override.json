@@ -2,9 +2,7 @@
   "scheme": {
     "data": {
       "categories": [],
-      "concepts": {
-        "inline": []
-      }
+      "concepts": []
     },
     "default_scope": "banner",
     "description": "Layer that introduces a bracketed render format and overrides the default render format pointer. Validates that composeLayers propagates a layer's defaultRenderFormat when it names a new format.",
@@ -14,9 +12,7 @@
     },
     "name": "Render Format Override Layer",
     "parse": {
-      "case_sensitive": false,
-      "normalize": [],
-      "strip_whitespace": true
+      "normalize": []
     },
     "render": {
       "default": "bracketed",

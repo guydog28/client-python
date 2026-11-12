@@ -7,26 +7,26 @@
         "disposition": "carry",
         "id": "low",
         "reason": "Low is low in both schemes.",
-        "source": { "categoryId": "level", "conceptId": "LOW" },
-        "targets": [{ "categoryId": "level", "conceptId": "LOW" }]
+        "source": { "category": "level", "concept": "LOW" },
+        "targets": [{ "category": "level", "concept": "LOW" }]
       },
       {
         "disposition": "forbid",
         "id": "med",
         "reason": "ref-scheme-2 has no middle level.",
-        "source": { "categoryId": "level", "conceptId": "MED" }
+        "source": { "category": "level", "concept": "MED" }
       },
       {
         "disposition": "carry",
         "id": "high",
         "reason": "High is high in both schemes.",
-        "source": { "categoryId": "level", "conceptId": "HIGH" },
-        "targets": [{ "categoryId": "level", "conceptId": "HIGH" }]
+        "source": { "category": "level", "concept": "HIGH" },
+        "targets": [{ "category": "level", "concept": "HIGH" }]
       }
     ],
     "name": "Reference Crosswalk 1",
-    "sourceScheme": { "id": "ref-scheme-1", "version": "1.0.0" },
-    "targetScheme": { "id": "ref-scheme-2", "version": "1.0.0" },
+    "source_scheme": { "id": "ref-scheme-1", "version": "1.0.0" },
+    "target_scheme": { "id": "ref-scheme-2", "version": "1.0.0" },
     "version": "1.0.0"
   }
 }

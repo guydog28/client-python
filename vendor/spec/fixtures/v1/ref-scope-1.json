@@ -33,113 +33,109 @@
           "single": true
         }
       ],
-      "concepts": {
-        "inline": [
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "LOW",
-            "name": "Low",
-            "parents": [],
-            "position": 0,
-            "views": {
-              "default": "LOW",
-              "portion": "L"
-            },
-            "rank": 0
+      "concepts": [
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "LOW",
+          "name": "Low",
+          "parents": [],
+          "position": 0,
+          "views": {
+            "default": "LOW",
+            "portion": "L"
           },
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "MED",
-            "name": "Med",
-            "parents": [],
-            "position": 1,
-            "views": {
-              "default": "MED",
-              "portion": "M"
-            },
-            "rank": 1
+          "rank": 0
+        },
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "MED",
+          "name": "Med",
+          "parents": [],
+          "position": 1,
+          "views": {
+            "default": "MED",
+            "portion": "M"
           },
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "HIGH",
-            "name": "High",
-            "parents": [],
-            "position": 2,
-            "views": {
-              "default": "HIGH",
-              "portion": "H"
-            },
-            "rank": 2
+          "rank": 1
+        },
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "HIGH",
+          "name": "High",
+          "parents": [],
+          "position": 2,
+          "views": {
+            "default": "HIGH",
+            "portion": "H"
           },
-          {
-            "categories": [
-              "authority"
-            ],
-            "id": "AUTH-X",
-            "name": "Authority X",
-            "parents": [],
-            "position": 0,
-            "scopes": [
-              "alt"
-            ],
-            "views": {
-              "default": "AUTH-X"
-            }
-          },
-          {
-            "categories": [
-              "authority"
-            ],
-            "id": "AUTH-Y",
-            "name": "Authority Y",
-            "parents": [],
-            "position": 1,
-            "scopes": [
-              "alt"
-            ],
-            "views": {
-              "default": "AUTH-Y"
-            }
-          },
-          {
-            "categories": [
-              "origin"
-            ],
-            "id": "ORIG",
-            "name": "Origin",
-            "parents": [],
-            "position": 0,
-            "scopes": [
-              "alt"
-            ],
-            "text_input": {
-              "placeholder": "ORIGIN",
-              "encoding": {
-                "type": "text",
-                "pattern": "[A-Z]{2,6}"
-              }
-            },
-            "views": {
-              "default": "ORIG={value}"
-            }
+          "rank": 2
+        },
+        {
+          "categories": [
+            "authority"
+          ],
+          "id": "AUTH-X",
+          "name": "Authority X",
+          "parents": [],
+          "position": 0,
+          "scopes": [
+            "alt"
+          ],
+          "views": {
+            "default": "AUTH-X"
           }
-        ]
-      }
+        },
+        {
+          "categories": [
+            "authority"
+          ],
+          "id": "AUTH-Y",
+          "name": "Authority Y",
+          "parents": [],
+          "position": 1,
+          "scopes": [
+            "alt"
+          ],
+          "views": {
+            "default": "AUTH-Y"
+          }
+        },
+        {
+          "categories": [
+            "origin"
+          ],
+          "id": "ORIG",
+          "name": "Origin",
+          "parents": [],
+          "position": 0,
+          "scopes": [
+            "alt"
+          ],
+          "text_input": {
+            "placeholder": "ORIGIN",
+            "encoding": {
+              "type": "text",
+              "pattern": "[A-Z]{2,6}"
+            }
+          },
+          "views": {
+            "default": "ORIG={value}"
+          }
+        }
+      ]
     },
     "default_scope": "banner",
     "description": "Conformance scope+capture reference. Three categories: level (default-scope, max rollup, required, in the banner format); authority (scoped to 'alt', union rollup, excluded from the banner but present in the full format); origin (scoped to 'alt', a capture-value concept whose {value} channel only survives the full format). Mirrors a common authority-scope pattern: alternate-scope categories and capture values drop from the banner projection but travel losslessly as assertions.",
     "id": "ref-scope-1",
     "name": "Reference Scope Scheme 1",
     "parse": {
-      "case_sensitive": false,
-      "normalize": [],
-      "strip_whitespace": true
+      "normalize": []
     },
     "render": {
       "default": "banner",
@@ -176,8 +172,7 @@
           "separator": "/",
           "surface": "banner"
         }
-      ],
-      "of_invalid": "drop_unmatched"
+      ]
     },
     "rules": [],
     "scopes": [

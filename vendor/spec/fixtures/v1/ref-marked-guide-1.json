@@ -7,50 +7,48 @@
             "id": "ref-scheme-1"
         },
         "name": "Reference Marked Guide 1",
-        "rules": {
-            "inline": [
-                {
-                    "description": "Applies when document contains sensitive or critical content. Contributes HIGH level marking.",
-                    "id": "rule-high",
-                    "keywords": [
-                        "critical",
-                        "sensitive"
-                    ],
-                    "marking": "HIGH",
-                    "name": "High Sensitivity",
-                    "outcome": {
-                        "rendered": "HIGH"
-                    }
-                },
-                {
-                    "description": "Applies when document is public or open. Contributes LOW level marking.",
-                    "id": "rule-low",
-                    "keywords": [
-                        "public",
-                        "open"
-                    ],
-                    "marking": "LOW",
-                    "name": "Low Sensitivity",
-                    "outcome": {
-                        "rendered": "LOW"
-                    }
-                },
-                {
-                    "description": "Applies when document contains controlled or restricted data. Contributes HIGH/CTRL-A marking.",
-                    "id": "rule-ctrl-a",
-                    "keywords": [
-                        "controlled",
-                        "restricted"
-                    ],
-                    "marking": "HIGH/CTRL-A",
-                    "name": "Control A",
-                    "outcome": {
-                        "rendered": "HIGH/CTRL-A"
-                    }
+        "rules": [
+            {
+                "description": "Applies when document contains sensitive or critical content. Contributes HIGH level marking.",
+                "id": "rule-high",
+                "keywords": [
+                    "critical",
+                    "sensitive"
+                ],
+                "marking": "HIGH",
+                "name": "High Sensitivity",
+                "outcome": {
+                    "rendered": "HIGH"
                 }
-            ]
-        },
-        "targetSchemes": [
+            },
+            {
+                "description": "Applies when document is public or open. Contributes LOW level marking.",
+                "id": "rule-low",
+                "keywords": [
+                    "public",
+                    "open"
+                ],
+                "marking": "LOW",
+                "name": "Low Sensitivity",
+                "outcome": {
+                    "rendered": "LOW"
+                }
+            },
+            {
+                "description": "Applies when document contains controlled or restricted data. Contributes HIGH/CTRL-A marking.",
+                "id": "rule-ctrl-a",
+                "keywords": [
+                    "controlled",
+                    "restricted"
+                ],
+                "marking": "HIGH/CTRL-A",
+                "name": "Control A",
+                "outcome": {
+                    "rendered": "HIGH/CTRL-A"
+                }
+            }
+        ],
+        "target_schemes": [
             {
                 "id": "ref-scheme-1"
             }

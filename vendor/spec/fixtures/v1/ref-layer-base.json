@@ -11,61 +11,57 @@
           "single": true
         }
       ],
-      "concepts": {
-        "inline": [
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "LOW",
-            "name": "Low",
-            "parents": [],
-            "position": 0,
-            "views": {
-              "default": "LOW",
-              "portion": "L"
-            },
-            "rank": 0
+      "concepts": [
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "LOW",
+          "name": "Low",
+          "parents": [],
+          "position": 0,
+          "views": {
+            "default": "LOW",
+            "portion": "L"
           },
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "MED",
-            "name": "Med",
-            "parents": [],
-            "position": 1,
-            "views": {
-              "default": "MED",
-              "portion": "M"
-            },
-            "rank": 1
+          "rank": 0
+        },
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "MED",
+          "name": "Med",
+          "parents": [],
+          "position": 1,
+          "views": {
+            "default": "MED",
+            "portion": "M"
           },
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "HIGH",
-            "name": "High",
-            "parents": [],
-            "position": 2,
-            "views": {
-              "default": "HIGH",
-              "portion": "H"
-            },
-            "rank": 2
-          }
-        ]
-      }
+          "rank": 1
+        },
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "HIGH",
+          "name": "High",
+          "parents": [],
+          "position": 2,
+          "views": {
+            "default": "HIGH",
+            "portion": "H"
+          },
+          "rank": 2
+        }
+      ]
     },
     "default_scope": "banner",
     "description": "Base layer for conformance fromLayers tests. Three level concepts only: LOW/MED/HIGH.",
     "id": "ref-layer-base",
     "name": "Base Layer",
     "parse": {
-      "case_sensitive": false,
-      "normalize": [],
-      "strip_whitespace": true
+      "normalize": []
     },
     "render": {
       "default": "default",

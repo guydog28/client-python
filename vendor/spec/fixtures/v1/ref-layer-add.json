@@ -11,24 +11,22 @@
           "single": false
         }
       ],
-      "concepts": {
-        "inline": [
-          {
-            "categories": [
-              "controls"
-            ],
-            "id": "CTRL-A",
-            "name": "Control A",
-            "parents": [
-              "HIGH"
-            ],
-            "position": 0,
-            "views": {
-              "default": "CTRL-A"
-            }
+      "concepts": [
+        {
+          "categories": [
+            "controls"
+          ],
+          "id": "CTRL-A",
+          "name": "Control A",
+          "parents": [
+            "HIGH"
+          ],
+          "position": 0,
+          "views": {
+            "default": "CTRL-A"
           }
-        ]
-      }
+        }
+      ]
     },
     "default_scope": "banner",
     "description": "Extension layer that adds the CTRL-A concept in the controls category. Depends on ref-layer-base for the HIGH parent concept.",
@@ -38,9 +36,7 @@
     },
     "name": "Add Layer",
     "parse": {
-      "case_sensitive": false,
-      "normalize": [],
-      "strip_whitespace": true
+      "normalize": []
     },
     "render": {
       "default": "default",

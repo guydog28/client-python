@@ -1,57 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "Attribution": {
-            "description": "Provenance attached to every source so downstream consumers can render proper attribution and license notices.\n\nMandatory because most source data we'll integrate (NIST, ICS, IANA, external taxonomies) requires citation. Sources that don't have a formal license should set `license: 'unspecified'` rather than omit it.",
-            "properties": {
-                "citation": {
-                    "description": "Suggested citation string for academic / regulatory use.",
-                    "type": "string"
-                },
-                "license": {
-                    "description": "SPDX identifier or short license token (e.g. \"CC-BY-4.0\", \"public-domain\").",
-                    "type": "string"
-                },
-                "licenseUrl": {
-                    "description": "Canonical URL where the license terms can be inspected.",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "Display name of the upstream source (e.g. \"NIST CSWP-29\").",
-                    "type": "string"
-                }
-            },
-            "required": ["name", "license"],
-            "type": "object"
-        },
-        "BestEffortSourceReference": {
-            "description": "Best-effort source identity and mandatory attribution for an operation.",
-            "properties": {
-                "attribution": {
-                    "$ref": "#/definitions/Attribution",
-                    "description": "Attribution and license information for the observed source."
-                },
-                "locator": {
-                    "description": "Location from which the mutable content was observed.",
-                    "type": "string"
-                },
-                "providerId": {
-                    "description": "Stable identifier for the source provider.",
-                    "type": "string"
-                },
-                "reproducibility": {
-                    "const": "best-effort",
-                    "description": "Whether the source observation can be reproduced byte-for-byte.",
-                    "type": "string"
-                },
-                "snapshotId": {
-                    "description": "Snapshot identity is forbidden when reproducibility is not proven.",
-                    "not": {}
-                }
-            },
-            "required": ["attribution", "providerId", "reproducibility"],
-            "type": "object"
-        },
         "CharacterWindow": {
             "description": "Proximity measured in raw characters.",
             "properties": {
@@ -112,7 +61,7 @@
             "type": "object"
         },
         "GuideRule": {
-            "description": "A rule in a marking guide: a data-element description with an outcome that contributes to the aggregate marking when activated.\n\nRules are presented as checkboxes in the UI. `keywords` enables keyword-search filtering; `match` enables text-scan detection (e.g., finding IPv4 addresses in a document body). `outcome.rendered` or `outcome.concepts` provides the marking contribution. Rules with `when` are computed; they auto-activate based on sibling rule selection state and do not appear as user-visible checkboxes.\n\nThis is the named runtime/read-result shape. Authoring input is carried by the guide definition's `rules.inline` entries.",
+            "description": "A rule in a marking guide: a data-element description with an outcome that contributes to the aggregate marking when activated.\n\nRules are presented as checkboxes in the UI. `keywords` enables keyword-search filtering; `match` enables text-scan detection (e.g., finding IPv4 addresses in a document body). `outcome.rendered` or `outcome.concepts` provides the marking contribution. Rules with `when` are computed; they auto-activate based on sibling rule selection state and do not appear as user-visible checkboxes.\n\nThis is the named runtime/read-result shape. A guide document authors its rules as `GuideRuleDoc` entries in `guide.rules`.",
             "properties": {
                 "category": {
                     "description": "Guide category ID for grouping in the UI.",
@@ -160,8 +109,8 @@
                     "type": "string"
                 },
                 "when": {
-                    "$ref": "#/definitions/RuleWhen",
-                    "description": "When present, this rule auto-activates based on other rules' selection state. Uses the same when framework as scheme rules. `has` references guide rule IDs. Rules with `when` are \"computed\"; they don't appear as checkboxes."
+                    "$ref": "#/definitions/GuideWhen",
+                    "description": "When present, the rule is computed: it activates when this block holds over the rules the user selected, and it is not offered as a checkbox."
                 }
             },
             "required": ["id", "name", "outcome"],
@@ -187,10 +136,6 @@
         "GuideScanSpan": {
             "description": "A span, by offsets into the scanned text, where a guide rule keyword or pattern matched.",
             "properties": {
-                "confidence": {
-                    "description": "Advisory confidence in [0, 1], present only when the scan asked for it with the `confidence` scan option. An ordinal hint derived from the match's shape, not a calibrated probability.",
-                    "type": "number"
-                },
                 "end": {
                     "description": "Offset in the scanned text just past the end of the match, in UTF-16 code units.",
                     "type": "integer"
@@ -205,6 +150,87 @@
                 }
             },
             "required": ["keyword", "start", "end"],
+            "type": "object"
+        },
+        "GuideWhen": {
+            "description": "A block of conditions over the rules the user selected. Every list present must hold: `any` when one of its nodes holds, `all` when each does, `none` when none does.",
+            "properties": {
+                "all": {
+                    "description": "Every one of these holds.",
+                    "items": {
+                        "$ref": "#/definitions/GuideWhenNode"
+                    },
+                    "type": "array"
+                },
+                "any": {
+                    "description": "At least one of these holds.",
+                    "items": {
+                        "$ref": "#/definitions/GuideWhenNode"
+                    },
+                    "type": "array"
+                },
+                "none": {
+                    "description": "None of these holds.",
+                    "items": {
+                        "$ref": "#/definitions/GuideWhenNode"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "GuideWhenHas": {
+            "description": "A guide condition that holds when the user selected one rule.",
+            "properties": {
+                "has": {
+                    "description": "The id of a selectable rule of this guide.",
+                    "type": "string"
+                }
+            },
+            "required": ["has"],
+            "type": "object"
+        },
+        "GuideWhenNode": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/GuideWhenHas"
+                },
+                {
+                    "$ref": "#/definitions/GuideWhenTest"
+                },
+                {
+                    "$ref": "#/definitions/GuideWhen"
+                }
+            ],
+            "description": "One node of a guide `when` block: a condition, or a nested block."
+        },
+        "GuideWhenOperator": {
+            "description": "The tests a guide `when` condition can apply to the rules the user selected. `has_concept` and `not_has_concept` name a rule by id in `value`; the `count_*` tests (greater than, greater than or equal, equal, less than, less than or equal) compare the number of selected rules with the number in `value`; `has_content` holds when any rule is selected.",
+            "enum": [
+                "has_concept",
+                "not_has_concept",
+                "has_content",
+                "count_gt",
+                "count_gte",
+                "count_eq",
+                "count_lt",
+                "count_lte"
+            ],
+            "type": "string"
+        },
+        "GuideWhenTest": {
+            "description": "A guide condition that tests the user's selection with an operator.",
+            "properties": {
+                "operator": {
+                    "$ref": "#/definitions/GuideWhenOperator",
+                    "description": "The test to apply."
+                },
+                "value": {
+                    "description": "A rule id for `has_concept` and `not_has_concept`, a count for the `count_*` tests, absent for `has_content`.",
+                    "type": ["string", "number"]
+                }
+            },
+            "required": ["operator"],
             "type": "object"
         },
         "MatchAllNode": {
@@ -427,163 +453,6 @@
             "enum": ["pass", "fail"],
             "type": "string"
         },
-        "ProcessingRole": {
-            "description": "Structural role of a marking within a processing operation.",
-            "enum": ["whole", "part"],
-            "type": "string"
-        },
-        "ReproducibleSourceReference": {
-            "description": "Reproducible source identity and mandatory attribution for an operation.",
-            "properties": {
-                "attribution": {
-                    "$ref": "#/definitions/Attribution",
-                    "description": "Attribution and license information for the observed source."
-                },
-                "locator": {
-                    "description": "Location from which the content was observed.",
-                    "type": "string"
-                },
-                "providerId": {
-                    "description": "Stable identifier for the source provider.",
-                    "type": "string"
-                },
-                "reproducibility": {
-                    "const": "reproducible",
-                    "description": "Whether the source observation can be reproduced byte-for-byte.",
-                    "type": "string"
-                },
-                "snapshotId": {
-                    "description": "Immutable content identity.",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "attribution",
-                "providerId",
-                "reproducibility",
-                "snapshotId"
-            ],
-            "type": "object"
-        },
-        "RuleCondition": {
-            "description": "A single condition in a rule's `when` block. Can test category contents, processing context role, or concept presence.",
-            "properties": {
-                "category": {
-                    "description": "Category to evaluate against. Also serves as a shorthand matching any concept in this category within when blocks.",
-                    "type": "string"
-                },
-                "has": {
-                    "description": "Shorthand for has_concept: check if this concept is present",
-                    "type": "string"
-                },
-                "is": {
-                    "description": "Combined operator+value shorthand (e.g. \"count_eq 1\", \"has_content\")",
-                    "type": "string"
-                },
-                "operator": {
-                    "description": "Explicit operator for the condition",
-                    "type": "string"
-                },
-                "role": {
-                    "$ref": "#/definitions/ProcessingRole",
-                    "description": "Processing context role filter"
-                },
-                "target": {
-                    "$ref": "#/definitions/RuleConditionTarget",
-                    "description": "Which assertion set to evaluate: 'self' (default), 'context' (the whole marking), or 'contributors' (every set that fed an aggregate)."
-                },
-                "value": {
-                    "description": "Explicit value for the operator",
-                    "type": ["string", "number"]
-                }
-            },
-            "type": "object"
-        },
-        "RuleConditionTarget": {
-            "description": "Assertion set a rule condition is evaluated against.\n\n- `'self'` (default): the assertions currently under evaluation.\n- `'context'`: the assertions of the whole marking this one is part of. Such a condition has an answer only when the part has a verified whole, one that reads and is valid. Without one (no whole given, a whole that does not read, or a whole that reads but is invalid) the condition is unresolved, and so is any `all`, `any` or `none` around it whose answer depends on it. A rule whose `when` is unresolved never fires, changes no value, reports no error and offers no fix; a check rule (`require`, `require_any`, `restrict`, `forbid`, `exclusive`, `cardinality`) that the marking already meets still passes, and any other unresolved rule gives the part the `_whole_unverified` notice. A part's stand-in for its whole's values is not left open this way: without a verified whole it is a `_stand_in_requires_whole` error. See `ProcessingContext.partOf`.\n- `'contributors'`: each contributing assertion set that went into an aggregate, evaluated separately. The condition holds only when EVERY contributor satisfies it, and it is never satisfied outside aggregation, where there are no contributors to inspect. Use it to describe what must be true of every part of a document, which the merged set can no longer answer once the parts have been collapsed into one.",
-            "enum": ["self", "context", "contributors"],
-            "type": "string"
-        },
-        "RuleContributorQuantifier": {
-            "description": "Quantifies a condition block over contributing assertion sets.",
-            "enum": ["any", "all", "none"],
-            "type": "string"
-        },
-        "RuleWhen": {
-            "anyOf": [
-                {
-                    "type": "string"
-                },
-                {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                {
-                    "$ref": "#/definitions/RuleWhenQuantifier"
-                }
-            ],
-            "description": "Conditions that trigger a rule. Supports shorthand forms:\n\n- `string`: concept ID must be present (any category)\n- `string[]`: any of these concept IDs must be present\n- `object`: structured `{ any | all | none }` block, possibly nested"
-        },
-        "RuleWhenNode": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/RuleCondition"
-                },
-                {
-                    "$ref": "#/definitions/RuleWhenQuantifier"
-                }
-            ],
-            "description": "A leaf condition or recursively nested boolean quantifier in a rule tree."
-        },
-        "RuleWhenQuantifier": {
-            "description": "A node in a rule `when`-tree: either a leaf `RuleCondition` or a nested quantifier (`any` / `all` / `none`) over further nodes.\n\nThe tree structure allows arbitrarily deep boolean logic within a rule's trigger condition. Leaf nodes test assertion or context state; inner nodes combine them with OR (`any`), AND (`all`), or NOT-OR (`none`).",
-            "properties": {
-                "all": {
-                    "description": "Satisfied when every one of these nodes is.",
-                    "items": {
-                        "$ref": "#/definitions/RuleWhenNode"
-                    },
-                    "type": "array"
-                },
-                "any": {
-                    "description": "Satisfied when at least one of these nodes is.",
-                    "items": {
-                        "$ref": "#/definitions/RuleWhenNode"
-                    },
-                    "type": "array"
-                },
-                "none": {
-                    "description": "Satisfied when none of these nodes is.",
-                    "items": {
-                        "$ref": "#/definitions/RuleWhenNode"
-                    },
-                    "type": "array"
-                },
-                "quantifier": {
-                    "$ref": "#/definitions/RuleContributorQuantifier",
-                    "description": "Combine contributor results; defaults to all. Requires target: contributors. Missing or empty contributors never satisfy the block."
-                },
-                "target": {
-                    "const": "contributors",
-                    "description": "Evaluate this entire boolean block within each contributor.",
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "SourceReference": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/ReproducibleSourceReference"
-                },
-                {
-                    "$ref": "#/definitions/BestEffortSourceReference"
-                }
-            ],
-            "description": "Records source identity and mandatory attribution for an operation."
-        },
         "TokenWindow": {
             "description": "Proximity measured in whitespace-delimited tokens.",
             "properties": {
@@ -620,10 +489,6 @@
                 "type": "string"
             },
             "type": "array"
-        },
-        "provenance": {
-            "$ref": "#/definitions/SourceReference",
-            "description": "Source provenance for the guide-rule source that supplied the matched rule.\n\nPopulated only when the rule came from an external `GuideRuleSource` override wired into the `GuideEngine` at load time (typically a `MappedGuideRuleSource` the server's Context loader built from a guide YAML's `rules.external` block). Inline-backed results leave this field undefined to keep payloads compact for the common single-source case.\n\nIdentity fields mirror the source's `sourceIdentity()` observation at engine-construction time."
         },
         "rule": {
             "$ref": "#/definitions/GuideRule",

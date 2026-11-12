@@ -83,7 +83,7 @@
         {
             "args": ["ZZZMISS"],
             "expect": {
-                "rendered": "",
+                "rendered": "ZZZMISS",
                 "valid": false
             },
             "fixture": "ref-scheme-1",

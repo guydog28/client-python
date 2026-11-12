@@ -2,17 +2,8 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "RecognitionLimit": {
-            "description": "The ceilings recognition can reach.\n\nClosed, because a caller distinguishing a cancelled run from an exhausted one is writing a branch, not a message. `aborted` is the caller's own `AbortSignal` firing, which is a ceiling in the sense that matters here: the answer is not a confident one. `wall-clock` is the operator's time limit, and it is a separate word from `transitions` because the two say different things to whoever set them: one means the input was harder than the work ceiling allows, the other that the host was slower than the time allowed or the input harder than both.",
-            "enum": [
-                "aborted",
-                "input-length",
-                "transitions",
-                "lookups",
-                "live-states",
-                "wall-clock",
-                "grammar-size",
-                "depth"
-            ],
+            "description": "The ceilings recognition can reach.\n\nClosed, because a caller telling one exhausted ceiling from another is writing a branch, not a message. `input-length` is the longest input the engine reads, `transitions` and `lookups` are the work it spends reading, and `live-states` is how many readings it keeps open at once.",
+            "enum": ["input-length", "transitions", "lookups", "live-states"],
             "type": "string"
         },
         "ScanStatus": {

@@ -3,10 +3,6 @@
     "definitions": {},
     "description": "A span, by offsets into the scanned text, where a guide rule keyword or pattern matched.",
     "properties": {
-        "confidence": {
-            "description": "Advisory confidence in [0, 1], present only when the scan asked for it with the `confidence` scan option. An ordinal hint derived from the match's shape, not a calibrated probability.",
-            "type": "number"
-        },
         "end": {
             "description": "Offset in the scanned text just past the end of the match, in UTF-16 code units.",
             "type": "integer"

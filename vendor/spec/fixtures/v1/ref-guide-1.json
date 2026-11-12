@@ -3,47 +3,45 @@
         "description": "Canonical conformance test guide. Three rules: rule-high (keywords: critical, sensitive → outcome HIGH), rule-low (keywords: public, open → outcome LOW), rule-ctrl-a (keywords: controlled, restricted → outcome HIGH/CTRL-A). Tests: scan finds keyword hits, evaluate aggregates outcomes, evaluateMany rolls up the outcomes of the rules selected from each guide.",
         "id": "ref-guide-1",
         "name": "Reference Guide 1",
-        "rules": {
-            "inline": [
-                {
-                    "description": "Applies when document contains sensitive or critical content. Contributes HIGH level marking.",
-                    "id": "rule-high",
-                    "keywords": [
-                        "critical",
-                        "sensitive"
-                    ],
-                    "name": "High Sensitivity",
-                    "outcome": {
-                        "rendered": "HIGH"
-                    }
-                },
-                {
-                    "description": "Applies when document is public or open. Contributes LOW level marking.",
-                    "id": "rule-low",
-                    "keywords": [
-                        "public",
-                        "open"
-                    ],
-                    "name": "Low Sensitivity",
-                    "outcome": {
-                        "rendered": "LOW"
-                    }
-                },
-                {
-                    "description": "Applies when document contains controlled or restricted data. Contributes HIGH/CTRL-A marking.",
-                    "id": "rule-ctrl-a",
-                    "keywords": [
-                        "controlled",
-                        "restricted"
-                    ],
-                    "name": "Control A",
-                    "outcome": {
-                        "rendered": "HIGH/CTRL-A"
-                    }
+        "rules": [
+            {
+                "description": "Applies when document contains sensitive or critical content. Contributes HIGH level marking.",
+                "id": "rule-high",
+                "keywords": [
+                    "critical",
+                    "sensitive"
+                ],
+                "name": "High Sensitivity",
+                "outcome": {
+                    "rendered": "HIGH"
                 }
-            ]
-        },
-        "targetSchemes": [
+            },
+            {
+                "description": "Applies when document is public or open. Contributes LOW level marking.",
+                "id": "rule-low",
+                "keywords": [
+                    "public",
+                    "open"
+                ],
+                "name": "Low Sensitivity",
+                "outcome": {
+                    "rendered": "LOW"
+                }
+            },
+            {
+                "description": "Applies when document contains controlled or restricted data. Contributes HIGH/CTRL-A marking.",
+                "id": "rule-ctrl-a",
+                "keywords": [
+                    "controlled",
+                    "restricted"
+                ],
+                "name": "Control A",
+                "outcome": {
+                    "rendered": "HIGH/CTRL-A"
+                }
+            }
+        ],
+        "target_schemes": [
             {
                 "id": "ref-scheme-1"
             }

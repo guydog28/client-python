@@ -8,19 +8,17 @@
             "version": "1.0.0"
         },
         "name": "Reference Marked Access 1",
-        "rules": {
-            "inline": [
-                {
-                    "attribute": "level",
-                    "categoryId": "level",
-                    "id": "level-rule",
-                    "marking": "LOW",
-                    "name": "Level",
-                    "strategy": "gte"
-                }
-            ]
-        },
-        "targetScheme": {
+        "rules": [
+            {
+                "attribute": "level",
+                "category": "level",
+                "id": "level-rule",
+                "marking": "LOW",
+                "name": "Level",
+                "strategy": "gte"
+            }
+        ],
+        "target_scheme": {
             "id": "ref-access-1"
         },
         "version": "1.0.0"

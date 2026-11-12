@@ -11,9 +11,7 @@
           "single": true
         }
       ],
-      "concepts": {
-        "inline": []
-      }
+      "concepts": []
     },
     "description": "Layer that overrides the level category rollup operator from max to min. Validates that composeLayers applies category layer composition:override, changing aggregation behavior.",
     "id": "ref-layer-rollup-replace",
@@ -22,9 +20,7 @@
     },
     "name": "Rollup Replace Layer",
     "parse": {
-      "case_sensitive": false,
-      "normalize": [],
-      "strip_whitespace": true
+      "normalize": []
     },
     "rollup_pipelines": [],
     "rules": [],

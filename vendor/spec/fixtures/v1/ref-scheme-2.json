@@ -19,52 +19,50 @@
           "single": false
         }
       ],
-      "concepts": {
-        "inline": [
-          {
-            "categories": ["level"],
-            "id": "LOW",
-            "name": "Low",
-            "parents": [],
-            "position": 0,
-            "views": { "default": "LOW" },
-            "rank": 0
-          },
-          {
-            "categories": ["level"],
-            "id": "HIGH",
-            "name": "High",
-            "parents": [],
-            "position": 1,
-            "views": { "default": "HIGH" },
-            "rank": 1
-          },
-          {
-            "categories": ["share"],
-            "id": "ALPHA",
-            "name": "Alpha",
-            "parents": [],
-            "position": 0,
-            "views": { "default": "ALPHA" }
-          },
-          {
-            "categories": ["share"],
-            "id": "BRAVO",
-            "name": "Bravo",
-            "parents": [],
-            "position": 1,
-            "views": { "default": "BRAVO" }
-          },
-          {
-            "categories": ["share"],
-            "id": "CHARLIE",
-            "name": "Charlie",
-            "parents": [],
-            "position": 2,
-            "views": { "default": "CHARLIE" }
-          }
-        ]
-      }
+      "concepts": [
+        {
+          "categories": ["level"],
+          "id": "LOW",
+          "name": "Low",
+          "parents": [],
+          "position": 0,
+          "views": { "default": "LOW" },
+          "rank": 0
+        },
+        {
+          "categories": ["level"],
+          "id": "HIGH",
+          "name": "High",
+          "parents": [],
+          "position": 1,
+          "views": { "default": "HIGH" },
+          "rank": 1
+        },
+        {
+          "categories": ["share"],
+          "id": "ALPHA",
+          "name": "Alpha",
+          "parents": [],
+          "position": 0,
+          "views": { "default": "ALPHA" }
+        },
+        {
+          "categories": ["share"],
+          "id": "BRAVO",
+          "name": "Bravo",
+          "parents": [],
+          "position": 1,
+          "views": { "default": "BRAVO" }
+        },
+        {
+          "categories": ["share"],
+          "id": "CHARLIE",
+          "name": "Charlie",
+          "parents": [],
+          "position": 2,
+          "views": { "default": "CHARLIE" }
+        }
+      ]
     },
     "default_scope": "banner",
     "description": "Share-list conformance scheme. Two categories: level (max rollup, required) and share (intersection rollup, optional), so a whole can carry a share value that not every part allows. Parts are written in parentheses and run to the next part.",
@@ -77,9 +75,7 @@
     "id": "ref-scheme-2",
     "name": "Reference Scheme 2",
     "parse": {
-      "case_sensitive": false,
-      "normalize": [],
-      "strip_whitespace": true
+      "normalize": []
     },
     "part_scope": "until-next",
     "render": {
@@ -101,8 +97,7 @@
           "separator": "//",
           "surface": "banner"
         }
-      ],
-      "of_invalid": "drop_unmatched"
+      ]
     },
     "rules": [],
     "scopes": [

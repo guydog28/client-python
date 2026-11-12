@@ -9,13 +9,13 @@
         "marking": "LOW",
         "reason": "Low is low in both schemes.",
         "source": {
-          "categoryId": "level",
-          "conceptId": "LOW"
+          "category": "level",
+          "concept": "LOW"
         },
         "targets": [
           {
-            "categoryId": "level",
-            "conceptId": "LOW"
+            "category": "level",
+            "concept": "LOW"
           }
         ]
       }
@@ -34,21 +34,21 @@
             "reason": "A control on low data shares with ALPHA.",
             "sources": [
               {
-                "categoryId": "controls",
-                "conceptId": "CTRL-A"
+                "category": "controls",
+                "concept": "CTRL-A"
               }
             ],
             "targets": [
               {
-                "categoryId": "share",
-                "conceptId": "ALPHA"
+                "category": "share",
+                "concept": "ALPHA"
               }
             ],
             "when": {
               "all": [
                 {
-                  "categoryId": "level",
-                  "conceptId": "LOW"
+                  "category": "level",
+                  "concept": "LOW"
                 }
               ]
             }
@@ -62,13 +62,13 @@
                 "marking": "HIGH",
                 "reason": "High is high in both schemes.",
                 "source": {
-                  "categoryId": "level",
-                  "conceptId": "HIGH"
+                  "category": "level",
+                  "concept": "HIGH"
                 },
                 "targets": [
                   {
-                    "categoryId": "level",
-                    "conceptId": "HIGH"
+                    "category": "level",
+                    "concept": "HIGH"
                   }
                 ]
               }
@@ -80,11 +80,11 @@
         "strategy": "first-match"
       }
     ],
-    "sourceScheme": {
+    "source_scheme": {
       "id": "ref-scheme-1",
       "version": "1.0.0"
     },
-    "targetScheme": {
+    "target_scheme": {
       "id": "ref-scheme-2",
       "version": "1.0.0"
     },

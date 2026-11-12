@@ -24,12 +24,6 @@
             "treatment": "cached"
         },
         {
-            "name": "scheme.normalize",
-            "method": "POST",
-            "route": "scheme/normalize",
-            "treatment": "cached"
-        },
-        {
             "name": "scheme.render",
             "method": "POST",
             "route": "scheme/render",
@@ -99,13 +93,13 @@
             "name": "access.check",
             "method": "POST",
             "route": "access/check",
-            "treatment": "decision"
+            "treatment": "never"
         },
         {
             "name": "context.checkAccess",
             "method": "POST",
             "route": "access/check",
-            "treatment": "decision"
+            "treatment": "never"
         },
         {
             "name": "context.audit",
@@ -129,12 +123,6 @@
             "name": "scheme.buildSchemeView",
             "method": "POST",
             "route": "scheme/view",
-            "treatment": "uncached"
-        },
-        {
-            "name": "scheme.filterConcepts",
-            "method": "POST",
-            "route": "scheme/filter-concepts",
             "treatment": "uncached"
         },
         {
@@ -162,33 +150,9 @@
             "treatment": "uncached"
         },
         {
-            "name": "guide.describeRule",
-            "method": "POST",
-            "route": "guide/describe-rule",
-            "treatment": "uncached"
-        },
-        {
-            "name": "guide.filterRules",
-            "method": "POST",
-            "route": "guide/filter-rules",
-            "treatment": "uncached"
-        },
-        {
             "name": "guide.buildGuideView",
             "method": "POST",
             "route": "guide/view",
-            "treatment": "uncached"
-        },
-        {
-            "name": "access.describeAccessRule",
-            "method": "POST",
-            "route": "access/describe-rule",
-            "treatment": "uncached"
-        },
-        {
-            "name": "access.describeAccessRequirements",
-            "method": "POST",
-            "route": "access/describe-requirements",
             "treatment": "uncached"
         },
         {
@@ -213,12 +177,6 @@
             "name": "scheme.formats",
             "method": "GET",
             "route": "scheme/formats",
-            "treatment": "resource"
-        },
-        {
-            "name": "scheme.grammar",
-            "method": "GET",
-            "route": "scheme/grammar",
             "treatment": "resource"
         },
         {
@@ -253,58 +211,42 @@
         },
         {
             "id": "C05",
-            "requirement": "Two operations sharing a route and body keep separate entries."
-        },
-        {
-            "id": "C06",
             "requirement": "A rejected request is not cached; the next call retries."
         },
         {
-            "id": "C07",
+            "id": "C06",
             "requirement": "A malformed 200 is not cached: the response check runs inside the cached call, and the next call retries."
         },
         {
-            "id": "C08",
+            "id": "C07",
             "requirement": "One caller canceling settles only that caller."
         },
         {
-            "id": "C09",
+            "id": "C08",
             "requirement": "The wire request is canceled only when its last caller has gone."
         },
         {
-            "id": "C10",
+            "id": "C09",
             "requirement": "On a pinned binding an entry survives arbitrarily long, past any TTL."
         },
         {
-            "id": "C11",
+            "id": "C10",
             "requirement": "On an unpinned binding an entry expires, and no later than one hour."
         },
         {
+            "id": "C11",
+            "requirement": "Access decisions and the other never operations reach the wire on every call."
+        },
+        {
             "id": "C12",
-            "requirement": "Access decisions reach the wire on every call by default."
-        },
-        {
-            "id": "C13",
-            "requirement": "Once the opt-in is on, access decisions are cached like any other entry."
-        },
-        {
-            "id": "C14",
-            "requirement": "The opt-in is refused on an unpinned binding."
-        },
-        {
-            "id": "C15",
-            "requirement": "The never operations reach the wire on every call, opt-in or not."
-        },
-        {
-            "id": "C16",
             "requirement": "A composition change clears the cache."
         },
         {
-            "id": "C17",
+            "id": "C13",
             "requirement": "The runtime's denial-shaped 404 clears the cache; a resource 404 does not."
         },
         {
-            "id": "C18",
+            "id": "C14",
             "requirement": "Results are independent per caller."
         }
     ],
@@ -332,10 +274,6 @@
         "schemeResourceOperations": {
             "description": "Read the scheme resources through per-call public operations.",
             "notApplicable": "The port resolves the scheme resources once at connect into connection state, outside the response cache."
-        },
-        "sharedRouteOperations": {
-            "description": "Call two public operations that post the same body to the same route.",
-            "notApplicable": "The port exposes one method per wire operation, so no two of its operations share a route and body."
         }
     },
     "knownGaps": [],
@@ -408,30 +346,6 @@
                 {
                     "step": "expectWireCount",
                     "case": "ctx-scheme-explain.ok",
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "id": "cached-repeat.scheme.normalize",
-            "title": "A repeated scheme.normalize on a pinned binding is answered from the entry the first call filed.",
-            "covers": [
-                "C01"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned"
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "scheme.normalize",
-                    "case": "ctx-scheme-normalize.ok",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-scheme-normalize.ok",
                     "count": 1
                 }
             ]
@@ -858,30 +772,6 @@
             ]
         },
         {
-            "id": "uncached.scheme.filterConcepts",
-            "title": "scheme.filterConcepts is outside the cached set and reaches the wire on every call.",
-            "covers": [
-                "C03"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned"
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "scheme.filterConcepts",
-                    "case": "ctx-scheme-filter-concepts.ok",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-scheme-filter-concepts.ok",
-                    "count": 2
-                }
-            ]
-        },
-        {
             "id": "uncached.scheme.checkCoverage",
             "title": "scheme.checkCoverage is outside the cached set and reaches the wire on every call.",
             "covers": [
@@ -978,54 +868,6 @@
             ]
         },
         {
-            "id": "uncached.guide.describeRule",
-            "title": "guide.describeRule is outside the cached set and reaches the wire on every call.",
-            "covers": [
-                "C03"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned"
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "guide.describeRule",
-                    "case": "ctx-guide-describe-rule.ok",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-guide-describe-rule.ok",
-                    "count": 2
-                }
-            ]
-        },
-        {
-            "id": "uncached.guide.filterRules",
-            "title": "guide.filterRules is outside the cached set and reaches the wire on every call.",
-            "covers": [
-                "C03"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned"
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "guide.filterRules",
-                    "case": "ctx-guide-filter-rules.ok",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-guide-filter-rules.ok",
-                    "count": 2
-                }
-            ]
-        },
-        {
             "id": "uncached.guide.buildGuideView",
             "title": "guide.buildGuideView is outside the cached set and reaches the wire on every call.",
             "covers": [
@@ -1045,54 +887,6 @@
                 {
                     "step": "expectWireCount",
                     "case": "ctx-guide-view.ok",
-                    "count": 2
-                }
-            ]
-        },
-        {
-            "id": "uncached.access.describeAccessRule",
-            "title": "access.describeAccessRule is outside the cached set and reaches the wire on every call.",
-            "covers": [
-                "C03"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned"
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "access.describeAccessRule",
-                    "case": "ctx-access-describe-rule.ok",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-access-describe-rule.ok",
-                    "count": 2
-                }
-            ]
-        },
-        {
-            "id": "uncached.access.describeAccessRequirements",
-            "title": "access.describeAccessRequirements is outside the cached set and reaches the wire on every call.",
-            "covers": [
-                "C03"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned"
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "access.describeAccessRequirements",
-                    "case": "ctx-access-describe-requirements.ok",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-access-describe-requirements.ok",
                     "count": 2
                 }
             ]
@@ -1202,32 +996,6 @@
             ]
         },
         {
-            "id": "uncached.scheme.grammar",
-            "title": "The scheme.grammar resource read is not a response-cache entry and reaches the wire on every call.",
-            "covers": [
-                "C03"
-            ],
-            "capabilities": [
-                "schemeResourceOperations"
-            ],
-            "client": {
-                "binding": "pinned"
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "scheme.grammar",
-                    "case": "ctx-scheme-grammar.full",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-scheme-grammar.full",
-                    "count": 2
-                }
-            ]
-        },
-        {
             "id": "uncached.scheme.scopes",
             "title": "The scheme.scopes resource read is not a response-cache entry and reaches the wire on every call.",
             "covers": [
@@ -1287,24 +1055,23 @@
             ],
             "capabilities": [],
             "client": {
-                "binding": "pinned",
-                "cacheAccessDecisions": true
+                "binding": "pinned"
             },
             "steps": [
                 {
                     "step": "call",
-                    "operation": "context.checkAccess",
-                    "case": "ctx-access-check.two-attributes"
+                    "operation": "scheme.process",
+                    "case": "ctx-scheme-process.outputs-and-options"
                 },
                 {
                     "step": "call",
-                    "operation": "context.checkAccess",
-                    "case": "ctx-access-check.two-attributes",
+                    "operation": "scheme.process",
+                    "case": "ctx-scheme-process.outputs-and-options",
                     "variant": "reorderedMembers"
                 },
                 {
                     "step": "expectWireCount",
-                    "case": "ctx-access-check.two-attributes",
+                    "case": "ctx-scheme-process.outputs-and-options",
                     "count": 1
                 },
                 {
@@ -1373,57 +1140,10 @@
             ]
         },
         {
-            "id": "shared-route-separate-entries",
-            "title": "access.check and context.checkAccess post the same body to the same route and keep separate entries.",
-            "covers": [
-                "C05",
-                "C13"
-            ],
-            "capabilities": [
-                "sharedRouteOperations"
-            ],
-            "client": {
-                "binding": "pinned",
-                "cacheAccessDecisions": true
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "access.check",
-                    "case": "ctx-access-check.assertions"
-                },
-                {
-                    "step": "call",
-                    "operation": "context.checkAccess",
-                    "case": "ctx-access-check.assertions"
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-access-check.assertions",
-                    "count": 2
-                },
-                {
-                    "step": "call",
-                    "operation": "access.check",
-                    "case": "ctx-access-check.assertions"
-                },
-                {
-                    "step": "call",
-                    "operation": "context.checkAccess",
-                    "case": "ctx-access-check.assertions"
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-access-check.assertions",
-                    "count": 2
-                }
-            ]
-        },
-        {
             "id": "rejected-not-cached",
             "title": "A refused request is evicted as it settles, so the next identical call goes back to the server.",
             "covers": [
-                "C06"
+                "C05"
             ],
             "capabilities": [],
             "client": {
@@ -1470,7 +1190,7 @@
             "id": "malformed-success-not-cached",
             "title": "A 200 missing a member the contract requires is a failed call: it is not filed, and the next call retries.",
             "covers": [
-                "C07"
+                "C06"
             ],
             "capabilities": [
                 "scriptedResponses"
@@ -1540,56 +1260,10 @@
             ]
         },
         {
-            "id": "malformed-decision-not-cached",
-            "title": "Under the opt-in, a decision missing a required member is a failed call and is never filed.",
-            "covers": [
-                "C07",
-                "C13"
-            ],
-            "capabilities": [
-                "scriptedResponses"
-            ],
-            "client": {
-                "binding": "pinned",
-                "cacheAccessDecisions": true
-            },
-            "steps": [
-                {
-                    "step": "respond",
-                    "case": "ctx-access-check.assertions",
-                    "synthetic": "malformed-success",
-                    "removeMembers": [
-                        "/result/granted"
-                    ]
-                },
-                {
-                    "step": "call",
-                    "operation": "access.check",
-                    "case": "ctx-access-check.assertions",
-                    "expect": {
-                        "error": {
-                            "kind": "malformed-response"
-                        }
-                    }
-                },
-                {
-                    "step": "call",
-                    "operation": "access.check",
-                    "case": "ctx-access-check.assertions",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-access-check.assertions",
-                    "count": 2
-                }
-            ]
-        },
-        {
             "id": "cancel-one-caller",
             "title": "Canceling one of three joined callers settles only that caller; the shared request and its entry survive.",
             "covers": [
-                "C08"
+                "C07"
             ],
             "capabilities": [
                 "responseGate",
@@ -1661,7 +1335,7 @@
             "id": "cancel-before-and-after",
             "title": "A caller that arrives canceled never touches the cache, and a cancellation after the answer arrived evicts nothing.",
             "covers": [
-                "C08"
+                "C07"
             ],
             "capabilities": [
                 "cancellation"
@@ -1726,7 +1400,7 @@
             "id": "cancel-last-caller",
             "title": "The shared request is canceled when its last caller walks away, and not before.",
             "covers": [
-                "C09"
+                "C08"
             ],
             "capabilities": [
                 "responseGate",
@@ -1801,7 +1475,7 @@
             "id": "pinned-no-expiry",
             "title": "A pinned entry is still served after thirty days, past every per-operation TTL.",
             "covers": [
-                "C10"
+                "C09"
             ],
             "capabilities": [
                 "clock"
@@ -1850,7 +1524,7 @@
             "id": "unpinned-expiry",
             "title": "An unpinned entry is gone once the one-hour ceiling has passed.",
             "covers": [
-                "C11"
+                "C10"
             ],
             "capabilities": [
                 "clock"
@@ -1899,7 +1573,7 @@
             "id": "unpinned-expiry.token-defaulted",
             "title": "A binding whose version the context token supplies is unpinned too, and its entries expire the same way.",
             "covers": [
-                "C11"
+                "C10"
             ],
             "capabilities": [
                 "clock"
@@ -1930,10 +1604,10 @@
             ]
         },
         {
-            "id": "decisions-uncached-by-default",
-            "title": "Without the opt-in, every access decision is a wire trip, even on a pinned binding.",
+            "id": "never-cached.decisions",
+            "title": "Every access decision is a wire trip, even on a pinned binding.",
             "covers": [
-                "C12"
+                "C11"
             ],
             "capabilities": [],
             "client": {
@@ -1961,78 +1635,25 @@
                     "step": "expectWireCount",
                     "case": "ctx-access-check.marking",
                     "count": 2
-                }
-            ]
-        },
-        {
-            "id": "decisions-opt-in",
-            "title": "With the opt-in on a pinned binding, a repeated decision is answered from its entry.",
-            "covers": [
-                "C13"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned",
-                "cacheAccessDecisions": true
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "access.check",
-                    "case": "ctx-access-check.assertions",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-access-check.assertions",
-                    "count": 1
                 },
                 {
                     "step": "call",
                     "operation": "context.checkAccess",
-                    "case": "ctx-access-check.marking",
+                    "case": "ctx-access-check.two-attributes",
                     "times": 2
                 },
                 {
                     "step": "expectWireCount",
-                    "case": "ctx-access-check.marking",
-                    "count": 1
+                    "case": "ctx-access-check.two-attributes",
+                    "count": 2
                 }
             ]
         },
         {
-            "id": "decisions-opt-in-refused-unpinned",
-            "title": "The opt-in on a binding whose composition can move is refused when the client is built.",
+            "id": "never-cached",
+            "title": "The audit and the access-requirements description reach the wire on every call.",
             "covers": [
-                "C14"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "unpinned",
-                "cacheAccessDecisions": true,
-                "construction": "refused"
-            },
-            "steps": []
-        },
-        {
-            "id": "decisions-opt-in-refused-token-defaulted",
-            "title": "The opt-in is refused when the context token, not the client, picks the version.",
-            "covers": [
-                "C14"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "token-defaulted",
-                "cacheAccessDecisions": true,
-                "construction": "refused"
-            },
-            "steps": []
-        },
-        {
-            "id": "never-cached.opt-in-off",
-            "title": "The never operations reach the wire on every call with the access-decision opt-in off.",
-            "covers": [
-                "C15"
+                "C11"
             ],
             "capabilities": [],
             "client": {
@@ -2064,46 +1685,10 @@
             ]
         },
         {
-            "id": "never-cached.opt-in-on",
-            "title": "The never operations reach the wire on every call with the access-decision opt-in on.",
+            "id": "never-cached.translate",
+            "title": "A translation reaches the wire on every call, completed or forbidden.",
             "covers": [
-                "C15"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned",
-                "cacheAccessDecisions": true
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "context.audit",
-                    "case": "ctx-document-audit.ok",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-document-audit.ok",
-                    "count": 2
-                },
-                {
-                    "step": "call",
-                    "operation": "context.accessRequirements",
-                    "case": "ctx-access-describe-requirements.ok",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-access-describe-requirements.ok",
-                    "count": 2
-                }
-            ]
-        },
-        {
-            "id": "never-cached.translate.opt-in-off",
-            "title": "A translation reaches the wire on every call, completed or forbidden, with the access-decision opt-in off.",
-            "covers": [
-                "C15"
+                "C11"
             ],
             "capabilities": [],
             "client": {
@@ -2136,47 +1721,10 @@
             ]
         },
         {
-            "id": "never-cached.translate.opt-in-on",
-            "title": "A translation reaches the wire on every call, completed or forbidden, with the access-decision opt-in on.",
-            "covers": [
-                "C15"
-            ],
-            "capabilities": [],
-            "client": {
-                "binding": "pinned",
-                "context": "ez-crosswalk",
-                "cacheAccessDecisions": true
-            },
-            "steps": [
-                {
-                    "step": "call",
-                    "operation": "context.translate",
-                    "case": "ctx-crosswalk-translate.translated",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-crosswalk-translate.translated",
-                    "count": 2
-                },
-                {
-                    "step": "call",
-                    "operation": "context.translate",
-                    "case": "ctx-crosswalk-translate.forbidden",
-                    "times": 2
-                },
-                {
-                    "step": "expectWireCount",
-                    "case": "ctx-crosswalk-translate.forbidden",
-                    "count": 2
-                }
-            ]
-        },
-        {
             "id": "never-cached.translate.not-selected",
             "title": "A translation that reports a candidate that lost a selection reaches the wire on every call.",
             "covers": [
-                "C15"
+                "C11"
             ],
             "capabilities": [],
             "client": {
@@ -2201,7 +1749,7 @@
             "id": "composition-change-clears",
             "title": "A response naming a new resolved version on an unpinned binding clears what was filed under the old one.",
             "covers": [
-                "C16"
+                "C12"
             ],
             "capabilities": [
                 "scriptedResponses",
@@ -2251,7 +1799,7 @@
             "id": "denial-404-clears",
             "title": "The runtime's denial-shaped 404 clears every held entry; the denied call fails and is not replayed.",
             "covers": [
-                "C17"
+                "C13"
             ],
             "capabilities": [
                 "scriptedResponses"
@@ -2302,7 +1850,7 @@
             "id": "resource-404-keeps",
             "title": "A 404 that names a missing resource is an answer about that resource and leaves the cache in place.",
             "covers": [
-                "C17"
+                "C13"
             ],
             "capabilities": [],
             "client": {
@@ -2341,7 +1889,7 @@
             "id": "independent-results",
             "title": "Mutating one caller's result changes neither a joined caller's result nor a later cached read.",
             "covers": [
-                "C18"
+                "C14"
             ],
             "capabilities": [
                 "responseGate"

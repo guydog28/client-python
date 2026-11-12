@@ -3,110 +3,11 @@
     "definitions": {
         "AssertionConfidence": {
             "description": "Confidence assigned to an assertion by the processing pipeline.",
-            "enum": ["certain", "inferred", "repaired", "uncertain"],
+            "enum": ["certain", "inferred", "repaired"],
             "type": "string"
-        },
-        "Attribution": {
-            "description": "Provenance attached to every source so downstream consumers can render proper attribution and license notices.\n\nMandatory because most source data we'll integrate (NIST, ICS, IANA, external taxonomies) requires citation. Sources that don't have a formal license should set `license: 'unspecified'` rather than omit it.",
-            "properties": {
-                "citation": {
-                    "description": "Suggested citation string for academic / regulatory use.",
-                    "type": "string"
-                },
-                "license": {
-                    "description": "SPDX identifier or short license token (e.g. \"CC-BY-4.0\", \"public-domain\").",
-                    "type": "string"
-                },
-                "licenseUrl": {
-                    "description": "Canonical URL where the license terms can be inspected.",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "Display name of the upstream source (e.g. \"NIST CSWP-29\").",
-                    "type": "string"
-                }
-            },
-            "required": ["name", "license"],
-            "type": "object"
-        },
-        "BestEffortSourceReference": {
-            "description": "Best-effort source identity and mandatory attribution for an operation.",
-            "properties": {
-                "attribution": {
-                    "$ref": "#/definitions/Attribution",
-                    "description": "Attribution and license information for the observed source."
-                },
-                "locator": {
-                    "description": "Location from which the mutable content was observed.",
-                    "type": "string"
-                },
-                "providerId": {
-                    "description": "Stable identifier for the source provider.",
-                    "type": "string"
-                },
-                "reproducibility": {
-                    "const": "best-effort",
-                    "description": "Whether the source observation can be reproduced byte-for-byte.",
-                    "type": "string"
-                },
-                "snapshotId": {
-                    "description": "Snapshot identity is forbidden when reproducibility is not proven.",
-                    "not": {}
-                }
-            },
-            "required": ["attribution", "providerId", "reproducibility"],
-            "type": "object"
-        },
-        "Record<string,unknown>": {
-            "additionalProperties": {},
-            "type": "object"
-        },
-        "ReproducibleSourceReference": {
-            "description": "Reproducible source identity and mandatory attribution for an operation.",
-            "properties": {
-                "attribution": {
-                    "$ref": "#/definitions/Attribution",
-                    "description": "Attribution and license information for the observed source."
-                },
-                "locator": {
-                    "description": "Location from which the content was observed.",
-                    "type": "string"
-                },
-                "providerId": {
-                    "description": "Stable identifier for the source provider.",
-                    "type": "string"
-                },
-                "reproducibility": {
-                    "const": "reproducible",
-                    "description": "Whether the source observation can be reproduced byte-for-byte.",
-                    "type": "string"
-                },
-                "snapshotId": {
-                    "description": "Immutable content identity.",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "attribution",
-                "providerId",
-                "reproducibility",
-                "snapshotId"
-            ],
-            "type": "object"
-        },
-        "SourceReference": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/ReproducibleSourceReference"
-                },
-                {
-                    "$ref": "#/definitions/BestEffortSourceReference"
-                }
-            ],
-            "description": "Records source identity and mandatory attribution for an operation."
         }
     },
-    "description": "A concept asserted in a category during processing, with confidence level and provenance metadata.\n\nAssertions are the core data unit flowing through the engine pipeline. `confidence` records how the assertion was produced: `'certain'` when read or handed in as stated, `'inferred'` when an inference rule added it, and `'repaired'` when the engine added or rewrote it while repairing the marking. The engine does not assign `'uncertain'` itself. `source` says where the assertion came from. `expiresAt` records caller-supplied expiry metadata. The engine does not evaluate that date or automatically change confidence or the marking; the host applies its expiry policy.",
+    "description": "A concept asserted in a category during processing, with how it was produced and where it came from.\n\nAssertions are the core data unit flowing through the engine pipeline. `confidence` records how the assertion was produced: `'certain'` when read or handed in as stated, `'inferred'` when an inference rule added it, and `'repaired'` when the engine added or rewrote it while repairing the marking. `source` says where the assertion came from.",
     "properties": {
         "categoryId": {
             "description": "The id of the category the concept is asserted in.",
@@ -118,19 +19,7 @@
         },
         "confidence": {
             "$ref": "#/definitions/AssertionConfidence",
-            "description": "How the assertion was produced: `certain` when read or handed in as stated, `inferred` when an inference rule added it, or `repaired` when the engine added or rewrote it while repairing the marking. The engine does not assign `uncertain` itself."
-        },
-        "expiresAt": {
-            "description": "Caller-supplied ISO 8601 expiry date; the engine does not evaluate it.",
-            "type": "string"
-        },
-        "metadata": {
-            "$ref": "#/definitions/Record%3Cstring%2Cunknown%3E",
-            "description": "Caller-defined data attached to the assertion. The engine assigns it no meaning."
-        },
-        "provenance": {
-            "$ref": "#/definitions/SourceReference",
-            "description": "Source provenance for the concept that backed this assertion.\n\nPopulated only when the concept came from an external source whose records were loaded with the scheme (typically one a scheme's `concepts.external` block declares). Inline-backed assertions leave this field undefined to keep payloads compact for the common single-source case. A concept a scheme document declares in its `inline` list has none, even when one of that document's `external` sources also serves a record with its id. A concept read through a queryable-only source (`SourceCapabilities.queryableOnly`) has none either: that source is asked per lookup and never loaded whole, and a lookup does not say which source answered. Such a source still appears in a composed operation's `resolution.sources`. Across a layered stack the later layer decides: a concept a later layer's source supplies carries that source's provenance even when an earlier document declares it inline, and a concept a later layer declares inline carries none.\n\nIdentity fields mirror the source's `sourceIdentity()` observation at engine-load time (or the immutable value the Context pinned)."
+            "description": "How the assertion was produced: `certain` when read or handed in as stated, `inferred` when an inference rule added it, or `repaired` when the engine added or rewrote it while repairing the marking."
         },
         "replacedConceptId": {
             "description": "The deprecated concept this assertion was modernized from.\n\nSet when processing rewrote a deprecated concept into the replacement its scheme declares. `conceptId` is the current concept every downstream stage evaluates; this field records what the data was actually marked with, so an explanation can show the substitution (\"concept A was replaced by concept B; B is what your access was compared against\") instead of silently presenting a concept the document never carried.\n\nIt travels on the assertion rather than alongside it because assertion arrays are the engine's state transport: an access check made from transported assertions can still explain the substitution.",

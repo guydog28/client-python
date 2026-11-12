@@ -21,47 +21,45 @@
           "single": false
         }
       ],
-      "concepts": {
-        "inline": [
-          {
-            "categories": ["level"],
-            "id": "LOW",
-            "marking": "L",
-            "name": "Low",
-            "parents": [],
-            "position": 0,
-            "rank": 0,
-            "views": { "default": "LOW", "portion": "L" }
-          },
-          {
-            "categories": ["level"],
-            "id": "MED",
-            "name": "Med",
-            "parents": [],
-            "position": 1,
-            "rank": 1,
-            "views": { "default": "MED", "portion": "M" }
-          },
-          {
-            "categories": ["level"],
-            "id": "HIGH",
-            "name": "High",
-            "parents": [],
-            "position": 2,
-            "rank": 2,
-            "views": { "default": "HIGH", "portion": "H" }
-          },
-          {
-            "categories": ["controls"],
-            "id": "CTRL-A",
-            "marking": "H/CTRL-A",
-            "name": "Control A",
-            "parents": ["HIGH"],
-            "position": 0,
-            "views": { "default": "CTRL-A" }
-          }
-        ]
-      }
+      "concepts": [
+        {
+          "categories": ["level"],
+          "id": "LOW",
+          "marking": "L",
+          "name": "Low",
+          "parents": [],
+          "position": 0,
+          "rank": 0,
+          "views": { "default": "LOW", "portion": "L" }
+        },
+        {
+          "categories": ["level"],
+          "id": "MED",
+          "name": "Med",
+          "parents": [],
+          "position": 1,
+          "rank": 1,
+          "views": { "default": "MED", "portion": "M" }
+        },
+        {
+          "categories": ["level"],
+          "id": "HIGH",
+          "name": "High",
+          "parents": [],
+          "position": 2,
+          "rank": 2,
+          "views": { "default": "HIGH", "portion": "H" }
+        },
+        {
+          "categories": ["controls"],
+          "id": "CTRL-A",
+          "marking": "H/CTRL-A",
+          "name": "Control A",
+          "parents": ["HIGH"],
+          "position": 0,
+          "views": { "default": "CTRL-A" }
+        }
+      ]
     },
     "default_scope": "banner",
     "description": "Marked conformance scheme. The same shape as ref-scheme-1, marked in its own scheme: the scheme block carries the whole marking, and a category, a concept, a render format and a rule each carry a part. An engine loads and answers it exactly as it would the same document with every marking left out.",
@@ -70,9 +68,7 @@
     "marking_scheme": "self",
     "name": "Reference Marked Scheme 1",
     "parse": {
-      "case_sensitive": false,
-      "normalize": [],
-      "strip_whitespace": true
+      "normalize": []
     },
     "render": {
       "default": "default",
@@ -99,8 +95,7 @@
           "surface": "banner",
           "view": "portion"
         }
-      ],
-      "of_invalid": "drop_unmatched"
+      ]
     },
     "rules": [
       {
@@ -112,7 +107,10 @@
         "when": { "category": "level", "has": "LOW" }
       }
     ],
-    "scopes": [{ "id": "banner", "label": "Banner" }],
+    "scopes": [{
+        "id": "banner",
+        "label": "Banner"
+      }],
     "version": "1.0.0"
   }
 }

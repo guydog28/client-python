@@ -81,8 +81,8 @@
                 ],
                 "type": "object"
             },
-            "maxItems": 25,
-            "minItems": 25,
+            "maxItems": 22,
+            "minItems": 22,
             "type": "array"
         },
         "fixtureSet": { "minLength": 1, "type": "string" },

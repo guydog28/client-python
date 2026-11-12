@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object", "minProperties": 25, "maxProperties": 25,
+  "type": "object", "minProperties": 22, "maxProperties": 22,
   "patternProperties": {
     "^case-[0-9]{2}$": {
       "type": "array", "minItems": 2,

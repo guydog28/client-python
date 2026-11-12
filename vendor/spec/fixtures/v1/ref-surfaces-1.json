@@ -25,55 +25,53 @@
           "single": true
         }
       ],
-      "concepts": {
-        "inline": [
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "INTERNAL",
-            "name": "Internal",
-            "rank": 0,
-            "views": {
-              "abbreviated": "INT",
-              "default": "INTERNAL"
-            }
-          },
-          {
-            "categories": [
-              "level"
-            ],
-            "id": "CONFIDENTIAL",
-            "name": "Confidential",
-            "rank": 1,
-            "views": {
-              "abbreviated": "CONF",
-              "default": "CONFIDENTIAL"
-            }
-          },
-          {
-            "categories": [
-              "sharing"
-            ],
-            "id": "PARTNERS",
-            "name": "Shared with partners",
-            "views": {
-              "default": "PARTNERS"
-            }
-          },
-          {
-            "categories": [
-              "keep"
-            ],
-            "id": "KEEP_7Y",
-            "name": "Seven years",
-            "rank": 0,
-            "views": {
-              "default": "KEEP 7 YEARS"
-            }
+      "concepts": [
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "INTERNAL",
+          "name": "Internal",
+          "rank": 0,
+          "views": {
+            "abbreviated": "INT",
+            "default": "INTERNAL"
           }
-        ]
-      }
+        },
+        {
+          "categories": [
+            "level"
+          ],
+          "id": "CONFIDENTIAL",
+          "name": "Confidential",
+          "rank": 1,
+          "views": {
+            "abbreviated": "CONF",
+            "default": "CONFIDENTIAL"
+          }
+        },
+        {
+          "categories": [
+            "sharing"
+          ],
+          "id": "PARTNERS",
+          "name": "Shared with partners",
+          "views": {
+            "default": "PARTNERS"
+          }
+        },
+        {
+          "categories": [
+            "keep"
+          ],
+          "id": "KEEP_7Y",
+          "name": "Seven years",
+          "rank": 0,
+          "views": {
+            "default": "KEEP 7 YEARS"
+          }
+        }
+      ]
     },
     "default_scope": "sensitivity",
     "description": "Surface outputs conformance scheme. Two surfaces: sensitivity, with a part view `short` that is written in `short_line` or, for a marking shared with partners, `short_shared_line`; a whole view `full` written in `full_line` and also read in the retired `full_line_2019`; and an `xml` view with no role. Retention has one view, `block`, with no role. Parts are written in parentheses.",

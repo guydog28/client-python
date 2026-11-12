@@ -11,34 +11,30 @@
           "single": false
         }
       ],
-      "concepts": {
-        "inline": [
-          {
-            "categories": [
-              "tags"
-            ],
-            "id": "TAG-A",
-            "name": "Tag A",
-            "parents": [],
-            "position": 0,
-            "views": {
-              "default": "TAG-A"
-            }
+      "concepts": [
+        {
+          "categories": [
+            "tags"
+          ],
+          "id": "TAG-A",
+          "name": "Tag A",
+          "parents": [],
+          "position": 0,
+          "views": {
+            "default": "TAG-A"
           }
-        ]
-      }
+        }
+      ]
     },
     "default_scope": "banner",
-    "description": "Extension layer that adds the tags category with concept TAG-A. No parent requirements \u2014 validates that a new category and its concept surface in suggestions after layer composition.",
+    "description": "Extension layer that adds the tags category with concept TAG-A. No parent requirements — validates that a new category and its concept surface in suggestions after layer composition.",
     "id": "ref-layer-cat-insert",
     "layer": {
       "base": "ref-layer-base@1.0.0"
     },
     "name": "Category Insert Layer",
     "parse": {
-      "case_sensitive": false,
-      "normalize": [],
-      "strip_whitespace": true
+      "normalize": []
     },
     "render": {
       "default": "default",

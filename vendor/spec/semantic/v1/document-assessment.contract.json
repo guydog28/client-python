@@ -231,88 +231,8 @@
         {
             "assertions": [
                 {
-                    "operator": "equals",
-                    "path": "resolution.sources[0].providerId",
-                    "value": "fixture-source"
-                },
-                {
-                    "operator": "equals",
-                    "path": "resolution.sources[0].reproducibility",
-                    "value": "reproducible"
-                },
-                {
-                    "operator": "present",
-                    "path": "resolution.sources[0].snapshotId"
-                },
-                {
-                    "operator": "present",
-                    "path": "resolution.sources[0].attribution.name"
-                }
-            ],
-            "implementation": "recorded",
-            "number": 18,
-            "operation": "auditDocument",
-            "requestId": "case-18",
-            "required": true,
-            "semanticId": "reproducible-source"
-        },
-        {
-            "assertions": [
-                {
-                    "operator": "equals",
-                    "path": "resolution.sources[0].reproducibility",
-                    "value": "best-effort"
-                },
-                {
-                    "operator": "equals",
-                    "path": "resolution.sources[0].locator",
-                    "value": "https://example.test/live"
-                },
-                {
-                    "operator": "absent",
-                    "path": "resolution.sources[0].snapshotId"
-                }
-            ],
-            "implementation": "recorded",
-            "number": 19,
-            "operation": "auditDocument",
-            "requestId": "case-19",
-            "required": true,
-            "semanticId": "best-effort-http-source"
-        },
-        {
-            "assertions": [
-                {
-                    "operator": "present",
-                    "path": "result.documentDigest"
-                },
-                {
-                    "operator": "equals",
-                    "path": "resolution.sources[0].reproducibility",
-                    "value": "best-effort"
-                },
-                {
-                    "operator": "equals",
-                    "path": "operationLimitations[0].code",
-                    "value": "best-effort-source"
-                }
-            ],
-            "implementation": "recorded",
-            "number": 20,
-            "operation": "auditDocument",
-            "requestId": "case-20",
-            "required": true,
-            "semanticId": "single-operation-resolution"
-        },
-        {
-            "assertions": [
-                {
                     "operator": "present",
                     "path": "resolution.resolvedVersion"
-                },
-                {
-                    "operator": "present",
-                    "path": "operationLimitations"
                 }
             ],
             "implementation": "recorded",

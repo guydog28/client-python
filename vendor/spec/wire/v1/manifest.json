@@ -2,8 +2,8 @@
     "contractDivergences": [],
     "corpusVersion": "v1",
     "coverage": {
-        "cases": 129,
-        "operationsCovered": 40
+        "cases": 119,
+        "operationsCovered": 34
     },
     "determinism": {
         "objectKeyOrder": "Object keys are ordered on serialization, recursively, including inside recorded response bodies. Array order is the server's own and is preserved.",

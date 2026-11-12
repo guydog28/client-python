@@ -22,57 +22,49 @@ belongs, so it is the one place that has to get it right.
 
 Operations are named here by namespace and method. A port maps each name to its
 own method and may spell it however its language does. The table is the whole
-contract surface for caching: a port caches the operations marked `cached`,
-caches the `decision` operations only under the opt-in, and sends everything
-else to the server on every call. No wider and no narrower.
+contract surface for caching: a port caches the operations marked `cached` and
+sends everything else to the server on every call. No wider and no narrower.
 
-| Operation                           | Request                              | Treatment  |
-| ----------------------------------- | ------------------------------------ | ---------- |
-| `scheme.process`                    | `POST scheme/process`                | `cached`   |
-| `scheme.validate`                   | `POST scheme/validate`               | `cached`   |
-| `scheme.explain`                    | `POST scheme/explain`                | `cached`   |
-| `scheme.normalize`                  | `POST scheme/normalize`              | `cached`   |
-| `scheme.render`                     | `POST scheme/render`                 | `cached`   |
-| `scheme.diff`                       | `POST scheme/diff`                   | `cached`   |
-| `scheme.aggregate`                  | `POST scheme/aggregate`              | `cached`   |
-| `scheme.aggregateAssertions`        | `POST scheme/aggregate`              | `cached`   |
-| `scheme.applyPreset`                | `POST scheme/apply-preset`           | `cached`   |
-| `scheme.suggest`                    | `POST scheme/suggest`                | `cached`   |
-| `scheme.suggestForCategories`       | `POST scheme/suggest-for-categories` | `cached`   |
-| `scheme.scan`                       | `POST scheme/scan`                   | `cached`   |
-| `scheme.describeConcept`            | `GET scheme/describe-concept`        | `cached`   |
-| `access.describeAllAccessRules`     | `GET access/rules`                   | `cached`   |
-| `context.describeCrosswalks`        | `GET crosswalk/describe`             | `cached`   |
-| `access.check`                      | `POST access/check`                  | `decision` |
-| `context.checkAccess`               | `POST access/check`                  | `decision` |
-| `context.audit`                     | `POST document/audit`                | `never`    |
-| `context.accessRequirements`        | `POST access/describe-requirements`  | `never`    |
-| `context.translate`                 | `POST crosswalk/translate`           | `never`    |
-| `scheme.buildSchemeView`            | `POST scheme/view`                   | `uncached` |
-| `scheme.filterConcepts`             | `POST scheme/filter-concepts`        | `uncached` |
-| `scheme.checkCoverage`              | `POST scheme/check-coverage`         | `uncached` |
-| `scheme.collectNotices`             | `POST scheme/notices`                | `uncached` |
-| `guide.scan`                        | `POST guide/scan`                    | `uncached` |
-| `guide.evaluate`                    | `POST guide/evaluate`                | `uncached` |
-| `guide.describeRule`                | `POST guide/describe-rule`           | `uncached` |
-| `guide.filterRules`                 | `POST guide/filter-rules`            | `uncached` |
-| `guide.buildGuideView`              | `POST guide/view`                    | `uncached` |
-| `access.describeAccessRule`         | `POST access/describe-rule`          | `uncached` |
-| `access.describeAccessRequirements` | `POST access/describe-requirements`  | `uncached` |
-| `scheme.summary`                    | `GET scheme`                         | `resource` |
-| `scheme.concepts`                   | `GET scheme/concepts`                | `resource` |
-| `scheme.categories`                 | `GET scheme/categories`              | `resource` |
-| `scheme.formats`                    | `GET scheme/formats`                 | `resource` |
-| `scheme.grammar`                    | `GET scheme/grammar`                 | `resource` |
-| `scheme.scopes`                     | `GET scheme/scopes`                  | `resource` |
-| `scheme.labelPresets`               | `GET scheme/label-presets`           | `resource` |
+| Operation                       | Request                              | Treatment  |
+| ------------------------------- | ------------------------------------ | ---------- |
+| `scheme.process`                | `POST scheme/process`                | `cached`   |
+| `scheme.validate`               | `POST scheme/validate`               | `cached`   |
+| `scheme.explain`                | `POST scheme/explain`                | `cached`   |
+| `scheme.render`                 | `POST scheme/render`                 | `cached`   |
+| `scheme.diff`                   | `POST scheme/diff`                   | `cached`   |
+| `scheme.aggregate`              | `POST scheme/aggregate`              | `cached`   |
+| `scheme.aggregateAssertions`    | `POST scheme/aggregate`              | `cached`   |
+| `scheme.applyPreset`            | `POST scheme/apply-preset`           | `cached`   |
+| `scheme.suggest`                | `POST scheme/suggest`                | `cached`   |
+| `scheme.suggestForCategories`   | `POST scheme/suggest-for-categories` | `cached`   |
+| `scheme.scan`                   | `POST scheme/scan`                   | `cached`   |
+| `scheme.describeConcept`        | `GET scheme/describe-concept`        | `cached`   |
+| `access.describeAllAccessRules` | `GET access/rules`                   | `cached`   |
+| `context.describeCrosswalks`    | `GET crosswalk/describe`             | `cached`   |
+| `access.check`                  | `POST access/check`                  | `never`    |
+| `context.checkAccess`           | `POST access/check`                  | `never`    |
+| `context.audit`                 | `POST document/audit`                | `never`    |
+| `context.accessRequirements`    | `POST access/describe-requirements`  | `never`    |
+| `context.translate`             | `POST crosswalk/translate`           | `never`    |
+| `scheme.buildSchemeView`        | `POST scheme/view`                   | `uncached` |
+| `scheme.checkCoverage`          | `POST scheme/check-coverage`         | `uncached` |
+| `scheme.collectNotices`         | `POST scheme/notices`                | `uncached` |
+| `guide.scan`                    | `POST guide/scan`                    | `uncached` |
+| `guide.evaluate`                | `POST guide/evaluate`                | `uncached` |
+| `guide.buildGuideView`          | `POST guide/view`                    | `uncached` |
+| `scheme.summary`                | `GET scheme`                         | `resource` |
+| `scheme.concepts`               | `GET scheme/concepts`                | `resource` |
+| `scheme.categories`             | `GET scheme/categories`              | `resource` |
+| `scheme.formats`                | `GET scheme/formats`                 | `resource` |
+| `scheme.scopes`                 | `GET scheme/scopes`                  | `resource` |
+| `scheme.labelPresets`           | `GET scheme/label-presets`           | `resource` |
 
 Every request path is relative to the binding's base path:
 `/v1/ctx/{ctxId}/{version}/`, or `/v1/ctx/{ctxId}/` when a context token
 supplies the version.
-A port that builds an operation on top of another one's answer, such as a list
-of access rule ids read off `access.describeAllAccessRules`, inherits that
-operation's treatment and has no entry of its own. A port that does not expose
+A port that builds an operation on top of another one's answer, such as the
+access policy's own marking read off `access.describeAllAccessRules`, inherits
+that operation's treatment and has no entry of its own. A port that does not expose
 an operation at all skips the plans that name it and says so; it does not
 substitute a different operation.
 
@@ -83,21 +75,19 @@ interactive traffic: typeahead `suggest`, per-edit `process`, on-hover
 through, and the crosswalk inventory every translation view and handbook on a
 page reads when it mounts.
 
-**`decision`** operations are the two single-target access decisions. They
-reach the server on every call unless the consumer turns on the opt-in
-described under [Access decisions](#access-decisions).
-
 **`never`** operations can never be served from a cache, and no option changes
-that. `context.audit` carries the audit rationale below at document scale. `context.accessRequirements` and `context.translate` are not decisions,
-but they answer under the same resolved Context envelope and are held to the
-same rule.
+that. The two single-target access decisions are the reason, as
+[Access decisions](#access-decisions) explains, and `context.audit` carries the
+same rationale at document scale. `context.accessRequirements` and
+`context.translate` are not decisions, but they answer under the same resolved
+Context envelope and are held to the same rule.
 
 **`uncached`** operations are read-only and could be cached under these rules.
 They are not, so that two SDKs answer the same integrator with the same
 traffic. Growing the cached set is a change to this document first and to every
 port after, so that it stays one set.
 
-**`resource`** operations are the seven scheme resource reads. They are never
+**`resource`** operations are the six scheme resource reads. They are never
 response-cache entries. A port either exposes them as per-call operations, each
 of which reaches the server, or resolves them once when it connects and holds
 the result as connection state outside the response cache. Clearing the cache
@@ -117,13 +107,7 @@ to be current. Nothing on this surface changes server state; keep it that way.
 key = operation + composition + canonical(body)
 ```
 
-- **operation** is the operation name above, not the URL. `access.check` and
-  `context.checkAccess` post the same body to the same route and still answer
-  differently: one keeps the resolution envelope and the other unwraps it.
-  Sharing an entry would hand a caller the other one's shape. Only a port that
-  exposes both as separate methods has this to get right. A port with one method
-  per wire operation has no two operations sharing a route and body, and must
-  not add a second method to satisfy the rule.
+- **operation** is the operation name above, not the URL.
 - **composition** is what the operation ran against: the Context binding,
   `records@1.2.3`, or the Context id alone when a signed context token supplies
   the version. The composition behind a Context belongs to the server, and the
@@ -241,33 +225,12 @@ entry and leaves connection state alone.
 
 ## Access decisions
 
-Access-decision caching is a consumer choice, not a library default. Every port
-exposes an explicit client option that turns it on, spelled
-`cacheAccessDecisions` in TypeScript and named to match local conventions
-elsewhere. It defaults to off.
-
-The reason for the default is the audit record, not non-determinism. Under a
-pin a decision is as deterministic as anything else. The runtime records each
-decision against the exact artifact versions that answered it, and that record
-is what an accreditation review reads. A decision served from client memory
-never made that trip, so as far as the deployment is concerned it never
-happened.
-
-The option reaches the two `decision` operations and stops there. The `never`
-operations stay on the wire whether it is on or off.
-
-Every port refuses the option on an unpinned binding, at construction, rather
-than running uncached and leaving the caller believing it got a trade it did not
-get. Under `latest` or a token-defaulted version the composition can move under
-the client, and a decision cached against one composition would go on answering
-after the binding moved past it.
-
-Turned on, the option changes nothing else. Cached decisions are keyed,
-de-duplicated and evicted like any other entry, and canceled where the operation
-takes a cancellation signal, and under the pin they
-never expire. What it trades is audit completeness for traffic. Document that
-trade wherever the option is declared, so a consumer does not have to read this
-file to learn what it costs.
+Access decisions are never cached, by any port, and no client option turns
+caching on. Under a pin a decision is as deterministic as anything else; the
+reason is the audit record. The runtime records each decision against the exact
+artifact versions that answered it, and that record is what an accreditation
+review reads. A decision served from client memory never made that trip, so as
+far as the deployment is concerned it never happened.
 
 ## Conformance
 
@@ -280,27 +243,18 @@ id, and every plan names the items it covers.
 | C02 | Concurrent identical `cached` operations cost one wire request, and every caller is answered.                       |
 | C03 | Every operation outside the cached set reaches the wire on every call, including the scheme resource reads.         |
 | C04 | Argument order does not create a second entry, a member passed as unset does not either, and an explicit null does. |
-| C05 | Two operations sharing a route and body keep separate entries.                                                      |
-| C06 | A rejected request is not cached; the next call retries.                                                            |
-| C07 | A malformed 200 is not cached: the response check runs inside the cached call, and the next call retries.           |
-| C08 | One caller canceling settles only that caller.                                                                      |
-| C09 | The wire request is canceled only when its last caller has gone.                                                    |
-| C10 | On a pinned binding an entry survives arbitrarily long, past any TTL.                                               |
-| C11 | On an unpinned binding an entry expires, and no later than one hour.                                                |
-| C12 | Access decisions reach the wire on every call by default.                                                           |
-| C13 | Once the opt-in is on, access decisions are cached like any other entry.                                            |
-| C14 | The opt-in is refused on an unpinned binding.                                                                       |
-| C15 | The `never` operations reach the wire on every call, opt-in or not.                                                 |
-| C16 | A composition change clears the cache.                                                                              |
-| C17 | The runtime's denial-shaped 404 clears the cache; a resource 404 does not.                                          |
-| C18 | Results are independent per caller.                                                                                 |
+| C05 | A rejected request is not cached; the next call retries.                                                            |
+| C06 | A malformed 200 is not cached: the response check runs inside the cached call, and the next call retries.           |
+| C07 | One caller canceling settles only that caller.                                                                      |
+| C08 | The wire request is canceled only when its last caller has gone.                                                    |
+| C09 | On a pinned binding an entry survives arbitrarily long, past any TTL.                                               |
+| C10 | On an unpinned binding an entry expires, and no later than one hour.                                                |
+| C11 | Access decisions and the other `never` operations reach the wire on every call.                                     |
+| C12 | A composition change clears the cache.                                                                              |
+| C13 | The runtime's denial-shaped 404 clears the cache; a resource 404 does not.                                          |
+| C14 | Results are independent per caller.                                                                                 |
 
-C05 binds only ports that expose more than one operation over the same route
-and body, such as a client with both `access.check` and `context.checkAccess`
-over the one check route. A port that exposes one method per wire operation
-declares the capability not applicable and runs the rest of the plans; C13 stays
-covered by the plans that cache access decisions through a single operation.
-C08 and C09 apply to ports with a cancellation surface. The null half of C04
+C07 and C08 apply to ports with a cancellation surface. The null half of C04
 applies to ports whose request types can carry an explicit null; the contract
 declares no nullable request member, so a port whose serializer always omits an
 unset member never sends one. C03's resource half applies to ports that expose
@@ -329,8 +283,8 @@ step is one of the forms in [`plans.schema.json`](plans.schema.json). A port's h
   way to observe that every caller of a `concurrent` step has joined the
   in-flight entry before the step ends: a waiter count the cache exposes to
   tests, or the port's guarantee that a call has joined before it returns
-  control. A harness that only hopes the callers have joined turns C02, C08 and
-  C18 into repeats.
+  control. A harness that only hopes the callers have joined turns C02, C07 and
+  C14 into repeats.
 - **A clock hook**, so `advanceClock` moves the clock the cache reads. Transport
   timers, such as a request timeout, do not move with it.
 - **Scripted responses** for what a recording cannot provide: a malformed 200,
@@ -341,8 +295,6 @@ step is one of the forms in [`plans.schema.json`](plans.schema.json). A port's h
 - **A quiesce hook**, so a step can wait for work the client does in the
   background after a response, such as rebuilding connection state.
 - **Cancellation**, or a declaration that the port has none.
-- **Shared-route operations**, or a declaration that the port exposes one
-  method per wire operation.
 
 One case has no recording, and the plans say how it is covered. An
 explicit-null request has none because the contract declares no nullable

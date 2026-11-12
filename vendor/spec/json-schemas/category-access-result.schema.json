@@ -2,8 +2,8 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "AccessRule": {
-            "description": "Strategy for comparing subject attributes against data assertions in a category during an access check.\n\n- `gte`: user's ranked concept must be ≥ the data concept's rank\n- `superset`: user's concept set must include all data concepts\n- `includes`: user's concept set must include at least one data concept\n- `exact`: user's concepts must exactly match the data concepts\n- `any`: a supplied, non-null user attribute grants access, including an empty array; it does not require a recognized concept or a non-empty concept set\n\nDeclared on `AccessRuleEntry.strategy` for simple attribute-mapping rules.",
-            "enum": ["gte", "superset", "includes", "exact", "any"],
+            "description": "Strategy for comparing subject attributes against data assertions in a category during an access check.\n\n- `gte`: user's ranked concept must be at or above the data concept's rank\n- `superset`: user's concept set must include all data concepts\n- `includes`: user's concept set must include at least one data concept\n- `exact`: user's concepts must exactly match the data concepts\n\nDeclared on `AccessRuleDoc.strategy` for simple attribute-mapping rules.",
+            "enum": ["gte", "superset", "includes", "exact"],
             "type": "string"
         },
         "ConceptModernization": {

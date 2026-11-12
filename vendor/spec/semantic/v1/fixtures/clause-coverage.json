@@ -341,103 +341,6 @@
       "expectedOutcome": "authored scheme audit still runs"
     }
   ],
-  "case-18": [
-    {
-      "clauseId": "case-18-clause-01",
-      "expectedAssertionId": "case-18-expected-01",
-      "operation": "auditDocument",
-      "fixtureScope": "case-18",
-      "expectedOutcome": "artifact reference is qualified"
-    },
-    {
-      "clauseId": "case-18-clause-02",
-      "expectedAssertionId": "case-18-expected-02",
-      "operation": "auditDocument",
-      "fixtureScope": "case-18",
-      "expectedOutcome": "provider is retained"
-    },
-    {
-      "clauseId": "case-18-clause-03",
-      "expectedAssertionId": "case-18-expected-03",
-      "operation": "auditDocument",
-      "fixtureScope": "case-18",
-      "expectedOutcome": "snapshot is immutable"
-    },
-    {
-      "clauseId": "case-18-clause-04",
-      "expectedAssertionId": "case-18-expected-04",
-      "operation": "auditDocument",
-      "fixtureScope": "case-18",
-      "expectedOutcome": "attribution is retained"
-    },
-    {
-      "clauseId": "case-18-clause-05",
-      "expectedAssertionId": "case-18-expected-05",
-      "operation": "auditDocument",
-      "fixtureScope": "case-18",
-      "expectedOutcome": "rule reference is qualified"
-    }
-  ],
-  "case-19": [
-    {
-      "clauseId": "case-19-clause-01",
-      "expectedAssertionId": "case-19-expected-01",
-      "operation": "auditDocument",
-      "fixtureScope": "case-19",
-      "expectedOutcome": "endpoint is a locator"
-    },
-    {
-      "clauseId": "case-19-clause-02",
-      "expectedAssertionId": "case-19-expected-02",
-      "operation": "auditDocument",
-      "fixtureScope": "case-19",
-      "expectedOutcome": "snapshot is absent"
-    },
-    {
-      "clauseId": "case-19-clause-03",
-      "expectedAssertionId": "case-19-expected-03",
-      "operation": "auditDocument",
-      "fixtureScope": "case-19",
-      "expectedOutcome": "reproducibility is best-effort"
-    }
-  ],
-  "case-20": [
-    {
-      "clauseId": "case-20-clause-01",
-      "expectedAssertionId": "case-20-expected-01",
-      "operation": "auditDocument",
-      "fixtureScope": "case-20",
-      "expectedOutcome": "artifact resolves once"
-    },
-    {
-      "clauseId": "case-20-clause-02",
-      "expectedAssertionId": "case-20-expected-02",
-      "operation": "auditDocument",
-      "fixtureScope": "case-20",
-      "expectedOutcome": "source identity reads once"
-    },
-    {
-      "clauseId": "case-20-clause-03",
-      "expectedAssertionId": "case-20-expected-03",
-      "operation": "auditDocument",
-      "fixtureScope": "case-20",
-      "expectedOutcome": "canonical query reads once"
-    },
-    {
-      "clauseId": "case-20-clause-04",
-      "expectedAssertionId": "case-20-expected-04",
-      "operation": "auditDocument",
-      "fixtureScope": "case-20",
-      "expectedOutcome": "all branches share observations"
-    },
-    {
-      "clauseId": "case-20-clause-05",
-      "expectedAssertionId": "case-20-expected-05",
-      "operation": "auditDocument",
-      "fixtureScope": "case-20",
-      "expectedOutcome": "best-effort limitation is envelope-shared"
-    }
-  ],
   "case-21": [
     {
       "clauseId": "case-21-clause-01",
@@ -459,20 +362,6 @@
       "operation": "auditDocument",
       "fixtureScope": "case-21",
       "expectedOutcome": "artifacts are present"
-    },
-    {
-      "clauseId": "case-21-clause-04",
-      "expectedAssertionId": "case-21-expected-04",
-      "operation": "auditDocument",
-      "fixtureScope": "case-21",
-      "expectedOutcome": "sources are present"
-    },
-    {
-      "clauseId": "case-21-clause-05",
-      "expectedAssertionId": "case-21-expected-05",
-      "operation": "auditDocument",
-      "fixtureScope": "case-21",
-      "expectedOutcome": "operation limitations are present"
     }
   ],
   "case-22": [

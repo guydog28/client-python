@@ -1,13 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "definitions": {
-        "ValidationSeverity": {
-            "description": "Severity assigned to a validation issue.",
-            "enum": ["error", "warning"],
-            "type": "string"
-        }
-    },
-    "description": "A constraint violation detected during validation, referencing the constraint ID and a human-readable message.\n\nCarried in the `errors` of every result that judges a marking. `constraintId` identifies the rule that fired; `message` is human-readable. When `severity` is `'warning'`, the violation is advisory and does not set `valid` to `false`. Use `categoryId` and `affectedConcepts` to highlight the specific UI elements involved.\n\nTwo of the ids the engine keeps for itself are for a fact a caller hands in that cannot be settled as given: `_missing_assertion_value`, a concept that takes a value handed in with none, and `_invalid_assertion_value`, a value the concept's encoding cannot read. Each is an error on the result, not a refused request: the fact is left out of the settled marking and named in `affectedConcepts`.\n\nAnother, `_exceeds_whole`, is a part that carries more than the whole it is read in: the whole does not cover a value the part holds, carries one the part does not allow, or, in a category a rollup pipeline resolves, would change if rolled up with the part. It is given only for a part that is valid on its own, read in a whole that reads and is valid. `affectedConcepts` names every finding, and no fix answers it. See `ProcessingContext.partOf`.\n\nAnd `_stand_in_requires_whole` is a part that leaves a category to a stand-in, a concept that declares `stands_for_whole`, with no verified whole to take the values from. `affectedConcepts` names the stand-in and `categoryId` its category.",
+    "definitions": {},
+    "description": "A constraint violation detected during validation, referencing the constraint ID and a human-readable message.\n\nCarried in the `errors` of every result that judges a marking. `constraintId` identifies the rule that fired; `message` is human-readable. Every entry sets `valid` to `false`; advisories are warnings, not errors. Use `categoryId` and `affectedConcepts` to highlight the specific UI elements involved.\n\nTwo of the ids the engine keeps for itself are for a fact a caller hands in that cannot be settled as given: `_missing_assertion_value`, a concept that takes a value handed in with none, and `_invalid_assertion_value`, a value the concept's encoding cannot read. Each is an error on the result, not a refused request: the fact is left out of the settled marking and named in `affectedConcepts`.\n\nAnother, `_exceeds_whole`, is a part that carries more than the whole it is read in: the whole does not cover a value the part holds, carries one the part does not allow, or, in a category a rollup pipeline resolves, would change if rolled up with the part. It is given only for a part that is valid on its own, read in a whole that reads and is valid. `affectedConcepts` names every finding, and no fix answers it. See `ProcessingContext.partOf`.\n\nAnd `_stand_in_requires_whole` is a part that leaves a category to a stand-in, a concept that declares `stands_for_whole`, with no verified whole to take the values from. `affectedConcepts` names the stand-in and `categoryId` its category.",
     "properties": {
         "affectedConcepts": {
             "description": "Concept IDs involved in this validation failure.",
@@ -25,7 +19,7 @@
             "type": "string"
         },
         "didYouMean": {
-            "description": "The ids of the concepts the unread token was likely meant as. Never empty. They are ids for a program to act on, not spellings to show an author: `message` gives the same hint in words, naming the spellings.\n\nSet only on an `_unmatched_token` error, which is about one token the engine could not read, and only when that token reads as a misspelling of some concept's spelling. The concepts named are tied for nearest, so their order ranks none above another.\n\nIts absence is no evidence that the token is stray text. A token too short to judge carries none, and so does one equally near to too many concepts. A token that already spells a concept, apart from case, carries none even when it is also near another concept: it was left unread for another reason, such as where it stands, and naming a different concept would point the author away from a word they spelled right.\n\nIt is not a fix: nothing here has been proven to make the marking valid, and `suggestedFix` and the result's fix paths do not depend on it.",
+            "description": "The ids of the concepts the unread token was likely meant as. Never empty. They are ids for a program to act on, not spellings to show an author: `message` gives the same hint in words, naming the spellings.\n\nSet only on an `_unmatched_token` error, which is about one token the engine could not read, and only when that token reads as a misspelling of some concept's spelling. The concepts named are tied for nearest, so their order ranks none above another.\n\nIts absence is no evidence that the token is stray text. A token too short to judge carries none, and so does one equally near to too many concepts. A token that already spells a concept, apart from case, carries none even when it is also near another concept: it was left unread for another reason, such as where it stands, and naming a different concept would point the author away from a word they spelled right.\n\nIt is not a fix: nothing here has been proven to make the marking valid, and the result's fix paths do not depend on it.",
             "items": {
                 "type": "string"
             },
@@ -34,14 +28,6 @@
         },
         "message": {
             "description": "What is wrong, in words a person can act on.",
-            "type": "string"
-        },
-        "severity": {
-            "$ref": "#/definitions/ValidationSeverity",
-            "description": "Severity: 'error' blocks validity, 'warning' is advisory. Default: 'error'."
-        },
-        "suggestedFix": {
-            "description": "The `message` of the proposed fix that answers this error, such as \"Add CTRL-A\".\n\nSet only on a result that carries that fix in its own `proposedFixes`. A result with no fix paths, such as a `ValidateResult` or a scan region, never sets it, so a reader never holds a pointer to a fix it was not given.",
             "type": "string"
         }
     },
