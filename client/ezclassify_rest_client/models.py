@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@fa1a64c03251d59630775a91a587af70f232256d47e543fce26cd37d03811df8. DO NOT EDIT.
+# Code generated from vendored contracts@1304fed6d3eb13bfccc0f4b4da717fb07f896038c6874e7bf5c91eda8311ce61. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -3231,7 +3231,7 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
                                             'count_eq',
                                             'count_lt',
                                             'count_lte',
-                                            'min_order',
+                                            'min_rank',
                                             'subset_of',
                                             'shares_concept_with',
                                             'every_has_concept',
