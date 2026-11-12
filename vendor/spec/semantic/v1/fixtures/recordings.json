@@ -23,8 +23,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": "LOW",
@@ -448,7 +447,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "standard",
           "detailsComplete": false,
@@ -466,10 +464,7 @@
           "counts": {
             "nominations": 2,
             "evidenceSpans": 2,
-            "guideUnits": 2,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 2
           }
         }
       }
@@ -496,8 +491,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": "LOW",
@@ -1767,7 +1761,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "full",
           "detailsComplete": true,
@@ -1775,10 +1768,7 @@
           "counts": {
             "nominations": 2,
             "evidenceSpans": 2,
-            "guideUnits": 2,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 2
           }
         }
       }
@@ -1805,8 +1795,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": "LOW",
@@ -3278,7 +3267,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "full",
           "detailsComplete": true,
@@ -3286,10 +3274,7 @@
           "counts": {
             "nominations": 2,
             "evidenceSpans": 2,
-            "guideUnits": 2,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 2
           }
         }
       }
@@ -3316,8 +3301,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": "LOW",
@@ -3675,7 +3659,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "standard",
           "detailsComplete": false,
@@ -3693,10 +3676,7 @@
           "counts": {
             "nominations": 1,
             "evidenceSpans": 1,
-            "guideUnits": 2,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 2
           }
         }
       }
@@ -3723,8 +3703,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -4421,7 +4400,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "full",
           "detailsComplete": true,
@@ -4429,10 +4407,7 @@
           "counts": {
             "nominations": 0,
             "evidenceSpans": 0,
-            "guideUnits": 1,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 1
           }
         }
       }
@@ -4459,8 +4434,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": "LOW",
@@ -5574,7 +5548,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "full",
           "detailsComplete": true,
@@ -5582,10 +5555,7 @@
           "counts": {
             "nominations": 2,
             "evidenceSpans": 2,
-            "guideUnits": 2,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 2
           }
         }
       }
@@ -5622,8 +5592,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -5960,7 +5929,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "standard",
           "detailsComplete": false,
@@ -5978,10 +5946,7 @@
           "counts": {
             "nominations": 1,
             "evidenceSpans": 1,
-            "guideUnits": 1,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 1
           }
         }
       }
@@ -6013,8 +5978,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -6048,7 +6012,6 @@
             }
           ]
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "standard",
           "detailsComplete": false,
@@ -6066,10 +6029,7 @@
           "counts": {
             "nominations": 0,
             "evidenceSpans": 0,
-            "guideUnits": 0,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 0
           }
         }
       }
@@ -6102,8 +6062,7 @@
               "id": "fixture-context",
               "version": "1.2.3"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -6343,7 +6302,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "standard",
           "detailsComplete": false,
@@ -6361,10 +6319,7 @@
           "counts": {
             "nominations": 1,
             "evidenceSpans": 1,
-            "guideUnits": 1,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 1
           }
         }
       }
@@ -6391,8 +6346,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -6632,7 +6586,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "standard",
           "detailsComplete": false,
@@ -6650,10 +6603,7 @@
           "counts": {
             "nominations": 1,
             "evidenceSpans": 1,
-            "guideUnits": 1,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 1
           }
         }
       }
@@ -6680,8 +6630,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "marking": "HIGH",
@@ -6744,29 +6693,14 @@
                 "level"
               ],
               "dependsOn": [],
-              "overrides": [],
-              "lines": [
-                "Level",
-                "",
-                "Requirement: level >= data.level",
-                "",
-                "Attributes needed: level"
-              ]
+              "overrides": []
             }
           ],
           "combinedRequirementText": "(level >= data.level)",
           "combinedAttributesNeeded": [
             "level"
-          ],
-          "lines": [
-            "Access requirements for: HIGH",
-            "",
-            "• Level: level >= data.level",
-            "",
-            "Attributes needed: level"
           ]
-        },
-        "operationLimitations": []
+        }
       }
     },
     "case-24": {
@@ -6791,8 +6725,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -7223,7 +7156,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "full",
           "detailsComplete": true,
@@ -7231,10 +7163,7 @@
           "counts": {
             "nominations": 1,
             "evidenceSpans": 1,
-            "guideUnits": 1,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 1
           }
         }
       }
@@ -7261,8 +7190,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -7330,7 +7258,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "standard",
           "detailsComplete": false,
@@ -7348,10 +7275,7 @@
           "counts": {
             "nominations": 0,
             "evidenceSpans": 0,
-            "guideUnits": 1,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 1
           }
         }
       }
@@ -7378,8 +7302,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -8243,7 +8166,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "full",
           "detailsComplete": true,
@@ -8251,10 +8173,7 @@
           "counts": {
             "nominations": 2,
             "evidenceSpans": 2,
-            "guideUnits": 1,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 1
           }
         }
       }
@@ -8311,8 +8230,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -8608,7 +8526,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "standard",
           "detailsComplete": false,
@@ -8626,10 +8543,7 @@
           "counts": {
             "nominations": 2,
             "evidenceSpans": 2,
-            "guideUnits": 1,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 1
           }
         }
       }
@@ -8656,8 +8570,7 @@
               "id": "ref-scheme-1-access-rules",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": null,
@@ -8897,7 +8810,6 @@
           },
           "limitations": []
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "standard",
           "detailsComplete": false,
@@ -8915,10 +8827,7 @@
           "counts": {
             "nominations": 1,
             "evidenceSpans": 1,
-            "guideUnits": 1,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 1
           }
         }
       }
@@ -8935,8 +8844,7 @@
               "id": "ref-scheme-2",
               "version": "1.0.0"
             }
-          ],
-          "sources": []
+          ]
         },
         "result": {
           "whole": "LOW//ALPHA/BRAVO/CHARLIE",
@@ -8990,8 +8898,7 @@
                 "message": "The whole carries ALPHA (Share), which not every part allows.",
                 "affectedConcepts": [
                   "ALPHA"
-                ],
-                "suggestedFix": "Remove ALPHA and CHARLIE."
+                ]
               },
               {
                 "constraintId": "part-excess:share:CHARLIE",
@@ -8999,8 +8906,7 @@
                 "message": "The whole carries CHARLIE (Share), which not every part allows.",
                 "affectedConcepts": [
                   "CHARLIE"
-                ],
-                "suggestedFix": "Remove ALPHA and CHARLIE."
+                ]
               }
             ],
             "proposedFixes": [
@@ -9161,7 +9067,6 @@
             }
           ]
         },
-        "operationLimitations": [],
         "responseProjection": {
           "profile": "full",
           "detailsComplete": true,
@@ -9169,10 +9074,7 @@
           "counts": {
             "nominations": 0,
             "evidenceSpans": 0,
-            "guideUnits": 0,
-            "accessRuleResults": 0,
-            "contentRequirements": 0,
-            "contextRequirements": 0
+            "guideUnits": 0
           }
         }
       }

@@ -44,7 +44,7 @@
         "restApiVersion": "1.0.0-dev.30"
     },
     "spec": {
-        "digest": "sha256:61f4be388fc94d7d86e1c84cde98c894f9635ae61458c9c7b0c51920f9046100",
+        "digest": "sha256:39fe4e3f3a9bf7433c10c8c0d10c04a28a087ed3f8d2cee30461a763747c132f",
         "infoVersion": "1.0.0-dev.30",
         "package": "@ezclassify/openapi",
         "packageVersion": "1.0.0-dev.30"
