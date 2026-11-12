@@ -155,7 +155,7 @@
           },
           {
             "constraintId": "_unmatched_token",
-            "message": "\"BOGUS\" was not recognized: it matched no known concept and will be dropped from the rendered marking."
+            "message": "\"BOGUS\" was not recognized: it matched no known concept and will be kept visible in the rendered marking."
           }
         ],
         "inputWasValid": false,
@@ -172,7 +172,7 @@
             }
           ]
         },
-        "rendered": "HIGH",
+        "rendered": "HIGH/BOGUS",
         "valid": false,
         "warnings": []
       }
@@ -809,7 +809,7 @@
           },
           {
             "constraintId": "_unmatched_token",
-            "message": "\"UNKNOWN\" was not recognized: it matched no known concept and will be dropped from the rendered marking."
+            "message": "\"UNKNOWN\" was not recognized: it matched no known concept and will be kept visible in the rendered marking."
           }
         ],
         "inputWasValid": false,
@@ -824,7 +824,7 @@
             }
           ]
         },
-        "rendered": "",
+        "rendered": "UNKNOWN",
         "valid": false,
         "warnings": []
       }

@@ -7472,12 +7472,9 @@ components:
         has:
           type: string
           description: "Shorthand for has_concept: check if this concept is present"
-        is:
-          type: string
-          description: Combined operator+value shorthand (e.g. "count_eq 1", "has_content")
         operator:
-          type: string
-          description: Explicit operator for the condition
+          $ref: "#/components/schemas/RuleConditionOperator"
+          description: The test to apply to the category's assertions.
         value:
           type:
             - string
@@ -7494,6 +7491,30 @@ components:
       description: >-
         A single condition in a rule's `when` block. Can test category contents, processing context role, or concept
         presence.
+    RuleConditionOperator:
+      type: string
+      enum:
+        - has_content
+        - has_concept
+        - not_has_concept
+        - count_gt
+        - count_gte
+        - count_eq
+        - count_lt
+        - count_lte
+        - min_order
+        - subset_of
+        - shares_concept_with
+        - every_has_concept
+        - any_lacks_concept
+      description: >-
+        The test a scheme condition applies to one category's assertions. `has_concept` and `not_has_concept` name a
+        concept in `value`; `has_content` holds when the category holds anything; the `count_*` tests (greater than,
+        greater than or equal, equal, less than, less than or equal) compare the number of concepts in the category with
+        the number in `value`; `min_order` holds when a concept sits at or above the order in `value`; `subset_of` holds
+        when this category's concepts are a subset of the category named in `value`, and `shares_concept_with` when the
+        two share a concept; `every_has_concept` and `any_lacks_concept` ask whether every assertion set, or at least
+        one, holds the concept named in `value`.
     RuleConditionTarget:
       type: string
       enum:
