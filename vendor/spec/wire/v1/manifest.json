@@ -19,8 +19,7 @@
         },
         "pathPlaceholders": {
             "<recording-deployment-artifact-dir>": "Writable state directory (EZCLASSIFY_ARTIFACT_DIR). A fresh temporary directory per recording run.",
-            "<recording-deployment-artifact-path>": "Directory the deployment loads its development context artifacts from (EZCLASSIFY_ARTIFACT_PATH).",
-            "<recording-deployment-root>": "Checkout root of the runtime repository that produced the recording."
+            "<recording-deployment-root>": "Directory the recording deployment's license, trust manifest and credentials are written to. A fresh temporary directory per recording run."
         },
         "recordedRequestHeaders": [
             "accept",
@@ -37,14 +36,13 @@
     "generation": {
         "contractVersion": "1.0.0-dev.30",
         "generator": "ezclassify-wire-corpus-recorder",
-        "generatorDigest": "sha256:727ec327940f73994dedfc9585d382252cd0b169765d32f08342d92f149bbbb9"
+        "generatorDigest": "sha256:3329e2a40bf50243d9e2ca9258eae65129cdff53254e282a0593e3330da37ea1"
     },
     "runtime": {
-        "engineVersion": "1.0.0-dev.30",
-        "restApiVersion": "1.0.0-dev.30"
+        "engineVersion": "1.0.0-dev.30"
     },
     "spec": {
-        "digest": "sha256:39fe4e3f3a9bf7433c10c8c0d10c04a28a087ed3f8d2cee30461a763747c132f",
+        "digest": "sha256:b2bca608ea6203a0110078b19a8f566f9b572e9457b1847e390ccb9667bf85ff",
         "infoVersion": "1.0.0-dev.30",
         "package": "@ezclassify/openapi",
         "packageVersion": "1.0.0-dev.30"

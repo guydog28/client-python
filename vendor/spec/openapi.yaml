@@ -7802,7 +7802,7 @@ components:
           description: Display name from the scheme metadata.
         description:
           type: string
-          description: Free-text description from the scheme metadata.
+          description: Free-text description from the scheme metadata. Omitted when the scheme has none.
         definition:
           type: string
           description: Human-readable definition of the scheme, for tooltips and about panels.
@@ -7907,7 +7907,6 @@ components:
         - id
         - version
         - name
-        - description
         - referenceSurfaceLabel
       description: Context scheme summary response.
     SchemeViewResponse:
