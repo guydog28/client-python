@@ -43,7 +43,7 @@
                     "type": "string"
                 },
                 "method": {
-                    "description": "Engine method to invoke. render/diff wrap their return value as {result}. aggregateAssertions takes a single arg: an array of assertion arrays (each inner array is one marking's already-parsed assertions). evaluateMany takes a single arg: an array of {guideId, ruleId} selections, each naming the guide that holds the rule. evaluateGuide/evaluateMany/guideScan require guideFixture. checkAccess requires accessFixture. ctx* methods use ctxId and ctxVersion to target a server-side context, and scheme to select one of its schemes. ctxAggregate takes a single arg: an array of marking strings.",
+                    "description": "Engine method to invoke. render/diff wrap their return value as {result}. aggregateAssertions takes a single arg: an array of assertion arrays (each inner array is one marking's already-parsed assertions). evaluateMany takes a single arg: an array of {guideId, ruleId} selections, each naming the guide that holds the rule. evaluateGuide/evaluateMany/guideScan require guideFixture. checkAccess requires accessFixture. ctx* methods use ctxId and ctxVersion to target a server-side context, and scheme to select one of its schemes. ctxAggregate takes a single arg: an array of marking strings. getScheme takes no arguments and answers the scheme's published profile: the categories, concepts and formats a client reads. getFormatCoverage takes an optional output id and answers the categories that output writes, as the engine assesses them. Neither is a wire operation, so both belong to an adapter-slice plan.",
                     "enum": [
                         "process",
                         "aggregate",
@@ -61,7 +61,9 @@
                         "ctxValidate",
                         "ctxAggregate",
                         "ctxScan",
-                        "ctxDocumentAudit"
+                        "ctxDocumentAudit",
+                        "getScheme",
+                        "getFormatCoverage"
                     ],
                     "type": "string"
                 },
@@ -99,8 +101,8 @@
             "type": "array"
         },
         "slice": {
-            "description": "Determines which conformance pipeline processes this plan. 'engine' plans are run per-PR by every language SDK replayer using recorded responses. 'server' plans require a live REST API server and are run only in the nightly cross-SDK Docker workflow.",
-            "enum": ["engine", "server"],
+            "description": "Determines which conformance pipeline processes this plan. 'engine' plans are run per-PR by every language SDK replayer using recorded responses. 'server' plans require a live REST API server and are run only in the nightly cross-SDK Docker workflow. 'adapter' plans hold answers an adapter gives in process with no wire operation behind them: the reference engine records them, an adapter that gives the same answers is checked against those recordings, and REST replayers do not run them.",
+            "enum": ["adapter", "engine", "server"],
             "type": "string"
         }
     },

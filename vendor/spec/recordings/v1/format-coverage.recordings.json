@@ -1,0 +1,492 @@
+{
+  "engineVersion": "1.0.0-dev.30",
+  "openapiVersion": "1.0.0-dev.30",
+  "responses": {
+    "15e94a61293b24714a95242dfa4a7d41c91027196699b04fc048ef26c0083bbe": {
+      "argsSummary": "[]",
+      "method": "getScheme",
+      "response": {
+        "categories": [
+          {
+            "id": "level",
+            "label": "Level",
+            "position": 0,
+            "required": true,
+            "rollup": "max",
+            "single": true
+          },
+          {
+            "id": "controls",
+            "label": "Controls",
+            "position": 1,
+            "required": false,
+            "rollup": "union",
+            "single": false
+          }
+        ],
+        "concepts": [
+          {
+            "aliases": [],
+            "categories": [
+              "level"
+            ],
+            "id": "LOW",
+            "name": "Low",
+            "parents": [],
+            "position": 0,
+            "rank": 0,
+            "views": {
+              "default": "LOW",
+              "portion": "L"
+            }
+          },
+          {
+            "aliases": [],
+            "categories": [
+              "level"
+            ],
+            "id": "MED",
+            "name": "Med",
+            "parents": [],
+            "position": 1,
+            "rank": 1,
+            "views": {
+              "default": "MED",
+              "portion": "M"
+            }
+          },
+          {
+            "aliases": [],
+            "categories": [
+              "level"
+            ],
+            "id": "HIGH",
+            "name": "High",
+            "parents": [],
+            "position": 2,
+            "rank": 2,
+            "views": {
+              "default": "HIGH",
+              "portion": "H"
+            }
+          },
+          {
+            "aliases": [],
+            "categories": [
+              "controls"
+            ],
+            "id": "CTRL-A",
+            "name": "Control A",
+            "parents": [
+              "HIGH"
+            ],
+            "position": 0,
+            "views": {
+              "default": "CTRL-A"
+            }
+          }
+        ],
+        "defaultRenderFormat": "default",
+        "defaultScope": "banner",
+        "description": "Canonical conformance test scheme. Two categories: level (max rollup, required) and controls (union rollup, optional). Four concepts: LOW/MED/HIGH in level, CTRL-A in controls requiring parent HIGH.",
+        "formats": [
+          {
+            "categoryOrder": [
+              "level",
+              "controls"
+            ],
+            "categorySeparators": {
+              "controls": "/",
+              "level": "/"
+            },
+            "categoryViews": {
+              "controls": "default",
+              "level": "default"
+            },
+            "id": "default",
+            "mode": "inline",
+            "separator": "/",
+            "separatorBefore": {
+              "controls": "/"
+            },
+            "surface": "banner"
+          },
+          {
+            "categoryOrder": [
+              "level",
+              "controls"
+            ],
+            "categorySeparators": {
+              "controls": "/",
+              "level": "/"
+            },
+            "id": "portion",
+            "mode": "inline",
+            "separator": "/",
+            "separatorBefore": {
+              "controls": "/"
+            },
+            "surface": "banner",
+            "view": "portion"
+          }
+        ],
+        "id": "ref-scheme-1",
+        "labelPresets": [],
+        "name": "Reference Scheme 1",
+        "referenceSurfaceLabel": {
+          "plural": "Handbooks",
+          "singular": "Handbook"
+        },
+        "roleAware": false,
+        "scopes": [
+          {
+            "id": "banner",
+            "label": "Banner"
+          }
+        ],
+        "version": "1.0.0"
+      }
+    },
+    "299e58533bc9b776c1ebcc03b722d40fbd8934c8bbddfe50112a1876c256bdb7": {
+      "argsSummary": "[\"portion\"]",
+      "method": "getFormatCoverage",
+      "response": {
+        "coveredCategories": [
+          "level",
+          "controls"
+        ],
+        "formatId": "portion",
+        "reconstruction": {
+          "reasons": [],
+          "status": "supported"
+        },
+        "valueLossyCategories": []
+      }
+    },
+    "4ff64c2b88d418fc07427e3d1f3bd9d377ac7d276b3188fb58ceaf5c61acf6e3": {
+      "argsSummary": "[\"default\"]",
+      "method": "getFormatCoverage",
+      "response": {
+        "coveredCategories": [
+          "level",
+          "controls"
+        ],
+        "formatId": "default",
+        "reconstruction": {
+          "reasons": [],
+          "status": "supported"
+        },
+        "valueLossyCategories": []
+      }
+    },
+    "53a0715b2a8056b90e84ae5543529e1b3608d46cb4ba964948eaf0bbf0c69efb": {
+      "argsSummary": "[\"sensitivity/short\"]",
+      "method": "getFormatCoverage",
+      "response": {
+        "coveredCategories": [
+          "level"
+        ],
+        "formatId": "sensitivity/short",
+        "reconstruction": {
+          "reasons": [
+            "Categories this format never writes: sharing, keep.",
+            "The output selects conditional formats; its base format alone does not establish reconstruction."
+          ],
+          "status": "unknown"
+        },
+        "valueLossyCategories": []
+      }
+    },
+    "55e77ab83ab0c9d2b2d11f61680168966562b2daf7e78a0f1cae574147198a34": {
+      "argsSummary": "[\"sensitivity/xml\"]",
+      "method": "getFormatCoverage",
+      "response": {
+        "coveredCategories": [
+          "level",
+          "sharing"
+        ],
+        "formatId": "sensitivity/xml",
+        "reconstruction": {
+          "reasons": [
+            "Categories this format never writes: keep."
+          ],
+          "status": "unknown"
+        },
+        "valueLossyCategories": []
+      }
+    },
+    "89d0984da7f673459c0512538cd081811cc617f0b0aca8e108c9c36b2bf686ad": {
+      "argsSummary": "[]",
+      "method": "getFormatCoverage",
+      "response": {
+        "coveredCategories": [
+          "level",
+          "controls"
+        ],
+        "formatId": "default",
+        "reconstruction": {
+          "reasons": [],
+          "status": "supported"
+        },
+        "valueLossyCategories": []
+      }
+    },
+    "8a5b258d963dfe9cef0a0cf335acb86df9b63bc738f7c47dd7e226510bf97a0c": {
+      "argsSummary": "[]",
+      "method": "getFormatCoverage",
+      "response": {
+        "coveredCategories": [
+          "level",
+          "sharing"
+        ],
+        "formatId": "sensitivity/full",
+        "reconstruction": {
+          "reasons": [
+            "Categories this format never writes: keep."
+          ],
+          "status": "unknown"
+        },
+        "valueLossyCategories": []
+      }
+    },
+    "bc354804fede161abebb4ec24b462821cdda3d518bb83f8f6ed555004db9b575": {
+      "argsSummary": "[\"retention/block\"]",
+      "method": "getFormatCoverage",
+      "response": {
+        "coveredCategories": [
+          "keep"
+        ],
+        "formatId": "retention/block",
+        "reconstruction": {
+          "reasons": [
+            "Categories this format never writes: level, sharing."
+          ],
+          "status": "unknown"
+        },
+        "valueLossyCategories": []
+      }
+    },
+    "db542e4a39184997c94329c0aa80b6ede3d755ac1b5bec5a5e0f1bf1f846e9af": {
+      "argsSummary": "[]",
+      "method": "getScheme",
+      "response": {
+        "categories": [
+          {
+            "id": "level",
+            "label": "Level",
+            "required": true,
+            "rollup": "max",
+            "single": true
+          },
+          {
+            "id": "sharing",
+            "label": "Sharing",
+            "required": false,
+            "rollup": "first",
+            "single": true
+          },
+          {
+            "id": "keep",
+            "label": "Keep for",
+            "required": false,
+            "rollup": "max",
+            "scopes": [
+              "retention"
+            ],
+            "single": true
+          }
+        ],
+        "concepts": [
+          {
+            "aliases": [],
+            "categories": [
+              "level"
+            ],
+            "id": "INTERNAL",
+            "name": "Internal",
+            "parents": [],
+            "position": 0,
+            "rank": 0,
+            "views": {
+              "abbreviated": "INT",
+              "default": "INTERNAL"
+            }
+          },
+          {
+            "aliases": [],
+            "categories": [
+              "level"
+            ],
+            "id": "CONFIDENTIAL",
+            "name": "Confidential",
+            "parents": [],
+            "position": 0,
+            "rank": 1,
+            "views": {
+              "abbreviated": "CONF",
+              "default": "CONFIDENTIAL"
+            }
+          },
+          {
+            "aliases": [],
+            "categories": [
+              "sharing"
+            ],
+            "id": "PARTNERS",
+            "name": "Shared with partners",
+            "parents": [],
+            "position": 0,
+            "views": {
+              "default": "PARTNERS"
+            }
+          },
+          {
+            "aliases": [],
+            "categories": [
+              "keep"
+            ],
+            "id": "KEEP_7Y",
+            "name": "Seven years",
+            "parents": [],
+            "position": 0,
+            "rank": 0,
+            "views": {
+              "default": "KEEP 7 YEARS"
+            }
+          }
+        ],
+        "contextFormats": {
+          "part": [
+            "short_line",
+            "short_shared_line"
+          ],
+          "whole": [
+            "full_line",
+            "full_line_2019"
+          ]
+        },
+        "defaultPartRenderFormat": "sensitivity/short",
+        "defaultRenderFormat": "sensitivity/full",
+        "defaultScope": "sensitivity",
+        "defaultWholeRenderFormat": "sensitivity/full",
+        "description": "Surface outputs conformance scheme. Two surfaces: sensitivity, with a part view `short` that is written in `short_line` or, for a marking shared with partners, `short_shared_line`; a whole view `full` written in `full_line` and also read in the retired `full_line_2019`; and an `xml` view with no role. Retention has one view, `block`, with no role. Parts are written in parentheses.",
+        "embeddedMarking": [
+          {
+            "pattern": "\\((.+)\\)",
+            "template": "({marking}) "
+          }
+        ],
+        "formats": [
+          {
+            "categoryOrder": [
+              "level"
+            ],
+            "defaultFor": [
+              "part"
+            ],
+            "id": "sensitivity/short",
+            "mode": "inline",
+            "outputView": "short",
+            "role": "part",
+            "surface": "sensitivity",
+            "view": "abbreviated"
+          },
+          {
+            "categoryOrder": [
+              "level",
+              "sharing"
+            ],
+            "categoryViews": {
+              "level": "default",
+              "sharing": "default"
+            },
+            "defaultFor": [
+              "whole"
+            ],
+            "id": "sensitivity/full",
+            "mode": "inline",
+            "outputView": "full",
+            "role": "whole",
+            "separator": " // ",
+            "separatorBefore": {
+              "sharing": " // "
+            },
+            "surface": "sensitivity"
+          },
+          {
+            "categoryOrder": [
+              "level",
+              "sharing"
+            ],
+            "categoryViews": {
+              "level": "default",
+              "sharing": "default"
+            },
+            "defaultFor": [],
+            "id": "sensitivity/xml",
+            "mode": "block",
+            "outputView": "xml",
+            "surface": "sensitivity",
+            "syntax": {
+              "type": "xml-attributes"
+            }
+          },
+          {
+            "categoryOrder": [
+              "keep"
+            ],
+            "categoryViews": {
+              "keep": "default"
+            },
+            "defaultFor": [
+              "whole",
+              "part"
+            ],
+            "id": "retention/block",
+            "mode": "block",
+            "outputView": "block",
+            "surface": "retention"
+          }
+        ],
+        "id": "ref-surfaces-1",
+        "labelPresets": [],
+        "name": "Reference Surfaces Scheme 1",
+        "referenceSurfaceLabel": {
+          "plural": "Handbooks",
+          "singular": "Handbook"
+        },
+        "roleAware": false,
+        "scopes": [
+          {
+            "id": "sensitivity",
+            "label": "Sensitivity"
+          },
+          {
+            "id": "retention",
+            "label": "Retention"
+          }
+        ],
+        "version": "1.0.0"
+      }
+    },
+    "e68185cb05ecd534c2e84c9c61564b42b751a1ebcad74d2b683c5459b1673e75": {
+      "argsSummary": "[\"sensitivity/full\"]",
+      "method": "getFormatCoverage",
+      "response": {
+        "coveredCategories": [
+          "level",
+          "sharing"
+        ],
+        "formatId": "sensitivity/full",
+        "reconstruction": {
+          "reasons": [
+            "Categories this format never writes: keep."
+          ],
+          "status": "unknown"
+        },
+        "valueLossyCategories": []
+      }
+    }
+  },
+  "version": "0.1.0"
+}

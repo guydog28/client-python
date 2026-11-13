@@ -1,0 +1,194 @@
+{
+    "cases": [
+        {
+            "args": [],
+            "expect": {
+                "formats": [
+                    {
+                        "categoryOrder": {
+                            "0": "level",
+                            "length": 1
+                        },
+                        "id": "sensitivity/short"
+                    },
+                    {
+                        "categoryOrder": {
+                            "0": "level",
+                            "1": "sharing",
+                            "length": 2
+                        },
+                        "id": "sensitivity/full"
+                    },
+                    {
+                        "categoryOrder": {
+                            "0": "level",
+                            "1": "sharing",
+                            "length": 2
+                        },
+                        "id": "sensitivity/xml"
+                    },
+                    {
+                        "categoryOrder": {
+                            "0": "keep",
+                            "length": 1
+                        },
+                        "id": "retention/block"
+                    }
+                ]
+            },
+            "fixture": "ref-surfaces-1",
+            "method": "getScheme",
+            "name": "format-coverage-profile-of-outputs-declared-by-surface"
+        },
+        {
+            "args": [
+                "sensitivity/short"
+            ],
+            "expect": {
+                "coveredCategories": {
+                    "0": "level",
+                    "length": 1
+                },
+                "formatId": "sensitivity/short"
+            },
+            "fixture": "ref-surfaces-1",
+            "method": "getFormatCoverage",
+            "name": "format-coverage-view-with-a-case-covers-its-base-format"
+        },
+        {
+            "args": [
+                "sensitivity/full"
+            ],
+            "expect": {
+                "coveredCategories": {
+                    "0": "level",
+                    "1": "sharing",
+                    "length": 2
+                },
+                "formatId": "sensitivity/full"
+            },
+            "fixture": "ref-surfaces-1",
+            "method": "getFormatCoverage",
+            "name": "format-coverage-whole-view"
+        },
+        {
+            "args": [
+                "sensitivity/xml"
+            ],
+            "expect": {
+                "coveredCategories": {
+                    "0": "level",
+                    "1": "sharing",
+                    "length": 2
+                },
+                "formatId": "sensitivity/xml"
+            },
+            "fixture": "ref-surfaces-1",
+            "method": "getFormatCoverage",
+            "name": "format-coverage-attribute-view"
+        },
+        {
+            "args": [
+                "retention/block"
+            ],
+            "expect": {
+                "coveredCategories": {
+                    "0": "keep",
+                    "length": 1
+                },
+                "formatId": "retention/block"
+            },
+            "fixture": "ref-surfaces-1",
+            "method": "getFormatCoverage",
+            "name": "format-coverage-view-of-a-second-surface"
+        },
+        {
+            "args": [],
+            "expect": {
+                "coveredCategories": {
+                    "0": "level",
+                    "1": "sharing",
+                    "length": 2
+                },
+                "formatId": "sensitivity/full"
+            },
+            "fixture": "ref-surfaces-1",
+            "method": "getFormatCoverage",
+            "name": "format-coverage-default-output"
+        },
+        {
+            "args": [],
+            "expect": {
+                "defaultRenderFormat": "default",
+                "formats": [
+                    {
+                        "categoryOrder": {
+                            "0": "level",
+                            "1": "controls",
+                            "length": 2
+                        },
+                        "id": "default"
+                    },
+                    {
+                        "categoryOrder": {
+                            "0": "level",
+                            "1": "controls",
+                            "length": 2
+                        },
+                        "id": "portion"
+                    }
+                ]
+            },
+            "fixture": "ref-scheme-1",
+            "method": "getScheme",
+            "name": "format-coverage-profile-of-formats-as-outputs"
+        },
+        {
+            "args": [
+                "default"
+            ],
+            "expect": {
+                "coveredCategories": {
+                    "0": "level",
+                    "1": "controls",
+                    "length": 2
+                },
+                "formatId": "default"
+            },
+            "fixture": "ref-scheme-1",
+            "method": "getFormatCoverage",
+            "name": "format-coverage-format-as-output"
+        },
+        {
+            "args": [
+                "portion"
+            ],
+            "expect": {
+                "coveredCategories": {
+                    "0": "level",
+                    "1": "controls",
+                    "length": 2
+                },
+                "formatId": "portion"
+            },
+            "fixture": "ref-scheme-1",
+            "method": "getFormatCoverage",
+            "name": "format-coverage-second-format-as-output"
+        },
+        {
+            "args": [],
+            "expect": {
+                "coveredCategories": {
+                    "0": "level",
+                    "1": "controls",
+                    "length": 2
+                },
+                "formatId": "default"
+            },
+            "fixture": "ref-scheme-1",
+            "method": "getFormatCoverage",
+            "name": "format-coverage-default-format"
+        }
+    ],
+    "slice": "adapter"
+}
