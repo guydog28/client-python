@@ -24,7 +24,7 @@ Runnable examples live in [`examples/`](examples/). Each subdirectory is a self-
 CLI demo that classifies a document using the Context-scoped MCP sequence
 (`audit_document_markings` → `aggregate_markings`). Two modes:
 
-- **MCP mode** (`--mcp` / `EZCLASSIFY_TRANSPORT=mcp`): spawns a licensed, content-configured `@ezclassify/mcp` runtime as a local subprocess. No LLM API key required; the orchestration is deterministic.
-- **REST mode** (default): connects to a running `@ezclassify/rest-api` runtime that serves the Context, with optional `EZCLASSIFY_ACCESS_TOKEN` and `EZCLASSIFY_CONTEXT_TOKEN`. It needs a runtime: the Cedar Valley replay server has no recording for arbitrary document text.
+- **MCP mode** (`--mcp` / `EZCLASSIFY_TRANSPORT=mcp`): spawns the `ezclassify-mcp` runtime binary, licensed and content-configured, as a local subprocess. No LLM API key required; the orchestration is deterministic.
+- **REST mode** (default): connects to a running EzClassify REST runtime that serves the Context, with optional `EZCLASSIFY_ACCESS_TOKEN` and `EZCLASSIFY_CONTEXT_TOKEN`. It needs a runtime: the Cedar Valley replay server has no recording for arbitrary document text.
 
-Unit tests in [`examples/llm-classify/tests/`](examples/llm-classify/tests/) cover the classifier workflow, REST client, and CLI entry point using only stdlib mocks, no live server needed. The standalone example tests run as part of `make test`. `make test-mcp-live` requires `MCP_SERVER_PATH` to name a licensed, content-configured MCP runtime and fails if it is absent. `make smoke URL=<server-url>` runs the REST live lane.
+Unit tests in [`examples/llm-classify/tests/`](examples/llm-classify/tests/) cover the classifier workflow, REST client, and CLI entry point using only stdlib mocks, no live server needed. The standalone example tests run as part of `make test`. `make test-mcp-live` requires `MCP_SERVER_PATH` to name the `ezclassify-mcp` binary of a licensed, content-configured runtime and fails if it is absent. `make smoke URL=<server-url>` runs the REST live lane.

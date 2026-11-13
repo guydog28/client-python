@@ -122,13 +122,15 @@ def test_rest_mode_sdk_error_exits_1(capsys: pytest.CaptureFixture[str]) -> None
     assert "error: Connection error: refused" in capsys.readouterr().err
 
 
-def test_mcp_mode_missing_node_exits_1(capsys: pytest.CaptureFixture[str]) -> None:
-    # Spawning the runtime raises FileNotFoundError when node is absent.
+def test_mcp_mode_missing_binary_exits_1(capsys: pytest.CaptureFixture[str]) -> None:
+    # Spawning the runtime raises FileNotFoundError when the binary is absent.
     import mcp_client
 
     with patch.object(
-        mcp_client, "MCPClient", side_effect=FileNotFoundError("node not found")
+        mcp_client,
+        "MCPClient",
+        side_effect=FileNotFoundError("ezclassify-mcp not found"),
     ):
         rc = main(["--text", "HIGH text", "--mcp", "--quiet"])
     assert rc == 1
-    assert "error: node not found" in capsys.readouterr().err
+    assert "error: ezclassify-mcp not found" in capsys.readouterr().err

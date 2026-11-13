@@ -1,10 +1,9 @@
 """Tests for the MCPClient subprocess plumbing.
 
-Each test spawns a tiny scripted node process standing in for the MCP
-server, so the pipe-handling behavior is exercised for real: stderr
-draining, receive timeouts, request-id matching, and error reporting.
-
-Requires Node.js on PATH. Missing prerequisites fail this suite.
+Each test spawns a tiny scripted executable standing in for the ezclassify-mcp
+binary, so the pipe-handling behavior is exercised for real: stderr draining,
+receive timeouts, request-id matching, argument and environment hand-off, and
+error reporting.
 """
 
 from __future__ import annotations
@@ -25,15 +24,13 @@ from mcp_client import MCPClient
 
 # Answers every request with an empty result, echoing the request id.
 _ECHO_SERVER = """
-const readline = require('readline');
-const rl = readline.createInterface({ input: process.stdin });
-rl.on('line', (l) => {
-    const m = JSON.parse(l);
-    if (m.id !== undefined) {
-        process.stdout.write(
-            JSON.stringify({ jsonrpc: '2.0', id: m.id, result: {} }) + '\\n');
-    }
-});
+import json
+import sys
+
+for line in sys.stdin:
+    message = json.loads(line)
+    if "id" in message:
+        print(json.dumps({"jsonrpc": "2.0", "id": message["id"], "result": {}}), flush=True)
 """
 
 
@@ -42,7 +39,7 @@ def spawned(monkeypatch: pytest.MonkeyPatch) -> Iterator[list[subprocess.Popen[b
     """Record every server the client spawns and reap survivors at teardown.
 
     The assertions in each test are about the client's own cleanup; this
-    finalizer is the backstop so a failing test can never leave a node
+    finalizer is the backstop so a failing test can never leave a server
     process behind.
     """
     procs: list[subprocess.Popen[bytes]] = []
@@ -62,8 +59,13 @@ def spawned(monkeypatch: pytest.MonkeyPatch) -> Iterator[list[subprocess.Popen[b
 
 
 def _server(tmp_path: Path, body: str) -> str:
-    path = tmp_path / "fake-mcp-server.js"
-    path.write_text(body, encoding="utf-8")
+    """Write *body* as an executable Python script and return its path.
+
+    The client runs its server path directly, as it runs the real binary.
+    """
+    path = tmp_path / "fake-ezclassify-mcp"
+    path.write_text(f"#!{sys.executable}\n{body}", encoding="utf-8")
+    path.chmod(0o755)
     return str(path)
 
 
@@ -73,8 +75,12 @@ def test_chatty_stderr_does_not_deadlock(tmp_path: Path) -> None:
     chatty = _server(
         tmp_path,
         """
-const junk = 'x'.repeat(65536);
-for (let i = 0; i < 20; i++) process.stderr.write(junk + '\\n');
+import sys
+
+junk = "x" * 65536
+for _ in range(20):
+    sys.stderr.write(junk + "\\n")
+sys.stderr.flush()
 """
         + _ECHO_SERVER,
     )
@@ -82,17 +88,42 @@ for (let i = 0; i < 20; i++) process.stderr.write(junk + '\\n');
         assert client.list_tools() == []
 
 
+def test_server_is_spawned_directly_with_the_stdio_flag_and_the_environment(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The binary is the process: no interpreter is put in front of it, it is
+    # asked for stdio, and it inherits the runtime settings the operator exported.
+    monkeypatch.setenv("EZCLASSIFY_ARTIFACT_DIR", "/var/lib/ezclassify")
+    reporting = _server(
+        tmp_path,
+        """
+import json
+import os
+import sys
+
+for line in sys.stdin:
+    message = json.loads(line)
+    if "id" in message:
+        tool = {"name": " ".join(sys.argv[1:]) + "|" + os.environ["EZCLASSIFY_ARTIFACT_DIR"]}
+        print(json.dumps({"jsonrpc": "2.0", "id": message["id"], "result": {"tools": [tool]}}), flush=True)
+""",
+    )
+    with MCPClient(mcp_server_path=reporting, timeout=15) as client:
+        tools = client.list_tools()
+    assert [t["name"] for t in tools] == ["--transport=stdio|/var/lib/ezclassify"]
+
+
 def test_recv_times_out_when_server_never_answers(
     tmp_path: Path, spawned: list[subprocess.Popen[bytes]]
 ) -> None:
     # The timeout constructor parameter bounds every receive, so a stalled
     # server cannot hang the client.
-    mute = _server(tmp_path, "setInterval(() => {}, 1000);\n")
+    mute = _server(tmp_path, "import time\nwhile True:\n    time.sleep(1)\n")
     with pytest.raises(RuntimeError, match="did not respond within"):
         with MCPClient(mcp_server_path=mute, timeout=2):
             pass
     # __exit__ never runs when __enter__ raises, so the client has to stop the
-    # server itself or the node process outlives the caller.
+    # server itself or the process outlives the caller.
     assert len(spawned) == 1
     assert spawned[0].poll() is not None
 
@@ -102,7 +133,7 @@ def test_handshake_failure_surfaces_stderr(tmp_path: Path) -> None:
     # instead of a generic message.
     crash = _server(
         tmp_path,
-        "process.stderr.write('boom: missing scheme dir\\n'); process.exit(1);\n",
+        "import sys\nsys.stderr.write('boom: missing scheme dir\\n')\nsys.exit(1)\n",
     )
     with pytest.raises(RuntimeError, match="boom: missing scheme dir"):
         with MCPClient(mcp_server_path=crash, timeout=10):
@@ -112,9 +143,9 @@ def test_handshake_failure_surfaces_stderr(tmp_path: Path) -> None:
 @pytest.mark.parametrize(
     "noise",
     [
-        "JSON.stringify({jsonrpc: '2.0', method: 'notifications/progress'})",
-        "JSON.stringify({jsonrpc: '2.0', id: 999, result: {}})",
-        "'still starting'",
+        'json.dumps({"jsonrpc": "2.0", "method": "notifications/progress"})',
+        'json.dumps({"jsonrpc": "2.0", "id": 999, "result": {}})',
+        '"still starting"',
     ],
     ids=["notifications", "other-response-ids", "non-json-logs"],
 )
@@ -124,19 +155,19 @@ def test_trickled_noise_does_not_restart_the_response_deadline(
     noisy = _server(
         tmp_path,
         """
-const readline = require('readline');
-const rl = readline.createInterface({ input: process.stdin });
-rl.on('line', (line) => {
-    const request = JSON.parse(line);
-    if (request.id === undefined) return;
-    const timer = setInterval(() => {
-        process.stdout.write(NOISE + '\\n');
-    }, 30);
-    setTimeout(() => {
-        clearInterval(timer);
-        process.stdout.write(JSON.stringify({id: request.id, result: {}}) + '\\n');
-    }, 1500);
-});
+import json
+import sys
+import time
+
+for line in sys.stdin:
+    request = json.loads(line)
+    if "id" not in request:
+        continue
+    end = time.monotonic() + 1.5
+    while time.monotonic() < end:
+        print(NOISE, flush=True)
+        time.sleep(0.03)
+    print(json.dumps({"id": request["id"], "result": {}}), flush=True)
 """.replace("NOISE", noise),
     )
     started = monotonic()
@@ -154,22 +185,18 @@ def test_recv_skips_messages_for_other_ids(tmp_path: Path) -> None:
     noisy = _server(
         tmp_path,
         """
-const readline = require('readline');
-const rl = readline.createInterface({ input: process.stdin });
-rl.on('line', (l) => {
-    const m = JSON.parse(l);
-    if (m.id !== undefined) {
-        // A server-initiated request (own id) and a notification arrive
-        // before the actual response.
-        process.stdout.write(
-            JSON.stringify({ jsonrpc: '2.0', id: 999, method: 'roots/list' }) + '\\n');
-        process.stdout.write(
-            JSON.stringify({ jsonrpc: '2.0', method: 'notifications/progress' }) + '\\n');
-        process.stdout.write(
-            JSON.stringify({ jsonrpc: '2.0', id: m.id,
-                             result: { tools: [{ name: 'audit_document_markings' }] } }) + '\\n');
-    }
-});
+import json
+import sys
+
+for line in sys.stdin:
+    message = json.loads(line)
+    if "id" in message:
+        # A server-initiated request (own id) and a notification arrive
+        # before the actual response.
+        print(json.dumps({"jsonrpc": "2.0", "id": 999, "method": "roots/list"}), flush=True)
+        print(json.dumps({"jsonrpc": "2.0", "method": "notifications/progress"}), flush=True)
+        print(json.dumps({"jsonrpc": "2.0", "id": message["id"],
+                          "result": {"tools": [{"name": "audit_document_markings"}]}}), flush=True)
 """,
     )
     with MCPClient(mcp_server_path=noisy, timeout=15) as client:
@@ -183,18 +210,16 @@ def test_noise_on_stdout_does_not_abort_the_request(tmp_path: Path) -> None:
     noisy = _server(
         tmp_path,
         """
-process.stdout.write('@ezclassify/mcp starting up\\n');
-const readline = require('readline');
-const rl = readline.createInterface({ input: process.stdin });
-rl.on('line', (l) => {
-    const m = JSON.parse(l);
-    if (m.id !== undefined) {
-        process.stdout.write('still warming up\\n');
-        process.stdout.write(
-            JSON.stringify({ jsonrpc: '2.0', id: m.id,
-                             result: { tools: [{ name: 'audit_document_markings' }] } }) + '\\n');
-    }
-});
+import json
+import sys
+
+print("ezclassify-mcp starting up", flush=True)
+for line in sys.stdin:
+    message = json.loads(line)
+    if "id" in message:
+        print("still warming up", flush=True)
+        print(json.dumps({"jsonrpc": "2.0", "id": message["id"],
+                          "result": {"tools": [{"name": "audit_document_markings"}]}}), flush=True)
 """,
     )
     with MCPClient(mcp_server_path=noisy, timeout=15) as client:
@@ -208,20 +233,18 @@ def test_tool_level_error_is_reported_with_the_tool_name(tmp_path: Path) -> None
     failing = _server(
         tmp_path,
         """
-const readline = require('readline');
-const rl = readline.createInterface({ input: process.stdin });
-rl.on('line', (l) => {
-    const m = JSON.parse(l);
-    if (m.id === undefined) return;
-    if (m.method === 'tools/call') {
-        process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id: m.id, result: {
-            isError: true,
-            content: [{ type: 'text', text: 'context not found' }] } }) + '\\n');
-        return;
-    }
-    process.stdout.write(
-        JSON.stringify({ jsonrpc: '2.0', id: m.id, result: {} }) + '\\n');
-});
+import json
+import sys
+
+for line in sys.stdin:
+    message = json.loads(line)
+    if "id" not in message:
+        continue
+    if message.get("method") == "tools/call":
+        result = {"isError": True, "content": [{"type": "text", "text": "context not found"}]}
+    else:
+        result = {}
+    print(json.dumps({"jsonrpc": "2.0", "id": message["id"], "result": result}), flush=True)
 """,
     )
     with MCPClient(
@@ -234,29 +257,37 @@ rl.on('line', (l) => {
 
 
 def test_tool_methods_before_start_raise_a_clear_error() -> None:
-    client = MCPClient(context_id="demo-ctx", mcp_server_path="/nonexistent/index.js")
+    client = MCPClient(
+        context_id="demo-ctx", mcp_server_path="/nonexistent/ezclassify-mcp"
+    )
     with pytest.raises(RuntimeError, match="is not started"):
         client.audit("some text")
 
 
-def test_server_lookup_only_consults_local_node_modules(
+def test_server_lookup_consults_only_the_path_for_the_binary(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    # The example's own node_modules is the one place the lookup consults;
-    # everything else is MCP_SERVER_PATH.
-    example_dir = Path(mcp_client.__file__).parent
-    local = example_dir / "node_modules/@ezclassify/mcp/dist/index.js"
+    # PATH is the one place the lookup consults; everything else is
+    # MCP_SERVER_PATH.
     asked: list[str] = []
 
-    def record(path: str) -> bool:
-        asked.append(path)
-        return False
+    def record(name: str) -> None:
+        asked.append(name)
 
-    monkeypatch.setattr(mcp_client.os.path, "isfile", record)
+    monkeypatch.setattr(mcp_client.shutil, "which", record)
     with pytest.raises(RuntimeError, match="MCP_SERVER_PATH"):
         mcp_client._find_mcp_server()
 
-    assert [Path(p) for p in asked] == [local]
+    assert asked == ["ezclassify-mcp"]
+
+
+def test_server_lookup_returns_the_binary_found_on_the_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        mcp_client.shutil, "which", lambda name: f"/opt/ezclassify/bin/{name}"
+    )
+    assert mcp_client._find_mcp_server() == "/opt/ezclassify/bin/ezclassify-mcp"
 
 
 def test_tool_call_forwards_operator_context_authorization(
@@ -264,7 +295,7 @@ def test_tool_call_forwards_operator_context_authorization(
 ) -> None:
     """A stdio transport still requires the signed Context authorization carrier."""
     monkeypatch.setenv("EZCLASSIFY_CONTEXT_TOKEN", "operator-test-carrier")
-    client = MCPClient(context_id="ref-ctx-1", mcp_server_path="unused.js")
+    client = MCPClient(context_id="ref-ctx-1", mcp_server_path="unused")
     sent: list[dict] = []
     monkeypatch.setattr(client, "_send", sent.append)
     monkeypatch.setattr(client, "_recv", lambda _id: {"result": {"content": []}})
@@ -280,7 +311,7 @@ def test_explicit_context_authorization_overrides_environment(
 ) -> None:
     monkeypatch.setenv("EZCLASSIFY_CONTEXT_TOKEN", "ambient-test-carrier")
     carrier = "explicit-test-carrier"
-    client = MCPClient(mcp_server_path="unused.js", context_token=carrier)
+    client = MCPClient(mcp_server_path="unused", context_token=carrier)
     sent: list[dict] = []
     monkeypatch.setattr(client, "_send", sent.append)
     monkeypatch.setattr(client, "_recv", lambda _id: {"result": {"content": []}})
@@ -292,7 +323,7 @@ def test_tool_call_without_context_authorization_does_not_invent_a_carrier(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.delenv("EZCLASSIFY_CONTEXT_TOKEN", raising=False)
-    client = MCPClient(mcp_server_path="unused.js")
+    client = MCPClient(mcp_server_path="unused")
     sent: list[dict] = []
     monkeypatch.setattr(client, "_send", sent.append)
     monkeypatch.setattr(client, "_recv", lambda _id: {"result": {"content": []}})
@@ -317,7 +348,7 @@ def _stub_tool(
 def test_audit_reads_the_typed_report_from_the_envelope(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    client = MCPClient(context_id="ref-ctx-1", mcp_server_path="unused.js")
+    client = MCPClient(context_id="ref-ctx-1", mcp_server_path="unused")
     wire = audit_report([part("HIGH"), part("BOGUS", 10, valid=False)], whole="HIGH")
     calls = _stub_tool(client, monkeypatch, {"result": wire.model_dump(by_alias=True)})
 
@@ -337,7 +368,7 @@ def test_aggregate_reads_the_typed_result_from_the_envelope(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     client = MCPClient(
-        context_id="ref-ctx-1", context_version="2.0.0", mcp_server_path="unused.js"
+        context_id="ref-ctx-1", context_version="2.0.0", mcp_server_path="unused"
     )
     wire = aggregate("HIGH")
     calls = _stub_tool(client, monkeypatch, {"result": wire.model_dump(by_alias=True)})
@@ -357,7 +388,7 @@ def test_aggregate_reads_the_typed_result_from_the_envelope(
 def test_audit_refuses_a_payload_without_a_typed_result(
     payload: object, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    client = MCPClient(context_id="ref-ctx-1", mcp_server_path="unused.js")
+    client = MCPClient(context_id="ref-ctx-1", mcp_server_path="unused")
     _stub_tool(client, monkeypatch, payload)
     with pytest.raises(RuntimeError, match="audit_document_markings returned no typed"):
         client.audit("HIGH")
@@ -367,7 +398,7 @@ def test_audit_refuses_a_payload_without_a_typed_result(
 def test_aggregate_refuses_a_payload_without_a_typed_result(
     payload: object, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    client = MCPClient(context_id="ref-ctx-1", mcp_server_path="unused.js")
+    client = MCPClient(context_id="ref-ctx-1", mcp_server_path="unused")
     _stub_tool(client, monkeypatch, payload)
     with pytest.raises(RuntimeError, match="aggregate_markings returned no typed"):
         client.aggregate(["HIGH"])
@@ -377,6 +408,6 @@ def test_a_tool_call_without_a_context_id_is_refused(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.delenv("EZCLASSIFY_CONTEXT_ID", raising=False)
-    client = MCPClient(mcp_server_path="unused.js")
+    client = MCPClient(mcp_server_path="unused")
     with pytest.raises(RuntimeError, match="EZCLASSIFY_CONTEXT_ID"):
         client.audit("HIGH")

@@ -1,21 +1,27 @@
-"""MCP JSON-RPC client that spawns @ezclassify/mcp as a stdio subprocess.
+"""MCP JSON-RPC client that spawns the ezclassify-mcp binary as a stdio subprocess.
 
 Speaks JSON-RPC over stdio with the stdlib alone; the wire types come from
 ezclassify-rest-client. Provides the same audit / aggregate
 interface as EzClassifyClient so it can be dropped in as a backend for the
 classify() workflow.
 
-Environment variables (the runtime's license and bundle settings are also required):
+Environment variables:
     EZCLASSIFY_CONTEXT_ID        : published Context id
     EZCLASSIFY_CONTEXT_VERSION   : Context version (default: latest)
     EZCLASSIFY_CONTEXT_TOKEN     : signed Context authorization carrier
-    MCP_SERVER_PATH              : path to @ezclassify/mcp dist/index.js
+    MCP_SERVER_PATH              : path to the ezclassify-mcp binary (default: the
+                                   one found on PATH)
+
+The child process inherits this environment, so the runtime's own settings
+(EZCLASSIFY_ARTIFACT_DIR, EZCLASSIFY_LICENSE_LOCATION, EZCLASSIFY_BUNDLE_DIR and
+EZCLASSIFY_CALLER_ORGANIZATION_ID) are set the same way.
 """
 
 from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import threading
 from collections import deque
@@ -32,7 +38,7 @@ _NOT_STARTED = (
 
 
 class MCPClient:
-    """Python MCP client that spawns @ezclassify/mcp as a subprocess.
+    """Python MCP client that spawns the ezclassify-mcp binary as a subprocess.
 
     Communicates via JSON-RPC 2.0 over stdio. Provides the same audit /
     aggregate interface as EzClassifyClient, making it a drop-in backend
@@ -57,12 +63,12 @@ class MCPClient:
         Args:
             context_id: Published Context id, or EZCLASSIFY_CONTEXT_ID.
             context_version: Context version, or EZCLASSIFY_CONTEXT_VERSION.
-            mcp_server_path: Configured runtime entrypoint, or MCP_SERVER_PATH.
+            mcp_server_path: Path to the ezclassify-mcp binary, or MCP_SERVER_PATH.
             timeout: Maximum seconds to wait for each JSON-RPC response.
             context_token: Signed Context carrier, overriding EZCLASSIFY_CONTEXT_TOKEN.
 
         Raises:
-            RuntimeError: If no runtime entrypoint can be located.
+            RuntimeError: If the ezclassify-mcp binary cannot be located.
         """
         self._context_id = context_id or os.environ.get("EZCLASSIFY_CONTEXT_ID")
         self._context_version = context_version or os.environ.get(
@@ -92,11 +98,10 @@ class MCPClient:
     def start(self) -> None:
         """Spawn the MCP server subprocess and complete the JSON-RPC handshake."""
         env = dict(os.environ)
-        # The runtime to spawn is chosen by the operator through
-        # MCP_SERVER_PATH or a local install, and node is taken from PATH the
-        # same way every other tool in the example is.
+        # The binary to spawn is chosen by the operator through
+        # MCP_SERVER_PATH or the PATH.
         self._proc = subprocess.Popen(  # noqa: S603
-            ["node", self._mcp_server_path, "--transport=stdio"],  # noqa: S607
+            [self._mcp_server_path, "--transport=stdio"],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -336,19 +341,15 @@ def _pump_stderr(stream: Any, tail: "deque[str]") -> None:
 
 
 def _find_mcp_server() -> str:
-    """Locate the @ezclassify/mcp dist/index.js file.
+    """Locate the ezclassify-mcp binary on PATH.
 
-    Looks in this directory's ``node_modules``. Any other location, a build
-    sitting in another checkout included, is named through MCP_SERVER_PATH.
+    Any other location is named through MCP_SERVER_PATH.
     """
-    here = os.path.dirname(os.path.abspath(__file__))
-
-    local = os.path.join(here, "node_modules", "@ezclassify", "mcp", "dist", "index.js")
-    if os.path.isfile(local):
-        return local
-
+    found = shutil.which("ezclassify-mcp")
+    if found is not None:
+        return found
     raise RuntimeError(
-        "Cannot locate @ezclassify/mcp server. Set MCP_SERVER_PATH or install:\n"
-        "  npm install @ezclassify/mcp\n"
+        "Cannot locate the ezclassify-mcp binary. Set MCP_SERVER_PATH to the "
+        "binary from your EzClassify runtime release archive, or put it on PATH.\n"
         "Configure the runtime license and signed content bundle before starting it."
     )

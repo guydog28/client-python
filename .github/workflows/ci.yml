@@ -225,8 +225,8 @@ jobs:
 
       # Examples gate: the llm-classify demo's suite runs registry-free
       # (stdlib mocks, local editable installs). Its MCP-subprocess live tests
-      # are a separate lane, `make test-mcp-live`, which needs a licensed MCP
-      # runtime at MCP_SERVER_PATH.
+      # are a separate lane, `make test-mcp-live`, which needs the ezclassify-mcp
+      # binary of a licensed runtime at MCP_SERVER_PATH.
       - name: Test llm-classify example
         working-directory: examples/llm-classify
         run: pytest tests/

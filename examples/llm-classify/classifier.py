@@ -1,7 +1,7 @@
 """Document classification workflow that mirrors the MCP tool-use sequence.
 
 The classifier drives two EzClassify calls in sequence, the same calls an LLM
-agent makes when using the ``@ezclassify/mcp`` MCP server:
+agent makes when using the ``ezclassify-mcp`` server:
 
     audit_document_markings → find the overall marking and every part marking
                               in the document, and judge each one

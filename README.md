@@ -297,7 +297,7 @@ python3 -m main --server https://runtime.example.com --file sample.txt
 ```
 
 Leave the tokens out if your runtime asks for none. Add `--mcp` to spawn a
-licensed, content-configured `@ezclassify/mcp` runtime instead. The example's
+licensed, content-configured `ezclassify-mcp` runtime binary instead. The example's
 README shows the report and both modes.
 
 ## Integration testing

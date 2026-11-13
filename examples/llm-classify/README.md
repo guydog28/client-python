@@ -73,9 +73,19 @@ which the memo never states.
 
 ## Run it through MCP
 
-MCP mode spawns a locally installed `@ezclassify/mcp` runtime instead of
-calling the REST API. The runtime must have a valid runtime license and a signed
-content bundle configured:
+MCP mode spawns the `ezclassify-mcp` binary from your runtime's release archive
+instead of calling the REST API. Put the binary on `PATH` or name it with
+`MCP_SERVER_PATH`. The runtime needs a valid license and a signed content
+bundle, which it reads from the environment the example passes through:
+
+```sh
+export EZCLASSIFY_ARTIFACT_DIR=/var/lib/ezclassify
+export EZCLASSIFY_LICENSE_LOCATION=/etc/ezclassify/license.ezl
+export EZCLASSIFY_BUNDLE_DIR=/etc/ezclassify/bundles
+export EZCLASSIFY_CALLER_ORGANIZATION_ID=<your organization id>
+```
+
+Then run the example:
 
 ```sh
 python3 -m main --file sample.txt --mcp
@@ -107,8 +117,9 @@ pytest tests/
 
 The standalone example tests run as part of the repository's `make test`.
 Run the eleven MCP acceptance cases separately with `make test-mcp-live` from
-the repository root. `MCP_SERVER_PATH` must select an already licensed,
-content-configured runtime with the published Context selected by the example.
+the repository root. `MCP_SERVER_PATH` must name the `ezclassify-mcp` binary of
+an already licensed, content-configured runtime with the published Context
+selected by the example.
 Supply a signed authorization carrier only when the deployment requires one.
 
 For a deployment using Context-token authorization, set `EZCLASSIFY_CONTEXT_TOKEN`

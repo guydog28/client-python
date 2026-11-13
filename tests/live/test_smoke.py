@@ -1,4 +1,4 @@
-"""Live wire-contract smoke test against a real @ezclassify/rest-api server.
+"""Live wire-contract smoke test against a real EzClassify REST runtime.
 
 The replayer/conformance suites exercise the client against *recorded* fixtures.
 That cannot catch a base-path or version mismatch: if the SDK and the live

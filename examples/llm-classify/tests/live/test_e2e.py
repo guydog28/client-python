@@ -1,14 +1,14 @@
 """Opt-in end-to-end tests for the llm-classify CLI in licensed MCP mode.
 
-These tests spawn the real @ezclassify/mcp server subprocess and run the
+These tests spawn the real ezclassify-mcp binary as a subprocess and run the
 CLI against it, no mocked HTTP calls, no fake JSON-RPC responses. The caller
 supplies an already licensed MCP runtime configured with the signed content
 for the ``cedar-valley`` Context, the demo's default (override it with
 EZCLASSIFY_CONTEXT_ID). The audit needs a scheme with a whole form and a part
 form, which Cedar Valley has.
 
-Requires: Node.js >= 22, @ezclassify/mcp built (dist/ present), Python 3.11+.
-MCP_SERVER_PATH must explicitly select that runtime.
+Requires: Python 3.11+ and the ezclassify-mcp binary from a runtime release archive.
+MCP_SERVER_PATH must explicitly select that binary.
 """
 
 from __future__ import annotations
