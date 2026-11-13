@@ -23,43 +23,34 @@ overall marking the parts require, and the handling notices on that result.
 
 ## Before you start
 
-This example sends your own document text to a runtime. The Cedar Valley replay
-server answers only requests recorded in advance, so it cannot audit this memo:
-it returns a 501 diagnostic. Use a runtime that serves the `cedar-valley`
-Context. To see the Python client working before you have one, start with the
-[Quickstart](../../README.md#quickstart), which runs against the replay server.
-
 You need Python 3.11 or newer and the SDK:
 
 ```sh
 pip install -r requirements.txt
 ```
 
-## Run it against your runtime
+## Run it against the developer runtime
 
-Your runtime administrator gives you the runtime URL and, for a secured
-deployment, two credentials: a caller token and a signed Context token. A
-runtime started on your machine listens on `http://localhost:3000`, which is
-the default for `--server`. Export the tokens if your deployment asks for them:
+This example sends your own document text to a runtime that serves the
+`cedar-valley` Context. The free developer runtime from the
+[Quickstart](../../README.md#quickstart) does, with no license, credentials or
+account. Start it in another terminal:
 
 ```sh
-export EZCLASSIFY_ACCESS_TOKEN=<caller identity token>
-export EZCLASSIFY_CONTEXT_TOKEN=<signed Context token>
+docker run --rm -p 3000:8080 ghcr.io/ezclassify/developer-runtime
 ```
 
-Then audit the sample memo. `--context` or `EZCLASSIFY_CONTEXT_ID` picks the
-published Context (default `cedar-valley`), and `--context-version` or
-`EZCLASSIFY_CONTEXT_VERSION` picks the version. Omit the version to let the
-server choose: the Context token's default, or the newest published:
+Then audit the sample memo. `--server` defaults to `http://localhost:3000`,
+where that container listens:
 
 ```sh
-python3 -m main --server https://runtime.example.com --file sample.txt
+python3 -m main --file sample.txt
 ```
 
 Classify inline text instead of a file:
 
 ```sh
-python3 -m main --server https://runtime.example.com --text $'CONFIDENTIAL\n\n(P) Route map posted in March.\n\nCONFIDENTIAL'
+python3 -m main --text $'CONFIDENTIAL\n\n(P) Route map posted in March.\n\nCONFIDENTIAL'
 ```
 
 Each step prints as it runs, so you can watch the audit call and the aggregate
@@ -70,6 +61,26 @@ issues. The authored overall marking is `CONFIDENTIAL` and it covers the parts.
 The parts also require `CONFIDENTIAL`, and the report lists the handling
 notices on that result. It also reports the procedural gap the scheme infers,
 which the memo never states.
+
+## Run it against your runtime
+
+Your runtime administrator gives you the runtime URL and, for a secured
+deployment, two credentials: a caller token and a signed Context token. Export
+the tokens if your deployment asks for them:
+
+```sh
+export EZCLASSIFY_ACCESS_TOKEN=<caller identity token>
+export EZCLASSIFY_CONTEXT_TOKEN=<signed Context token>
+```
+
+`--context` or `EZCLASSIFY_CONTEXT_ID` picks the published Context (default
+`cedar-valley`), and `--context-version` or `EZCLASSIFY_CONTEXT_VERSION` picks
+the version. Omit the version to let the server choose: the Context token's
+default, or the newest published:
+
+```sh
+python3 -m main --server https://runtime.example.com --file sample.txt
+```
 
 ## Run it through MCP
 

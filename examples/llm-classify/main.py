@@ -16,10 +16,12 @@ No LLM API key is required; the orchestration is deterministic.
 
     python3 -m main --server https://runtime.example.com --context cedar-valley --file sample.txt
 
-Connects to a running EzClassify runtime that serves the Context. This example
-audits arbitrary document text, which the Cedar Valley replay server has no
-recording for, so it needs a real runtime. ``--server`` defaults to
-``http://localhost:3000``, where a runtime started on your machine listens.
+Connects to a running EzClassify runtime that serves the Context. The free
+developer runtime serves ``cedar-valley`` with no credentials::
+
+    docker run --rm -p 3000:8080 ghcr.io/ezclassify/developer-runtime
+
+``--server`` defaults to ``http://localhost:3000``, where that container listens.
 
 Environment variables
 ---------------------
