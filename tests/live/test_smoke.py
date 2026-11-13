@@ -83,7 +83,7 @@ def test_live_process_round_trips_through_v1(live_server: str) -> None:
             with pytest.raises(EzClassifyClientError) as refusal:
                 context.scheme.render(
                     result.assertions,
-                    format="authority_block",
+                    output_format="authority_block",
                     preservation="full",
                 )
     assert result.valid is True
