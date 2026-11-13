@@ -28,13 +28,12 @@ Python 3.11+. The SDK ships client-only: use `EzClassifyClient` against a runnin
 
 ## Quickstart
 
-Start with the Cedar Valley replay server. It answers recorded requests for a
-fictional school-district Context, so you can see your integration work before
-you have a runtime, a license, or credentials. Node.js 22 or newer is needed
-for the replay server only; your application stays Python.
+Start with the free developer runtime. It is one container that serves the
+built-in Contexts, such as `capco-demo` and `cedar-valley`, over real HTTP, with
+no license, credentials or account. Your application stays Python.
 
 ```sh
-npx @ezclassify/conformance-server --scenario cedar-valley --port 4010
+docker run --rm -p 3000:8080 ghcr.io/ezclassify/developer-runtime
 ```
 
 Then connect the normal client to it:
@@ -43,7 +42,7 @@ Then connect the normal client to it:
 from ezclassify_rest_client import connect_context
 
 with connect_context(
-    "http://127.0.0.1:4010", context_id="cedar-valley", context_version="1.0.0"
+    "http://localhost:3000", context_id="cedar-valley", context_version="1.0.0"
 ) as ctx:
     marking = ctx.scheme.process("INTERNAL").result
     print(marking.rendered, marking.valid)
@@ -63,19 +62,15 @@ granted: False
   Recipient organization: False
 ```
 
-The server replays recordings, so it only knows a finite set of requests:
-Context `cedar-valley` version `1.0.0`, and inputs such as `PUBLIC`, `INTERNAL`
-and `CONFIDENTIAL`. The
-[scenario catalog](https://github.com/ezclassify/contracts/tree/main/packages/conformance-server/scenarios/cedar-valley#readme)
-lists every supported request. Anything else gets a 501 diagnostic instead of an
-invented answer. It requires no credentials by default; add `--auth simulated`
-to test how your code handles a missing or wrong credential.
+`cedar-valley` is a fictional school district policy for teaching, so use
+synthetic markings with it. `GET /v1/ctx` on the runtime lists every built-in
+Context.
 
 ### Swap to your runtime
 
-Change the base URL and add real credentials. The calls stay the same. Obtain
-the REST endpoint and credentials from your EzClassify runtime administrator.
-A secured deployment reads the caller identity from `access_token` and Context
+The calls stay the same. Four values change: the base URL, the Context, your
+application id and the caller token. Obtain them from your EzClassify runtime
+administrator. A secured deployment reads the caller identity from `access_token` and Context
 authorization from `context_token`; leave either out when the deployment does
 not require it.
 
@@ -284,9 +279,9 @@ SDK `major.minor` tracks the rest-api `major.minor`; patch versions may drift. `
 Runnable examples live in [`examples/`](examples/). The
 [`llm-classify`](examples/llm-classify/) demo audits a document with the
 `audit_document_markings` and `aggregate_markings` sequence and prints a
-classification report. It sends arbitrary document text, which the Cedar Valley
-replay server has no recording for, so it needs a runtime that serves the
-`cedar-valley` Context. Point it at yours and supply the credentials your
+classification report. It runs against the developer runtime from the
+[Quickstart](#quickstart) or against your own runtime that serves the
+`cedar-valley` Context. For your own runtime, supply the credentials your
 administrator issued:
 
 ```sh
@@ -302,16 +297,17 @@ README shows the report and both modes.
 
 ## Integration testing
 
-The replay server from the [Quickstart](#quickstart) also exercises your error
-handling. Your code decides what to log and when to retry; the recordings let you
-check that without a runtime.
+The developer runtime from the [Quickstart](#quickstart) also evaluates access
+decisions, so you can check connectivity, response handling and decision
+logging without a licensed runtime. Your code decides what to log and when to
+retry.
 
 ```python
 from ezclassify_rest_client import connect_context, EzClassifyClientError
 
 try:
     with connect_context(
-        "http://127.0.0.1:4010", context_id="cedar-valley", context_version="1.0.0"
+        "http://localhost:3000", context_id="cedar-valley", context_version="1.0.0"
     ) as ctx:
         decision = ctx.access.check_by_marking("CONFIDENTIAL", {}).result
         print(
