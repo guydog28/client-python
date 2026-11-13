@@ -1,4 +1,4 @@
-# Code generated from vendored contracts@1304fed6d3eb13bfccc0f4b4da717fb07f896038c6874e7bf5c91eda8311ce61. DO NOT EDIT.
+# Code generated from vendored contracts@873167a63048b3cfe83f9517e3385dbeee933bcf7497e01f7a41e79645b618d6. DO NOT EDIT.
 """Pydantic models generated from EzClassify's vendored OpenAPI and JSON Schemas."""
 
 from __future__ import annotations
@@ -1557,8 +1557,9 @@ class SchemeSummary(_WireModel):
     """Scheme semantic version."""
     name: str
     """Display name from the scheme metadata."""
-    description: str
-    """Free-text description from the scheme metadata."""
+    description: Optional[str] = None
+    """Free-text description from the scheme metadata. Omitted when the scheme has none.
+    """
     definition: Optional[str] = None
     """Human-readable definition of the scheme, for tooltips and about panels."""
     guidance: Optional[str] = None
@@ -3262,7 +3263,6 @@ _WIRE_SHAPES: Dict[str, Any] = {'AccessComparisonResult': {'r': [('left', False)
  'SchemeSummary': {'r': [('id', False),
                          ('version', False),
                          ('name', False),
-                         ('description', False),
                          ('referenceSurfaceLabel', False)],
                    'p': {'colorRules': {'i': 'MarkingColorRule'},
                          'referenceSurfaceLabel': 'ReferenceSurfaceLabel',

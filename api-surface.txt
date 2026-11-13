@@ -908,7 +908,7 @@ module ezclassify_rest_client.models
     default_scope: Optional[str] = Field(default=None, alias='defaultScope')
     default_whole_render_format: Optional[str] = Field(default=None, alias='defaultWholeRenderFormat')
     definition: Optional[str] = None
-    description: str
+    description: Optional[str] = None
     embedded_marking: Optional[List[Dict[str, Any]]] = Field(default=None, alias='embeddedMarking')
     @classmethod def from_dict(cls: type[Self], value: Dict[str, Any]) -> Self
     guidance: Optional[str] = None
